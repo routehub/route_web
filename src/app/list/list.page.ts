@@ -51,11 +51,11 @@ export class ListPage implements OnInit {
 
   public search(query, page): Promise<any[]> {
     return this.http.get(this.search_url + '?q=' + query + '&page=' + page).toPromise()
-      .then((res) => {
+      .then((res: any) => {
+        if (!res.results) {
+          return;
+        }
         for (let i = 0; i < res.results.length; i++) {
-          if (!res.results) {
-            continue;
-          }
           let r = res.results[i];
           this.items.push({
             title: r.title,
