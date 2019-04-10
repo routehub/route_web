@@ -4,12 +4,18 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      List
+      検索
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div ion-fixed>
+    <ion-searchbar autocomplete="on" searchIcon="search" placeholder="キャノンボール" animated [(ngModel)]="searchText"
+      (ionChange)="wordChanged($event)"></ion-searchbar>
+  </div>
+
+
   <ion-list>
     <ion-item *ngFor="let item of items">
       <ion-icon [name]="item.icon" slot="start"></ion-icon>
@@ -24,4 +30,8 @@
       You navigated here from <b>{{selectedItem.title }}</b>
     </div>
   -->
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

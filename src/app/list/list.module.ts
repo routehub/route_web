@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+
 
 import { ListPage } from './list.page';
 
@@ -11,6 +13,7 @@ import { ListPage } from './list.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    HttpClientModule,
     RouterModule.forChild([
       {
         path: '',
@@ -20,4 +23,4 @@ import { ListPage } from './list.page';
   ],
   declarations: [ListPage]
 })
-export class ListPageModule {}
+export class ListPageModule { }
