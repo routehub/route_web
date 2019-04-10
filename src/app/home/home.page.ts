@@ -1,5 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import mapboxgl from 'mapbox-gl';
+import * as mapboxgl from 'mapbox-gl';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
+
 
 @Component({
   selector: 'app-home',
@@ -11,7 +13,7 @@ export class HomePage {
 
   ionViewDidEnter() {
     // tslint:disable-next-line:no-unused-expression
-    new mapboxgl.Map({
+    let map: any = new mapboxgl.Map({
       container: this.map.nativeElement,
       style: {
         version: 8,
@@ -38,5 +40,55 @@ export class HomePage {
       center: [139.767, 35.681],
       zoom: 9
     });
+
+    // tslint:disable-next-line:no-unused-expression
+    const Draw: any = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        line_string: true,
+        point: true,
+        trash: true
+      },
+      styles: [
+        {
+        'id': 'gl-draw-line',
+        'type': 'line',
+        'filter': ['all', ['==', '$type', 'LineString'], ['==', 'active', 'true'], ['!=', 'mode', 'static']],
+        'layout': {
+          'line-cap': 'round',
+          'line-join': 'round'
+        },
+        'paint': {
+          'line-color': 'rgba(0,0,255,0.5)',
+          // 'line-dasharray': [0.2, 2],
+          'line-width': 6
+        }
+      },
+      {
+        'id': 'gl-draw-line-disable',
+        'type': 'line',
+        'filter': ['all', ['==', '$type', 'LineString'], ['==', 'active', 'false'], ['!=', 'mode', 'static']],
+        'layout': {
+          'line-cap': 'round',
+          'line-join': 'round'
+        },
+        'paint': {
+          'line-color': 'rgba(0,0,255,0.2)',
+          // 'line-dasharray': [0.2, 2],
+          'line-width': 6
+        }
+      }
+    ]
+    });
+    map.addControl(Draw, 'top-right');
+    map.on('load', function() {
+      // ALL YOUR APPLICATION CODE
+
+    });
+    map.on('draw.create', function (e) {
+      let data = Draw.getAll();
+      console.dir(data);
+    });
+
   }
 }
