@@ -79,33 +79,31 @@ export class WatchPage implements OnInit {
       trackResize: true
     });
 
-  }
+    this.map.on('load', () => {
+      const id = this.route.snapshot.paramMap.get('id');
+      var that = this;
+      this.get(id).then(function (route: any) {
+        // タイトル変更
+        that.title.el.innerText = route.title;
+        // 線を引く
+        let pos = route.pos.split(',').map(p => { return p.split(' ') });
+        that.route_geojson.source.data.geometry.coordinates = pos;
+        that.map.addLayer(that.route_geojson);
 
-  ionViewDidEnter() {
-    const id = this.route.snapshot.paramMap.get('id');
-    var that = this;
-    this.get(id).then(function (route: any) {
-      // タイトル変更
-      that.title.el.innerText = route.title;
-      // 線を引く
-      let pos = route.pos.split(',').map(p => { return p.split(' ') });
-      that.route_geojson.source.data.geometry.coordinates = pos;
-      that.map.addLayer(that.route_geojson);
-
-      var bounds = new mapboxgl.LngLatBounds();
-      pos.forEach(function (p) {
-        bounds.extend(p);
+        var bounds = new mapboxgl.LngLatBounds();
+        pos.forEach(function (p) {
+          bounds.extend(p);
+        });
+        that.map.fitBounds(bounds, {
+          duration: 0,
+          padding: {
+            top: 20,
+            bottom: 20,
+            left: 20,
+            right: 20
+          }
+        });
       });
-      that.map.fitBounds(bounds, {
-        duration: 0,
-        padding: {
-          top: 20,
-          bottom: 20,
-          left: 20,
-          right: 20
-        }
-      });
-
     });
   }
 
