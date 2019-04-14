@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { IonInfiniteScroll } from '@ionic/angular';
+import { IonInfiniteScroll, NavController/*, NavParams */ } from '@ionic/angular';
 
 @Component({
   selector: 'app-list',
@@ -25,11 +25,11 @@ export class ListPage implements OnInit {
     'bluetooth',
     'build'
   ];
-  public items: Array<{ title: string; note: string; icon: string }> = [];
+  public items: Array<{ id: string, title: string; note: string; icon: string }> = [];
   private page = 0;
   private query = '';
   searchText = '';
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, public navCtrl: NavController/*, public navParams: NavParams*/) {
     this.search(this.query, this.page);
   }
 
@@ -49,6 +49,10 @@ export class ListPage implements OnInit {
   ngOnInit() {
   }
 
+  pageSelected(item) {
+    this.navCtrl.navigateForward('/watch/' + item.id);
+  }
+
   public search(query, page): Promise<any[]> {
     return this.http.get(this.search_url + '?q=' + query + '&page=' + page).toPromise()
       .then((res: any) => {
@@ -58,6 +62,7 @@ export class ListPage implements OnInit {
         for (let i = 0; i < res.results.length; i++) {
           let r = res.results[i];
           this.items.push({
+            id: r.id,
             title: r.title,
             note: r.author,
             icon: 'beer'

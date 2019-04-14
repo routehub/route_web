@@ -19,7 +19,7 @@
   <ion-list>
     <ion-item *ngFor="let item of items">
       <ion-icon [name]="item.icon" slot="start"></ion-icon>
-      {{item.title}}
+      <ion-item (click)="pageSelected(item)">{{item.title}}</ion-item>
       <div class="item-note" slot="end">
         {{item.note}}
       </div>
