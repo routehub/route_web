@@ -109,7 +109,7 @@ export class WatchPage implements OnInit {
   }
 
   public get(id): Promise<any[]> {
-    let geturl = 'http://localhost:8080/route/1.0.0/route';
+    let geturl = 'http://153.127.254.245/route/1.0.0/route';
     return this.http.get(geturl + '?id=' + id).toPromise()
       .then((res: any) => {
         if (!res.results) {

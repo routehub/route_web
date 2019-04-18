@@ -12,7 +12,7 @@ export class ListPage implements OnInit {
   @ViewChild('searchbar') searchbar_elem: ElementRef;
 
   private selectedItem: any;
-  private search_url = 'http://localhost:8080/route/1.0.0/search';
+  private search_url = 'http://153.127.254.245/route/1.0.0/search';
   private icons = [
     'flask',
     'wifi',
