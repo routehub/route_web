@@ -44,7 +44,8 @@ export class WatchPage implements OnInit {
       },
       "paint": {
         "line-color": "#0000ff",
-        "line-width": 3
+        "line-width": 6,
+        "line-opacity": 0.7,
       }
     }
   }
@@ -117,6 +118,9 @@ export class WatchPage implements OnInit {
         return res.results;
       });
   }
+
+  // TODO : 標高グラフはこれを使う
+  //  https://github.com/MrMufflon/Leaflet.Elevation/blob/master/src/L.Control.Elevation.js
 
 
 }

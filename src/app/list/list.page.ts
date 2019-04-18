@@ -25,7 +25,7 @@ export class ListPage implements OnInit {
     'bluetooth',
     'build'
   ];
-  public items: Array<{ id: string, title: string; note: string; icon: string }> = [];
+  public items: Array<{ id: string, title: string; author: string; icon: string }> = [];
   private page = 0;
   private query = '';
   searchText = '';
@@ -64,7 +64,7 @@ export class ListPage implements OnInit {
           this.items.push({
             id: r.id,
             title: r.title,
-            note: r.author,
+            author: r.author,
             icon: 'beer'
           });
 
@@ -74,6 +74,8 @@ export class ListPage implements OnInit {
         const response: any = res;
         return response;
       });
+
+    'http://localhost:8080/route/1.0.0/route?id=4355bc819e024a613f92f6c13ccd8bd9'
   }
 
   // add back when alpha.4 is out
