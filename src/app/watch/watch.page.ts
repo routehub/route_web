@@ -80,9 +80,9 @@ export class WatchPage implements OnInit {
       width: window.innerWidth,
       height: 100,
       margins: {
-        top: 10,
+        top: 20,
         right: 30,
-        bottom: 0,
+        bottom: 20,
         left: 40
       },
       useHeightIndicator: true,
