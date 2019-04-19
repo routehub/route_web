@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { IonTitle } from '@ionic/angular';
 import * as L from 'leaflet';
+import 'leaflet.elevation/dist/leaflet.elevation-0.0.2.min.js'
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
 
@@ -31,14 +32,19 @@ export class WatchPage implements OnInit {
       "source": {
         "type": "geojson",
         "data": {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": "LineString",
-            "coordinates": [
-              //              [-122.48369693756104, 37.83381888486939],              
-            ]
-          }
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "properties": {},
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  //              [-122.48369693756104, 37.83381888486939],              
+                ]
+              }
+            }
+          ]
         }
       },
       "layout": {
@@ -67,6 +73,22 @@ export class WatchPage implements OnInit {
     }
     yahoo.addTo(this.map);
 
+    // elevation
+    var el = L.control.elevation({
+      position: 'bottomright',
+      theme: 'steelblue-theme',
+      width: window.innerWidth,
+      height: 100,
+      margins: {
+        top: 10,
+        right: 30,
+        bottom: 0,
+        left: 40
+      },
+      useHeightIndicator: true,
+    });
+    el.addTo(this.map);
+
     const id = this.route.snapshot.paramMap.get('id');
     var that = this;
     this.get(id).then(function (route: any) {
@@ -74,16 +96,22 @@ export class WatchPage implements OnInit {
       that.title.el.innerText = route.title;
       // 線を引く
       let pos = route.pos.split(',').map(p => { return p.split(' ') });
-      that.route_geojson.source.data.geometry.coordinates = pos;
+      // 標高も足しておく
+      let level = route.level.split(',');
+      for (var i = 0; i < level.length; i++) {
+        pos[i].push(level[i] * 1);
+      }
+
+      that.route_geojson.source.data.features[0].geometry.coordinates = pos;
       L.geoJSON(that.route_geojson.source.data, {
         "color": "#0000ff",
         "width": 6,
         "opacity": 0.7,
+        onEachFeature: el.addData.bind(el)
       }).addTo(that.map);
 
       // 描画範囲をよろしくする
       let line = turf.lineString(pos);
-      console.dir(line);
       let bbox = turfbbox(line); // lonlat問題...
       that.map.fitBounds([
         [bbox[1], bbox[0]],
