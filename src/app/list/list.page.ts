@@ -33,7 +33,7 @@ export class ListPage implements OnInit {
     this.search(this.query, this.page);
   }
 
-  public wordChanged(event) {
+  public wordChanged() {
     this.page = 0;
     this.query = this.searchText;
     this.items = [];
