@@ -1,9 +1,13 @@
 import { element } from 'protractor';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import * as mapboxgl from 'mapbox-gl';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { IonTitle } from '@ionic/angular';
+import * as L from 'leaflet';
+// TODO: forkして自前のブランチでマージしてビルドしたやつを利用する
+import 'leaflet.elevation/src/L.Control.Elevation.js';
+import turfbbox from '@turf/bbox';
+import * as turf from '@turf/helpers';
 
 @Component({
   selector: 'app-watch',
@@ -22,20 +26,26 @@ export class WatchPage implements OnInit {
 
   ngOnInit() {
     this.title = this.title_elem;
+
     this.route_geojson = {
       "id": "route",
       "type": "line",
       "source": {
         "type": "geojson",
         "data": {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": "LineString",
-            "coordinates": [
-              //              [-122.48369693756104, 37.83381888486939],              
-            ]
-          }
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "properties": {},
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  //              [-122.48369693756104, 37.83381888486939],              
+                ]
+              }
+            }
+          ]
         }
       },
       "layout": {
@@ -48,64 +58,69 @@ export class WatchPage implements OnInit {
         "line-opacity": 0.7,
       }
     }
+
   }
 
   ionViewWillEnter() {
-    this.map = new mapboxgl.Map({
-      container: this.map_elem.nativeElement,
-      style: {
-        version: 8,
-        sources: {
-          OSM: {
-            type: 'raster',
-            tiles: [
-              'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            ],
-            tileSize: 256
-          }
-        },
-        layers: [
-          {
-            id: 'OSM',
-            type: 'raster',
-            source: 'OSM',
-            minzoom: 0,
-            maxzoom: 18
-          }
-        ]
+    let center: any = [35.681, 139.767];
+    this.map = L.map(this.map_elem.nativeElement, { center: center, zoom: 9 });
+    let yahoo = L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512');
+    // FIXME: 実行時にもとクラスの定義を書き換えちゃってる
+    yahoo.__proto__.getTileUrl = function (coord) {
+      let z = coord.z + 1;
+      let x = coord.x;
+      let y = Math.pow(2, coord.z - 1) - coord.y - 1;
+      return 'https://map.c.yimg.jp/m?x=' + x + '&y=' + y + '&z=' + z + '&r=1&style=base:standard&size=512';
+    }
+    yahoo.addTo(this.map);
+
+    // elevation
+    var el = L.control.elevation({
+      position: 'bottomright',
+      theme: 'steelblue-theme',
+      width: window.innerWidth - document.getElementsByTagName('ion-menu')[0].offsetWidth,
+      height: 100,
+      margins: {
+        top: 20,
+        right: 30,
+        bottom: 20,
+        left: 40
       },
-      center: [139.767, 35.681],
-      zoom: 9,
-      trackResize: true
+      useHeightIndicator: true,
+    });
+    el.addTo(this.map);
+
+    const id = this.route.snapshot.paramMap.get('id');
+    var that = this;
+    this.get(id).then(function (route: any) {
+      // タイトル変更
+      that.title.el.innerText = route.title;
+      // 線を引く
+      let pos = route.pos.split(',').map(p => { return p.split(' ') });
+      // 標高も足しておく
+      let level = route.level.split(',');
+      for (var i = 0; i < level.length; i++) {
+        pos[i].push(level[i] * 1);
+      }
+
+      that.route_geojson.source.data.features[0].geometry.coordinates = pos;
+      L.geoJSON(that.route_geojson.source.data, {
+        "color": "#0000ff",
+        "width": 6,
+        "opacity": 0.7,
+        onEachFeature: el.addData.bind(el)
+      }).addTo(that.map);
+
+      // 描画範囲をよろしくする
+      let line = turf.lineString(pos);
+      let bbox = turfbbox(line); // lonlat問題...
+      that.map.fitBounds([
+        [bbox[1], bbox[0]],
+        [bbox[3], bbox[2]]
+      ]);
+
     });
 
-    this.map.on('load', () => {
-      const id = this.route.snapshot.paramMap.get('id');
-      var that = this;
-      this.get(id).then(function (route: any) {
-        // タイトル変更
-        that.title.el.innerText = route.title;
-        // 線を引く
-        let pos = route.pos.split(',').map(p => { return p.split(' ') });
-        that.route_geojson.source.data.geometry.coordinates = pos;
-        that.map.addLayer(that.route_geojson);
-
-        var bounds = new mapboxgl.LngLatBounds();
-        pos.forEach(function (p) {
-          bounds.extend(p);
-        });
-        that.map.fitBounds(bounds, {
-          duration: 0,
-          padding: {
-            top: 20,
-            bottom: 20,
-            left: 20,
-            right: 20
-          }
-        });
-      });
-    });
   }
 
   public get(id): Promise<any[]> {

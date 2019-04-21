@@ -1,7 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import * as mapboxgl from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-home',
@@ -13,88 +11,46 @@ export class HomePage {
   map: any;
 
   ionViewWillEnter() {
-    this.map.resize();
+    //    this.map.invalidateSize();
   }
 
-  ngOnInit() {
+  ionViewDidEnter() {
     // tslint:disable-next-line:no-unused-expression
-    this.map = new mapboxgl.Map({
-      container: this.map_elem.nativeElement,
-      style: {
-        version: 8,
-        sources: {
-          OSM: {
-            type: 'raster',
-            tiles: [
-              'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            ],
-            tileSize: 256
-          }
-        },
-        layers: [
-          {
-            id: 'OSM',
-            type: 'raster',
-            source: 'OSM',
-            minzoom: 0,
-            maxzoom: 18
-          }
-        ]
-      },
-      center: [139.767, 35.681],
-      zoom: 9,
-      trackResize: true
-    });
+    let center: any = [35.681, 139.767];
+    this.map = L.map(this.map_elem.nativeElement, { center: center, zoom: 9 });
 
-    // tslint:disable-next-line:no-unused-expression
-    const Draw: any = new MapboxDraw({
-      displayControlsDefault: false,
-      controls: {
-        line_string: true,
-        point: true,
-        trash: true
-      },
-      styles: [
-        {
-          'id': 'gl-draw-line',
-          'type': 'line',
-          'filter': ['all', ['==', '$type', 'LineString'], ['==', 'active', 'true'], ['!=', 'mode', 'static']],
-          'layout': {
-            'line-cap': 'round',
-            'line-join': 'round'
-          },
-          'paint': {
-            'line-color': 'rgba(0,0,255,0.5)',
-            // 'line-dasharray': [0.2, 2],
-            'line-width': 6
-          }
-        },
-        {
-          'id': 'gl-draw-line-disable',
-          'type': 'line',
-          'filter': ['all', ['==', '$type', 'LineString'], ['==', 'active', 'false'], ['!=', 'mode', 'static']],
-          'layout': {
-            'line-cap': 'round',
-            'line-join': 'round'
-          },
-          'paint': {
-            'line-color': 'rgba(0,0,255,0.2)',
-            // 'line-dasharray': [0.2, 2],
-            'line-width': 6
-          }
-        }
-      ]
-    });
-    this.map.addControl(Draw, 'top-right');
-    this.map.on('load', function () {
-      // ALL YOUR APPLICATION CODE
+    // OSM
+    let osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.map);
+    // 地理院タイル（標準地図）レイヤー設定	
+    let std = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+      attribution: "地理院タイル（標準地図）",
+    }).addTo(this.map);
+    // AltGoogle
+    /*
+    let google = L.tileLayer('https://s3-ap-northeast-1.amazonaws.com/naraemon-gmaps/xyz/base/{z}/{x}/{y}.png', {
+      attribution: "Google地図",
+    }).addTo(this.map);
+    */
+    // yahoo
+    // https://github.com/Leaflet/Leaaflet/blob/37d2fd15ad6518c254fae3e033177e96c48b5012/src/layer/tile/TileLayer.js
+    class YahooLayer extends L.TileLayer {
+      // TODO : ほんとはこんな漢字でちゃんんと軽傷したい
+    }
 
-    });
-    this.map.on('draw.create', function (e) {
-      let data = Draw.getAll();
-      console.dir(data);
-    });
+    let yahoo = L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512');
+    // FIXME: 実行時にもとクラスの定義を書き換えちゃってる
+    yahoo.__proto__.getTileUrl = function (coord) {
+      let z = coord.z + 1;
+      let x = coord.x;
+      let y = Math.pow(2, coord.z - 1) - coord.y - 1;
+      return 'https://map.c.yimg.jp/m?x=' + x + '&y=' + y + '&z=' + z + '&r=1&style=base:standard&size=512';
+    }
+    yahoo.addTo(this.map)
+    let base_layers = [osm, std, yahoo];
+    L.control.layers(base_layers).addTo(this.map);
 
   }
 }
