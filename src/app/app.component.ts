@@ -11,14 +11,19 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 export class AppComponent {
   public appPages = [
     {
-      title: 'Home',
-      url: '/home',
+      title: 'トップ',
+      url: '/',
       icon: 'home'
     },
     {
-      title: 'List',
+      title: '検索',
       url: '/list',
       icon: 'list'
+    },
+    {
+      title: 'データの移行',
+      url: '/migration',
+      icon: 'cloud-download'
     }
   ];
 
