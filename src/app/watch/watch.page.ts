@@ -4,7 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { IonTitle } from '@ionic/angular';
 import * as L from 'leaflet';
-import 'leaflet.elevation/dist/leaflet.elevation-0.0.2.min.js'
+// TODO: forkして自前のブランチでマージしてビルドしたやつを利用する
+import 'leaflet.elevation/src/L.Control.Elevation.js';
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
 
@@ -77,7 +78,7 @@ export class WatchPage implements OnInit {
     var el = L.control.elevation({
       position: 'bottomright',
       theme: 'steelblue-theme',
-      width: window.innerWidth,
+      width: window.innerWidth - document.getElementsByTagName('ion-menu')[0].offsetWidth,
       height: 100,
       margins: {
         top: 20,

@@ -27,7 +27,7 @@
     "@turf/bbox": "^6.0.1",
     "core-js": "^2.5.4",
     "leaflet": "^1.4.0",
-    "leaflet.elevation": "0.0.3",
+    "leaflet.elevation": "astridx/Leaflet.Elevation#L.Browser.touch",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.29"
   },

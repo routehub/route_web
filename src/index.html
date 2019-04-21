@@ -26,13 +26,71 @@
     crossorigin=""></script>
   <!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.js"></script>-->
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <!--
   <link rel="stylesheet"
     href="https://mrmufflon.github.io/Leaflet.Elevation/example/lib/elevation/Leaflet.Elevation-0.0.2.css" />
+  -->
+
 
   <style>
-    .steelblue-theme .leaflet-control.elevation .area {
+    .steelblue-theme.leaflet-control.elevation .background {
+      border-radius: 5px
+    }
+
+    .steelblue-theme.leaflet-control.elevation .axis line,
+    .steelblue-theme.leaflet-control.elevation .axis path {
+      fill: none;
+      stroke: #0d1821;
+      stroke-width: 2
+    }
+
+    .steelblue-theme.leaflet-control.elevation .mouse-drag {
+      fill: #ff1c1c4a;
+    }
+
+    .steelblue-theme.leaflet-control.elevation .elevation-toggle {
+      cursor: pointer;
+      box-shadow: 0 1px 7px rgba(0, 0, 0, .4);
+      -webkit-border-radius: 5px;
+      border-radius: 5px;
+      width: 36px;
+      height: 36px;
+      background-color: #f8f8f9
+    }
+
+    .steelblue-theme.leaflet-control.elevation .elevation-toggle-icon {
+      background: url(images/elevation-steelblue.png) no-repeat center center
+    }
+
+    .steelblue-theme.leaflet-control.elevation .area {
       fill: #0100ff96;
     }
+
+    .steelblue-theme.leaflet-control.elevation .mouse-focus-line {
+      pointer-events: none;
+      stroke-width: 1;
+      stroke: #0d1821
+    }
+
+    .steelblue-theme.leaflet-control.elevation-collapsed .background {
+      display: none
+    }
+
+    .steelblue-theme.leaflet-control.elevation-collapsed .elevation-toggle {
+      display: block
+    }
+
+    .steelblue-theme.height-focus {
+      stroke: #4682b4;
+      fill: #0100ff96;
+
+    }
+
+    .steelblue-theme.height-focus.line {
+      pointer-events: none;
+      stroke-width: 2
+    }
+
 
     .steelblue-theme .leaflet-control.elevation .background {
       background: linear-gradient(to bottom, #ffffff00, #ffffff9e);
@@ -43,16 +101,8 @@
     }
 
     .steelblue-theme .leaflet-overlay-pane .height-focus {
-      stroke: #0100ff96;
-      fill: #0100ff96;
-    }
-
-    .mouse-focus-label-x {
-      font-size: 15px;
-      fill: white;
-      fill-opacity: 0.5;
-      /* なぜか聞かない */
-
+      stroke: #0000ff;
+      fill: #0000ff;
     }
   </style>
 </head>
