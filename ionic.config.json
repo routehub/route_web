@@ -1,5 +1,7 @@
 {
   "name": "route_web",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

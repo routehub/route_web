@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { IonTitle } from '@ionic/angular';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 // TODO: forkして自前のブランチでマージしてビルドしたやつを利用する
 import 'leaflet.elevation/src/L.Control.Elevation.js';
@@ -16,15 +17,21 @@ import * as turf from '@turf/helpers';
 })
 export class WatchPage implements OnInit {
   @ViewChild('map') map_elem: ElementRef;
+  @ViewChild('watchlocation') watchlocation_elem: ElementRef;
+
   @ViewChild('title') title_elem: ElementRef;
 
   map: any;
   title: any;
   route_geojson: any;
+  enable_watch_location: boolean;
+  watch: any;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) { }
+  constructor(private http: HttpClient, private route: ActivatedRoute, private geolocation: Geolocation) { }
 
   ngOnInit() {
+    this.enable_watch_location = false;
+    this.watch = this.geolocation.watchPosition();
     this.title = this.title_elem;
 
     this.route_geojson = {
@@ -78,6 +85,7 @@ export class WatchPage implements OnInit {
     var el = L.control.elevation({
       position: 'bottomright',
       theme: 'steelblue-theme',
+      // TODO : ウィンドウサイズ変更イベントに対応する
       width: window.innerWidth - document.getElementsByTagName('ion-menu')[0].offsetWidth,
       height: 100,
       margins: {
@@ -120,7 +128,23 @@ export class WatchPage implements OnInit {
       ]);
 
     });
+  }
 
+  public toggleLocation() {
+    if (this.enable_watch_location) {
+      this.watch.unsubscribe();
+      this.watchlocation_elem.el.classList.remove('_active')
+      this.enable_watch_location = false;
+      return;
+    }
+    this.watch.subscribe((pos) => {
+      this.watch.subscribe((pos) => {
+        console.dir(pos);
+        this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true });
+      });
+      this.watchlocation_elem.el.classList.add('_active')
+      this.enable_watch_location = true;
+    });
   }
 
   public get(id): Promise<any[]> {
@@ -133,9 +157,4 @@ export class WatchPage implements OnInit {
         return res.results;
       });
   }
-
-  // TODO : 標高グラフはこれを使う
-  //  https://github.com/MrMufflon/Leaflet.Elevation/blob/master/src/L.Control.Elevation.js
-
-
 }
