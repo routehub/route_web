@@ -17,20 +17,17 @@ import * as turf from '@turf/helpers';
 })
 export class WatchPage implements OnInit {
   @ViewChild('map') map_elem: ElementRef;
-  @ViewChild('watchlocation') watchlocation_elem: ElementRef;
-
   @ViewChild('title') title_elem: ElementRef;
 
   map: any;
   title: any;
   route_geojson: any;
-  enable_watch_location: boolean;
+  watch_location_subscribe: any;
   watch: any;
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private geolocation: Geolocation) { }
 
   ngOnInit() {
-    this.enable_watch_location = false;
     this.watch = this.geolocation.watchPosition();
     this.title = this.title_elem;
 
@@ -131,19 +128,25 @@ export class WatchPage implements OnInit {
   }
 
   public toggleLocation() {
-    if (this.enable_watch_location) {
-      this.watch.unsubscribe();
-      this.watchlocation_elem.el.classList.remove('_active')
-      this.enable_watch_location = false;
+    let watch_button_dom = document.getElementsByClassName('watch-location')[0];
+
+    if (this.watch_location_subscribe && this.watch_location_subscribe.isStopped !== true) {
+      console.log('watch stop gps');
+      watch_button_dom.classList.remove('_active');
+      this.watch_location_subscribe.unsubscribe();
       return;
     }
-    this.watch.subscribe((pos) => {
+
+    console.log('watch start gps');
+    watch_button_dom.classList.add('_active');
+    this.watch_location_subscribe = this.watch.subscribe((pos) => {
       this.watch.subscribe((pos) => {
-        console.dir(pos);
+        if (this.watch_location_subscribe.isStopped === true) {
+          return;
+        }
+
         this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true });
       });
-      this.watchlocation_elem.el.classList.add('_active')
-      this.enable_watch_location = true;
     });
   }
 
