@@ -74,7 +74,7 @@ export class WatchPage implements OnInit {
 
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('#importarea:resize', ['$event'])
   sizeChange(event) {
     if (!this.elevation_controll) {
       return;

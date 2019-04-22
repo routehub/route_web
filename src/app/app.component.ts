@@ -21,7 +21,7 @@ export class AppComponent {
       icon: 'list'
     },
     {
-      title: 'データの移行',
+      title: 'ルートラボから取込',
       url: '/migration',
       icon: 'cloud-download'
     }
