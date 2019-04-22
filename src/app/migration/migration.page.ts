@@ -18,7 +18,7 @@ export class MigrationPage implements OnInit {
 
   onPaste(event) {
     event.preventDefault();
-    //    if (window.clipboardData && window.clipboardData.getData) { // IE
+    //    if (window.clipboardData && window.clipboardData.getData) { // IE pollyfillされるかな...
     //      var pastedText = window.clipboardData.getData('Text');
     //    } else 
     var importlist = [];

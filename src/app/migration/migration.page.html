@@ -4,6 +4,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+  <ion-progress-bar color="primary" value="0.5"></ion-progress-bar>
 
   <p class="migrate-discription">
     本サービスにデータを取り込むことにより、<br>
@@ -22,7 +23,7 @@
 
 
   <ion-item class="migrate-page-form">
-    <ion-label position="stacked">マイページをすべてコピー</ion-label>
+    <ion-label position="stacked">マイページを貼り付けですべて取り込み</ion-label>
     <ion-item>
       <ion-textarea cols="120" rows="50" id="importarea" #importarea (paste)="onPaste($event)"></ion-textarea>
     </ion-item>
