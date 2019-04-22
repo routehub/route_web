@@ -9,6 +9,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { RouteinfoPageModule } from './routeinfo/routeinfo.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +18,7 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
+    RouteinfoPageModule,
   ],
   providers: [
     StatusBar,

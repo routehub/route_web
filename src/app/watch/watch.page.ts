@@ -1,20 +1,22 @@
 import { element } from 'protractor';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { IonTitle } from '@ionic/angular';
+import { IonTitle, ModalController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 // TODO: forkして自前のブランチでマージしてビルドしたやつを利用する
 import 'leaflet.elevation/src/L.Control.Elevation.js';
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
+import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 
 @Component({
   selector: 'app-watch',
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.scss'],
 })
+
 export class WatchPage implements OnInit {
   @ViewChild('map') map_elem: ElementRef;
   @ViewChild('title') title_elem: ElementRef;
@@ -24,10 +26,17 @@ export class WatchPage implements OnInit {
   route_geojson: any;
   watch_location_subscribe: any;
   watch: any;
+  elevation_controll: any;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private geolocation: Geolocation) { }
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private geolocation: Geolocation,
+    public modalCtrl: ModalController) { }
 
   ngOnInit() {
+    window.dispatchEvent(new Event('resize'));
+
     this.watch = this.geolocation.watchPosition();
     this.title = this.title_elem;
 
@@ -65,6 +74,15 @@ export class WatchPage implements OnInit {
 
   }
 
+  @HostListener('window:resize', ['$event'])
+  sizeChange(event) {
+    if (!this.elevation_controll) {
+      return;
+    }
+    // todo
+    // resizeしたあと1秒以上固定だったら標高グラフを削除して再描画
+  }
+
   ionViewWillEnter() {
     let center: any = [35.681, 139.767];
     this.map = L.map(this.map_elem.nativeElement, { center: center, zoom: 9 });
@@ -79,7 +97,7 @@ export class WatchPage implements OnInit {
     yahoo.addTo(this.map);
 
     // elevation
-    var el = L.control.elevation({
+    this.elevation_controll = L.control.elevation({
       position: 'bottomright',
       theme: 'steelblue-theme',
       // TODO : ウィンドウサイズ変更イベントに対応する
@@ -93,7 +111,7 @@ export class WatchPage implements OnInit {
       },
       useHeightIndicator: true,
     });
-    el.addTo(this.map);
+    this.elevation_controll.addTo(this.map);
 
     const id = this.route.snapshot.paramMap.get('id');
     var that = this;
@@ -113,7 +131,7 @@ export class WatchPage implements OnInit {
         "color": "#0000ff",
         "width": 6,
         "opacity": 0.7,
-        onEachFeature: el.addData.bind(el)
+        onEachFeature: that.elevation_controll.addData.bind(that.elevation_controll)
       }).addTo(that.map);
 
       // 描画範囲をよろしくする
@@ -160,4 +178,15 @@ export class WatchPage implements OnInit {
         return res.results;
       });
   }
+
+
+  async presentRouteInfoPage() {
+    const modal = await this.modalCtrl.create({
+      component: RouteinfoPage,
+      componentProps: {}
+    });
+    return await modal.present();
+  }
+
+
 }
