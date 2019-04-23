@@ -1,0 +1,17 @@
+.migrate-discription {
+    color : gray;
+    padding-left : 20px;
+}
+
+.migrate-url-form ion-button, .migrate-url-form ion-buttons {
+    margin: 0;
+    padding: 0;
+}
+
+.migrate-page-form ion-textarea {
+    width: 100%;
+    padding: 0 !important;
+    /* TODO : gif動画を撮ってコピペの様を貼る */
+    --background : url("https://lh3.googleusercontent.com/hE5y1WQDklzRLz1cpVaZoYyJk1p6Q7c6b3E-BTNrbYzvs1wQi1iCqFFs0QrrVNJDJ0slRZzaDw4=w327-h287-no") no-repeat;
+}
+

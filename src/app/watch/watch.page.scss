@@ -7,9 +7,15 @@
   top: 0;
   right: 0;
   z-index: 999;
-  padding: 10px 10px 0 0;
+  margin: 10px 10px 0 0;
   color: #00000075;
 }
 .watch-location._active {
   color : #3880ffc4
+}
+
+.route-info {
+  zoom:180%;
+  color : #3880ffc4;
+  margin: 5px;
 }
