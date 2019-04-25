@@ -1,13 +1,23 @@
 <ion-app>
   <ion-tabs>
-    <ion-tab-bar slot="bottom">
+    <ion-tab-bar slot="top" color="primary" translucent="true" *ngIf="platform.is('desktop')">
 
+      <ion-title style="width:200px"><img style="height: 40px;" src="./assets/logo-white.png" alt="routelabo">
+      </ion-title>
+
+      <ion-tab-button layout="icon-start" [routerLink]="[p.url]" *ngFor="let p of appPages">
+        <ion-label>{{p.title}}</ion-label>
+        <ion-icon [name]="p.icon"></ion-icon>
+        <ion-badge>10</ion-badge>
+      </ion-tab-button>
+    </ion-tab-bar>
+
+    <ion-tab-bar slot="bottom" color="primary" translucent="true" *ngIf="platform.is('mobile')">
       <ion-tab-button [routerLink]="[p.url]" *ngFor="let p of appPages">
         <ion-label>{{p.title}}</ion-label>
         <ion-icon [name]="p.icon"></ion-icon>
         <ion-badge>10</ion-badge>
       </ion-tab-button>
-
     </ion-tab-bar>
   </ion-tabs>
 </ion-app>
