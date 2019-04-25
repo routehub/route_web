@@ -88,6 +88,11 @@ export class MigrationPage implements OnInit {
 
       this.http.get(this.migrate_url + '?id=' + item.id).toPromise()
       .then((res: any) => {
+        if (res.error) {
+          item.title = 'すでに登録済みです';
+          item.color = 'danger';
+          return;
+        }
         item.title = res.title;
         item.author = res.auhor;
         item.color = 'primary';
