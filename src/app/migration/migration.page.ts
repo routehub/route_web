@@ -8,6 +8,8 @@ import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular
 export class MigrationPage implements OnInit {
   @ViewChild('importarea') importarea: ElementRef;
 
+  public items: Array<{ id: string, title: string; author: string; icon: string }> = [];
+
   constructor() { }
 
   ngOnInit() {
@@ -25,22 +27,25 @@ export class MigrationPage implements OnInit {
       return;
     }
 
-    var importlist = [];
-
     let pastedText: string = event.clipboardData.getData('text/html');
-    let m = pastedText.match(/<tr id="(.+?)"/g);
+    let m = pastedText.match(/watch\?id=(.*?)"/g);
+
     if (!m || m.length <= 0) {
       console.log('pasted, but clipboard empty url.');
       return;
     }
-
     for (let i = 0; i < m.length; i++) {
-      let id_m = m[i].match(/"(.+?)"/);
-      importlist.push(id_m[1]);
+      let id_m = m[i].match(/watch\?id=(.+?)"/);
+      let id = id_m[1];
+      let item = {
+        id: id,
+        title: id,
+        author: '',
+        icon: ''
+      };
+      this.items.push(item);
     }
     // TODO: ★をつけたルートは別ロジックで取る（ユーザーに選ばせてあげたほうが良さそう
-
-    console.dir(importlist);
 
     // リストを順にインポートしていくUIつくる
   }

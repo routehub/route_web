@@ -25,8 +25,17 @@
   <ion-item class="migrate-page-form">
     <ion-label position="stacked">マイページを貼り付けですべて取り込み</ion-label>
     <ion-item>
-      <ion-textarea cols="120" rows="50" id="importarea" #importarea (paste)="onPaste($event)"></ion-textarea>
+      <ion-textarea cols="120" rows="20" id="importarea" #importarea (paste)="onPaste($event)"></ion-textarea>
     </ion-item>
   </ion-item>
+
+  <ion-list>
+    <ion-item *ngFor="let item of items">
+      <!--<ion-spinner name="crescent" slot="start"></ion-spinner>-->
+      <ion-icon name="checkmark-circle"></ion-icon>
+      <ion-item>{{item.title}}</ion-item>
+      <!--        <ion-item slot="end">{{item.author}}</ion-item>  -->
+    </ion-item>
+  </ion-list>
 
 </ion-content>
