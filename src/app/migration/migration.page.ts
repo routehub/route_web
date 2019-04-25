@@ -1,4 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { NavController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-migration',
@@ -8,9 +11,11 @@ import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular
 export class MigrationPage implements OnInit {
   @ViewChild('importarea') importarea: ElementRef;
 
-  public items: Array<{ id: string, title: string; author: string; icon: string }> = [];
+  public routeurl: string;
+  public items: Array<{ id: string, title: string; author: string; icon: string; color: string; }> = [];
+  private migrate_url = 'https://dev-api.routelabo.com/route/1.0.0/migrate';
 
-  constructor() { }
+  constructor(private http: HttpClient, public navCtrl: NavController) { }
 
   ngOnInit() {
   }
@@ -34,24 +39,68 @@ export class MigrationPage implements OnInit {
       console.log('pasted, but clipboard empty url.');
       return;
     }
+    var ids = [];
     for (let i = 0; i < m.length; i++) {
       let id_m = m[i].match(/watch\?id=(.+?)"/);
-      let id = id_m[1];
-      let item = {
-        id: id,
-        title: id,
-        author: '',
-        icon: ''
-      };
-      this.items.push(item);
+      if (!ids.includes(id_m[1])) {
+        ids.push(id_m[1]);
+      }
     }
-    // TODO: ★をつけたルートは別ロジックで取る（ユーザーに選ばせてあげたほうが良さそう
+    for (let i = 0; i < ids.length; i++) {
+      this.items.push({
+        id: ids[i],
+        title: ids[i],
+        author: '',
+        icon: '',
+        color: '',
+      });
+    }
 
-    // リストを順にインポートしていくUIつくる
+    this.checkque();
   }
 
   importUrl() {
-    // 裏で取り込み処理のリクエストをサーバに投げてDBにはいったらsuccesss的なリストを出す
+    if (!this.routeurl) {
+      return;
+    }
+    let m = this.routeurl.match(/watch\?id=(.*?)$/);
+    console.dir(m);
+
+    if (!m) {
+      return;
+    }
+    this.items.push({
+      id: m[1],
+      title: m[1],
+      author: '',
+      icon: '',
+      color: '',
+    });
+    this.checkque();
+    this.routeurl = '';
+  }
+
+  checkque () {
+    this.items.map(item => {
+      if (item.color !== '') {
+        return;
+      }
+
+      this.http.get(this.migrate_url + '?id=' + item.id).toPromise()
+      .then((res: any) => {
+        item.title = res.title;
+        item.author = res.auhor;
+        item.color = 'primary';
+      })
+      .catch(fallback => {
+        console.dir(fallback);
+        item.color = 'danger';
+      });
+    });
+  }
+
+  pageSelected (item) {
+    this.navCtrl.navigateForward('/watch/' + item.id);
   }
 
 }
