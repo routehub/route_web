@@ -45,7 +45,7 @@ export class AppComponent {
       // モバイル出ないときのデザイン調整
       if (!this.platform.is('mobile')) {
         this.tabslot = 'top';
-        console.log('is pc');
+        this.appPages.shift();
       }
     });
   }
