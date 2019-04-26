@@ -27,8 +27,10 @@ export class ListPage implements OnInit {
   items: Array<{
     id: string,
     title: string;
+    body: string;
     author: string;
     thumburl: string;
+    created_at: string;
   }> = [];
 
 
@@ -80,8 +82,10 @@ export class ListPage implements OnInit {
           this.items.push({
             id: r.id,
             title: r.title,
+            body: r.body,
             author: r.author,
             thumburl: this.getThumbUrl(r.summary),
+            created_at: r.created_at,
           });
 
           this.infiniteScroll.complete();

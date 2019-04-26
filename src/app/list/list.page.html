@@ -16,8 +16,15 @@
           </ion-card-header>
 
           <ion-card-content>
-            <ion-card-subtitle>{{item.author}}</ion-card-subtitle>
             <ion-card-title>{{item.title}}</ion-card-title>
+            <ion-card-subtitle>{{item.body}}</ion-card-subtitle>
+            <ul>
+              <li>投稿者：{{item.author}}</li>
+              <li>投稿日：{{item.created_at}}</li>
+              <li>距離：25.0km</li>
+              <li>最大標高差：38m</li>
+              <li>獲得標高：29m</li>
+            </ul>
           </ion-card-content>
 
         </ion-card>
