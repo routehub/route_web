@@ -1,8 +1,7 @@
-import { element } from 'protractor';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { IonTitle, ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 // TODO: forkして自前のブランチでマージしてビルドしたやつを利用する
@@ -43,26 +42,17 @@ export class WatchPage implements OnInit {
     this.title = this.title_elem;
 
     this.route_geojson = {
-      "id": "route",
-      "type": "line",
-      "source": {
-        "type": "geojson",
-        "data": {
-          "type": "FeatureCollection",
-          "features": [
-            {
-              "type": "Feature",
-              "properties": {},
-              "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                  //              [-122.48369693756104, 37.83381888486939],              
-                ]
-              }
-            }
-          ]
-        }
-      },
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [],
+          }
+        },
+      ],
       "layout": {
         "line-join": "round",
         "line-cap": "round"
@@ -128,8 +118,8 @@ export class WatchPage implements OnInit {
         pos[i].push(level[i] * 1);
       }
 
-      that.route_geojson.source.data.features[0].geometry.coordinates = pos;
-      L.geoJSON(that.route_geojson.source.data, {
+      that.route_geojson.features[0].geometry.coordinates = pos;
+      L.geoJSON(that.route_geojson, {
         "color": "#0000ff",
         "width": 6,
         "opacity": 0.7,
@@ -147,7 +137,8 @@ export class WatchPage implements OnInit {
     });
   }
 
-  public toggleLocation() {
+
+  toggleLocation() {
     let watch_button_dom = document.getElementsByClassName('watch-location')[0];
 
     if (this.watch_location_subscribe && this.watch_location_subscribe.isStopped !== true) {
@@ -170,7 +161,8 @@ export class WatchPage implements OnInit {
     });
   }
 
-  public get(id): Promise<any[]> {
+
+  get(id): Promise<any[]> {
     let geturl = 'https://dev-api.routelabo.com/route/1.0.0/route';
     return this.http.get(geturl + '?id=' + id).toPromise()
       .then((res: any) => {
