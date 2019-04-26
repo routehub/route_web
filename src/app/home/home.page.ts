@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -6,6 +7,11 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
   styleUrls: ['home.page.scss']
 })
 export class HomePage {
+
+  constructor(
+    public platform: Platform,
+  ) { }
+
   ionViewWillEnter() {
   }
 
