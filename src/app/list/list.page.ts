@@ -82,7 +82,7 @@ export class ListPage implements OnInit {
           this.items.push({
             id: r.id,
             title: r.title,
-            body: r.body,
+            body: this.getBodyHead(r.body),
             author: r.author,
             thumburl: this.getThumbUrl(r.summary),
             created_at: r.created_at,
@@ -94,6 +94,14 @@ export class ListPage implements OnInit {
         const response: any = res;
         return response;
       });
+  }
+
+  private getBodyHead(body) {
+    let limit = 70;
+    if (body.length < limit) {
+      return body;
+    }
+    return body.substr(0, limit) + '...';
   }
 
   private getThumbUrl(summary) {

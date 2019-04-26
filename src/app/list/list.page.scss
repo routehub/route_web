@@ -8,3 +8,10 @@
 .list-thumb.ng-lazyloaded {
   opacity: 1;
 }
+.list-body {
+  width:200px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
