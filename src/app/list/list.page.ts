@@ -22,7 +22,7 @@ export class ListPage implements OnInit {
     thumburl: string;
   }> = [];
   private page = 0;
-  private per_page = 10;
+  private per_page = 4;
   private query = '';
   searchText = '';
   private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
@@ -31,7 +31,6 @@ export class ListPage implements OnInit {
 
 
   constructor(private http: HttpClient, public navCtrl: NavController) {
-    this.search(this.query, this.page);
   }
 
   public wordChanged() {
@@ -48,6 +47,19 @@ export class ListPage implements OnInit {
   }
 
   ngOnInit() {
+    // ウィンドウサイズによって、取得する量を変える（早くしたい&API叩きすぎたくない
+    console.dir(window.innerWidth)
+    if (window.innerWidth > 600) {
+      this.per_page = 10;
+    }
+    if (window.innerWidth > 800) {
+      this.per_page = 12;
+    }
+    if (window.innerWidth > 1200) {
+      this.per_page = 16;
+    }
+    this.search(this.query, this.page);
+
   }
 
   pageSelected(item) {
