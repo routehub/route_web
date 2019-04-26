@@ -14,37 +14,29 @@
 </ion-header>
 
 <ion-content>
-  <div class="images">
-    <ion-card class="one-image" *ngFor="let item of items" (click)="pageSelected(item)">
-      <ion-card-header>
-        <img class="list-thumb" lazyLoad='{{item.thumburl}}' offset="50" />
-        <ion-card-subtitle>{{item.author}}</ion-card-subtitle>
-        <ion-card-title>{{item.title}}</ion-card-title>
-      </ion-card-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6 col-md-4 col-xl-3 *ngFor="let item of items">
 
-      <ion-card-content>
-      </ion-card-content>
+        <ion-card class="one-image" (click)="pageSelected(item)">
+          <ion-card-header>
+            <img class="list-thumb" lazyLoad='{{item.thumburl}}' offset="50" />
+          </ion-card-header>
 
-    </ion-card>
-  </div>
+          <ion-card-content>
+            <ion-card-subtitle>{{item.author}}</ion-card-subtitle>
+            <ion-card-title>{{item.title}}</ion-card-title>
+          </ion-card-content>
 
+        </ion-card>
 
-  <!--
-  <ion-list>
-    <ion-item *ngFor="let item of items">
-      <ion-icon [name]="item.icon" slot="start"></ion-icon>
-      <ion-item (click)="pageSelected(item)">{{item.title}}</ion-item>
-      <ion-item slot="end">{{item.author}}</ion-item>
-    </ion-item>
-  </ion-list>
--->
-  <!--
-    <div *ngIf="selectedItem" padding>
-      You navigated here from <b>{{selectedItem.title }}</b>
-    </div>
-  -->
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="doInfinite($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-infinite-scroll threshold="200px" (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
+
 </ion-content>

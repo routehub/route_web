@@ -19,11 +19,10 @@ export class ListPage implements OnInit {
     id: string,
     title: string;
     author: string;
-    icon: string;
     thumburl: string;
   }> = [];
   private page = 0;
-  private per_page = 6;
+  private per_page = 10;
   private query = '';
   searchText = '';
   private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
@@ -67,7 +66,6 @@ export class ListPage implements OnInit {
             id: r.id,
             title: r.title,
             author: r.author,
-            icon: 'beer',
             thumburl: this.getThumbUrl(r.summary),
           });
 
@@ -85,7 +83,7 @@ export class ListPage implements OnInit {
       return p[1] + ',' + p[0];
     }).join(',');
     return this.staticmap_url + '?appid=' + this.thumbappid
-      + '&autoscale=on&scalebar=off&width=300&height=200&l=' + '255,52,106,90,3,'
+      + '&autoscale=on&scalebar=off&width=300&height=200&l=' + '0,0,255,105,3,' // rgb, a, weight
       + line;
   }
 }
