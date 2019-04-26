@@ -12,22 +12,26 @@
 
     @media (min-width: 420px) {
         .images {
-            column-count: 3;
+            column-count: 2;
         }
     }
 
     @media (min-width: 720px) {
         .images {
-            column-count: 4;
+            column-count: 3;
         }
     }
 
     @media (min-width: 920px) {
         .images {
+            column-count: 4;
+        }
+    }
+    @media (min-width: 1120px) {
+        .images {
             column-count: 5;
         }
     }
-
     .one-image {
         margin: 2px;
     }
