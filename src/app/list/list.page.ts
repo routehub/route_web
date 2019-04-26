@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { IonInfiniteScroll, NavController/*, NavParams */ } from '@ionic/angular';
+import { IonInfiniteScroll, NavController } from '@ionic/angular';
 import { lineString } from '@turf/helpers';
 import { splitAtColon } from '@angular/compiler/src/util';
 
@@ -30,7 +30,7 @@ export class ListPage implements OnInit {
 
 
 
-  constructor(private http: HttpClient, public navCtrl: NavController/*, public navParams: NavParams*/) {
+  constructor(private http: HttpClient, public navCtrl: NavController) {
     this.search(this.query, this.page);
   }
 

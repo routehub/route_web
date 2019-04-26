@@ -2,7 +2,7 @@ import { element } from 'protractor';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { IonTitle, ModalController } from '@ionic/angular';
+import { IonTitle, ModalController, NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 // TODO: forkして自前のブランチでマージしてビルドしたやつを利用する
@@ -32,7 +32,9 @@ export class WatchPage implements OnInit {
     private http: HttpClient,
     private route: ActivatedRoute,
     private geolocation: Geolocation,
-    public modalCtrl: ModalController) { }
+    public modalCtrl: ModalController,
+    public navCtrl: NavController,
+  ) { }
 
   ngOnInit() {
     window.dispatchEvent(new Event('resize'));
@@ -186,6 +188,10 @@ export class WatchPage implements OnInit {
       componentProps: {}
     });
     return await modal.present();
+  }
+
+  public back() {
+    this.navCtrl.navigateBack("/list");
   }
 
 
