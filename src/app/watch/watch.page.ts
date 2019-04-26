@@ -9,6 +9,7 @@ import 'leaflet.elevation/src/L.Control.Elevation.js';
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-watch',
@@ -18,14 +19,34 @@ import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 
 export class WatchPage implements OnInit {
   @ViewChild('map') map_elem: ElementRef;
-  @ViewChild('title') title_elem: ElementRef;
 
   map: any;
   title: any;
-  route_geojson: any;
   watch_location_subscribe: any;
   watch: any;
   elevation_controll: any;
+  route_geojson = {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [],
+        }
+      },
+    ],
+    "layout": {
+      "line-join": "round",
+      "line-cap": "round"
+    },
+    "paint": {
+      "line-color": "#0000ff",
+      "line-width": 6,
+      "line-opacity": 0.7,
+    }
+  };
 
   constructor(
     private http: HttpClient,
@@ -33,37 +54,13 @@ export class WatchPage implements OnInit {
     private geolocation: Geolocation,
     public modalCtrl: ModalController,
     public navCtrl: NavController,
+    public platform: Platform,
   ) { }
 
   ngOnInit() {
     window.dispatchEvent(new Event('resize'));
 
     this.watch = this.geolocation.watchPosition();
-    this.title = this.title_elem;
-
-    this.route_geojson = {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": "LineString",
-            "coordinates": [],
-          }
-        },
-      ],
-      "layout": {
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      "paint": {
-        "line-color": "#0000ff",
-        "line-width": 6,
-        "line-opacity": 0.7,
-      }
-    }
-
   }
 
   @HostListener('window:resize', ['$event'])
@@ -77,7 +74,7 @@ export class WatchPage implements OnInit {
 
   ionViewWillEnter() {
     let center: any = [35.681, 139.767];
-    this.map = L.map(this.map_elem.nativeElement, { center: center, zoom: 9 });
+    this.map = L.map(this.map_elem.nativeElement, { center: center, zoom: 9, zoomControl: false });
     let yahoo = L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512');
     // FIXME: 実行時にもとクラスの定義を書き換えちゃってる
     yahoo.__proto__.getTileUrl = function (coord) {
@@ -109,7 +106,7 @@ export class WatchPage implements OnInit {
     var that = this;
     this.get(id).then(function (route: any) {
       // タイトル変更
-      that.title.el.innerText = route.title;
+      that.title = route.title;
       // 線を引く
       let pos = route.pos.split(',').map(p => { return p.split(' ') });
       // 標高も足しておく
