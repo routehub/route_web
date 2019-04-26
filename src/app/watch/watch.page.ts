@@ -140,8 +140,8 @@ export class WatchPage implements OnInit {
       let goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: goalIcon }).addTo(that.map);
       let commentIcon = new L.icon({
         iconUrl: '/assets/icon/comment_icon.png',
-        iconSize: [50, 27], // size of the icon
-        iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
+        iconSize: [20, 20], // size of the icon
+        iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
       });
       let editIcon = new L.icon({
@@ -164,6 +164,13 @@ export class WatchPage implements OnInit {
           } else {
             console.log(j, pos.length);
           }
+        }
+      }
+      let note = JSON.parse(route.note);
+      if (note && note.length > 0) {
+        for (let i = 0; i < note.length; i++) {
+          let j = note[i].pos;
+          let edit = L.marker([pos[j][1], pos[j][0]], { icon: commentIcon }).addTo(that.map);
         }
       }
 
