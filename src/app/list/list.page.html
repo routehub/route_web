@@ -17,7 +17,7 @@
   <div class="images">
     <ion-card class="one-image" *ngFor="let item of items" (click)="pageSelected(item)">
       <ion-card-header>
-        <img [src]='{{ (item.thumburl) || (loadingAnimation ) }}'>
+        <img class="list-thumb" lazyLoad='{{item.thumburl}}' offset="50" />
         <ion-card-subtitle>{{item.author}}</ion-card-subtitle>
         <ion-card-title>{{item.title}}</ion-card-title>
       </ion-card-header>

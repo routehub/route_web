@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
 
 
 import { ListPage } from './list.page';
@@ -14,6 +15,9 @@ import { ListPage } from './list.page';
     FormsModule,
     IonicModule,
     HttpClientModule,
+    LazyLoadImageModule.forRoot({
+      preset: intersectionObserverPreset
+    }),
     RouterModule.forChild([
       {
         path: '',

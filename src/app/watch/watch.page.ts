@@ -101,7 +101,7 @@ export class WatchPage implements OnInit {
       position: 'bottomright',
       theme: 'steelblue-theme',
       // TODO : ウィンドウサイズ変更イベントに対応する
-      width: window.innerWidth - document.getElementsByTagName('ion-menu')[0].offsetWidth,
+      width: window.innerWidth,
       height: 100,
       margins: {
         top: 20,

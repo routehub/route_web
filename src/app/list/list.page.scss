@@ -1,4 +1,3 @@
-
     .image-container {
         min-height: 200px;
         background-size: cover;
@@ -34,4 +33,14 @@
     }
     .one-image {
         margin: 2px;
+    }
+
+    .list-thumb {
+        transition: opacity 1s;
+        opacity: 0;
+        min-height: 150px;
+        min-width: 200px;
+    }
+    .list-thumb.ng-lazyloaded {
+      opacity: 1;
     }

@@ -23,6 +23,7 @@ export class ListPage implements OnInit {
     thumburl: string;
   }> = [];
   private page = 0;
+  private per_page = 6;
   private query = '';
   searchText = '';
   private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
@@ -55,7 +56,7 @@ export class ListPage implements OnInit {
   }
 
   public search(query, page): Promise<any[]> {
-    return this.http.get(this.search_url + '?q=' + query + '&page=' + page).toPromise()
+    return this.http.get(this.search_url + '?q=' + query + '&per_page=' + this.per_page + '&page=' + page).toPromise()
       .then((res: any) => {
         if (!res.results) {
           return;
