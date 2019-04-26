@@ -10,15 +10,25 @@
       <ion-tab-button layout="icon-start" [routerLink]="[p.url]" *ngFor="let p of appPages">
         <ion-label>{{p.title}}</ion-label>
         <ion-icon [name]="p.icon"></ion-icon>
-        <ion-badge>10</ion-badge>
+        <!--        <ion-badge>10</ion-badge> -->
       </ion-tab-button>
+
+      <ion-tab-button layout="icon-end">
+        <ion-button style="font-size:0.9em; color:white; border: solid #ff82ac 1px;border-radius: 4px;" expand="block"
+          fill="outline">
+          ログイン・登録</ion-button>
+
+      </ion-tab-button>
+
     </ion-tab-bar>
+
+
 
     <ion-tab-bar slot="bottom" color="primary" translucent="true" *ngIf="platform.is('mobile')">
       <ion-tab-button [routerLink]="[p.url]" *ngFor="let p of appPages">
         <ion-label>{{p.title}}</ion-label>
         <ion-icon [name]="p.icon"></ion-icon>
-        <ion-badge>10</ion-badge>
+        <!--        <ion-badge>10</ion-badge> -->
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>
