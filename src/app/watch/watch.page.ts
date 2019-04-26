@@ -123,6 +123,45 @@ export class WatchPage implements OnInit {
         onEachFeature: that.elevation_controll.addData.bind(that.elevation_controll)
       }).addTo(that.map);
 
+      // icon 追加
+      var startIcon = new L.icon({
+        iconUrl: '/assets/icon/start_icon.png',
+        iconSize: [50, 27], // size of the icon
+        iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
+      });
+      let start = L.marker([pos[0][1], pos[0][0]], { icon: startIcon }).addTo(that.map);
+      let goalIcon = new L.icon({
+        iconUrl: '/assets/icon/goal_icon.png',
+        iconSize: [50, 27], // size of the icon
+        iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
+      });
+      let goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: goalIcon }).addTo(that.map);
+      let commentIcon = new L.icon({
+        iconUrl: '/assets/icon/comment_icon.png',
+        iconSize: [50, 27], // size of the icon
+        iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
+      });
+      let editIcon = new L.icon({
+        iconUrl: '/assets/icon/edit_icon.png',
+        iconSize: [16, 16], // size of the icon
+        iconAnchor: [8, 8], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor    
+        className: 'map-editIcon',
+      });
+      for (let i = 0; i < route.kind.length; i++) {
+        if (i === 0 || i === route.kind.length - 1) {
+          // start, goalは除外
+          continue;
+        }
+        if (route.kind[i] === '1' && pos[i]) {
+          let edit = L.marker([pos[i][1], pos[i][0]], { icon: editIcon }).addTo(that.map);
+        }
+      }
+
+
       // 描画範囲をよろしくする
       let line = turf.lineString(pos);
       let bbox = turfbbox(line); // lonlat問題...
