@@ -1,7 +1,15 @@
 <ion-header>
   <ion-toolbar>
-    <ion-searchbar autocomplete="on" searchIcon="search" placeholder="サイクリング" animated [(ngModel)]="query"
-      (ionChange)="wordChanged()"></ion-searchbar>
+    <ion-buttons start>
+
+      <ion-searchbar autocomplete="on" searchIcon="search" placeholder="サイクリング" animated [(ngModel)]="query"
+        (ionChange)="wordChanged()"></ion-searchbar>
+
+      <button layout="end" ion-button icon-only>
+        <ion-icon class="search-setting-button" name="settings" color="medium" (click)="presentSettingmenu($event)">
+        </ion-icon>
+      </button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

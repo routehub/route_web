@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { IonInfiniteScroll, NavController } from '@ionic/angular';
+import { IonInfiniteScroll, NavController, PopoverController } from '@ionic/angular';
+import { SearchSettingComponent } from '../search-setting/search-setting.component';
 
 @Component({
   selector: 'app-list',
@@ -37,6 +38,7 @@ export class ListPage implements OnInit {
   constructor(
     private http: HttpClient,
     public navCtrl: NavController,
+    public popoverController: PopoverController,
   ) {
   }
 
@@ -53,6 +55,18 @@ export class ListPage implements OnInit {
       this.per_page = 16;
     }
     this.search();
+  }
+
+  /***
+   * 設定メニュー
+   */
+  async presentSettingmenu(ev: any) {
+    const popover = await this.popoverController.create({
+      component: SearchSettingComponent,
+      event: ev,
+      translucent: true
+    });
+    return await popover.present();
   }
 
 

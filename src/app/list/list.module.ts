@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+import { SearchSettingComponent } from '../search-setting/search-setting.component';
 
 
 import { ListPage } from './list.page';
@@ -25,6 +26,12 @@ import { ListPage } from './list.page';
       }
     ])
   ],
-  declarations: [ListPage]
+  declarations: [
+    ListPage,
+    SearchSettingComponent,
+  ],
+  entryComponents: [
+    SearchSettingComponent,
+  ]
 })
 export class ListPageModule { }
