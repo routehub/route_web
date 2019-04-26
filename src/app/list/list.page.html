@@ -1,15 +1,7 @@
 <ion-header>
   <ion-toolbar>
-    <!--
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>
-      検索
-    </ion-title>
-  -->
-    <ion-searchbar autocomplete="on" searchIcon="search" placeholder="サイクリング" animated [(ngModel)]="searchText"
-      (ionChange)="wordChanged()"></ion-searchbar>
+    <ion-searchbar autocomplete="on" searchIcon="search" placeholder="サイクリング" animated [(ngModel)]="query"
+      (ionChange)="wordChanged(query)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -35,7 +27,7 @@
   </ion-grid>
 
   <ion-infinite-scroll threshold="200px" (ionInfinite)="doInfinite($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading...">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="読み込み中...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 

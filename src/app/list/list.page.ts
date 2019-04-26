@@ -1,8 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IonInfiniteScroll, NavController } from '@ionic/angular';
-import { lineString } from '@turf/helpers';
-import { splitAtColon } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-list',
@@ -11,39 +9,33 @@ import { splitAtColon } from '@angular/compiler/src/util';
 })
 export class ListPage implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-  @ViewChild('searchbar') searchbar_elem: ElementRef;
 
   private search_url = 'https://dev-api.routelabo.com/route/1.0.0/search';
   private staticmap_url = 'https://map.yahooapis.jp/map/V1/static';
-  public items: Array<{
+  private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
+
+  /**
+   * 検索用パラメーター
+   */
+  private page = 0;
+  private per_page = 4; // デフォルトはモバイル向けの件数
+  public query = ''; // viewとも共通
+
+  /**
+   * ルート情報モジュール
+   */
+  items: Array<{
     id: string,
     title: string;
     author: string;
     thumburl: string;
   }> = [];
-  private page = 0;
-  private per_page = 4;
-  private query = '';
-  searchText = '';
-  private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
-  loadingAnimation = "../../assets/loadingAnimation.gif";
 
 
-
-  constructor(private http: HttpClient, public navCtrl: NavController) {
-  }
-
-  public wordChanged() {
-    this.page = 0;
-    this.query = this.searchText;
-    this.items = [];
-    this.search(this.query, this.page);
-  }
-
-  doInfinite(event) {
-    console.dir('infini');
-    this.page++;
-    this.search(this.query, this.page);
+  constructor(
+    private http: HttpClient,
+    public navCtrl: NavController,
+  ) {
   }
 
   ngOnInit() {
@@ -58,16 +50,27 @@ export class ListPage implements OnInit {
     if (window.innerWidth > 1200) {
       this.per_page = 16;
     }
-    this.search(this.query, this.page);
+    this.search();
+  }
 
+
+  wordChanged() {
+    this.page = 0;
+    this.items = [];
+    this.search();
+  }
+
+  doInfinite(event) {
+    this.page++;
+    this.search();
   }
 
   pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
 
-  public search(query, page): Promise<any[]> {
-    return this.http.get(this.search_url + '?q=' + query + '&per_page=' + this.per_page + '&page=' + page).toPromise()
+  search(): Promise<any[]> {
+    return this.http.get(this.search_url + '?q=' + this.query + '&per_page=' + this.per_page + '&page=' + this.page).toPromise()
       .then((res: any) => {
         if (!res.results) {
           return;
@@ -89,7 +92,7 @@ export class ListPage implements OnInit {
       });
   }
 
-  getThumbUrl(summary) {
+  private getThumbUrl(summary) {
     let line = summary.slice(11, -1).split(',').map(pos => {
       let p = pos.split(' ');
       return p[1] + ',' + p[0];
