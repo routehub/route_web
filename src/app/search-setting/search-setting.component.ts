@@ -8,8 +8,36 @@ import { PopoverController } from '@ionic/angular';
 })
 export class SearchSettingComponent implements OnInit {
 
-  constructor() { }
+  kmrange = {
+    upper: 30,
+    lower: 80,
+  }
+  elevrange = {
+    upper: 800,
+    lower: 2000,
+  }
+  isDistDisabled = "true";
+  isElevDisabled = "true";
 
-  ngOnInit() { }
+  constructor(private popoverCtrl: PopoverController) { }
+
+  ngOnInit() {
+  }
+
+
+  distCheckboxChanged(event) {
+    if (event.detail.checked === true) {
+      this.isDistDisabled = "false";
+    } else {
+      this.isDistDisabled = "true";
+    }
+  }
+  elevCheckboxChanged(event) {
+    if (event.detail.checked === true) {
+      this.isElevDisabled = "false";
+    } else {
+      this.isElevDisabled = "true";
+    }
+  }
 
 }
