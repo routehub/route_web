@@ -146,18 +146,24 @@ export class WatchPage implements OnInit {
       });
       let editIcon = new L.icon({
         iconUrl: '/assets/icon/edit_icon.png',
-        iconSize: [16, 16], // size of the icon
-        iconAnchor: [8, 8], // point of the icon which will correspond to marker's location
+        iconSize: [14, 14], // size of the icon
+        iconAnchor: [7, 7], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor    
         className: 'map-editIcon',
       });
+
       for (let i = 0; i < route.kind.length; i++) {
         if (i === 0 || i === route.kind.length - 1) {
           // start, goalは除外
           continue;
         }
-        if (route.kind[i] === '1' && pos[i]) {
-          let edit = L.marker([pos[i][1], pos[i][0]], { icon: editIcon }).addTo(that.map);
+        if (route.kind[i] === '1') {
+          let j = i / 2;
+          if (pos[j]) {
+            let edit = L.marker([pos[j][1], pos[j][0]], { icon: editIcon }).addTo(that.map);
+          } else {
+            console.log(j, pos.length);
+          }
         }
       }
 
