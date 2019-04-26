@@ -14,30 +14,22 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <div>
-          1 of 3
-        </div>
-      </ion-col>
-      <ion-col>
-        <div>
-          2 of 3
-        </div>
-      </ion-col>
-      <ion-col>
-        <div>
-          3 of 3
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <div class="images">
+    <ion-card class="one-image" *ngFor="let item of items" (click)="pageSelected(item)">
+      <ion-card-header>
+        <img src="assets/img/{{image}}.jpg">
+        <ion-card-subtitle>{{item.author}}</ion-card-subtitle>
+        <ion-card-title>{{item.title}}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+      </ion-card-content>
+
+    </ion-card>
+  </div>
 
 
-
-
-
+  <!--
   <ion-list>
     <ion-item *ngFor="let item of items">
       <ion-icon [name]="item.icon" slot="start"></ion-icon>
@@ -45,6 +37,7 @@
       <ion-item slot="end">{{item.author}}</ion-item>
     </ion-item>
   </ion-list>
+-->
   <!--
     <div *ngIf="selectedItem" padding>
       You navigated here from <b>{{selectedItem.title }}</b>

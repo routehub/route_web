@@ -1,1 +1,33 @@
 
+    .image-container {
+        min-height: 200px;
+        background-size: cover;
+    }
+
+    @media (min-width: 0px) {
+        .images {
+            column-count: 1;
+        }
+    }
+
+    @media (min-width: 420px) {
+        .images {
+            column-count: 3;
+        }
+    }
+
+    @media (min-width: 720px) {
+        .images {
+            column-count: 4;
+        }
+    }
+
+    @media (min-width: 920px) {
+        .images {
+            column-count: 5;
+        }
+    }
+
+    .one-image {
+        margin: 2px;
+    }
