@@ -1,19 +1,41 @@
 <ion-header>
   <ion-toolbar>
+    <!--
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
       検索
     </ion-title>
+  -->
+    <ion-searchbar autocomplete="on" searchIcon="search" placeholder="サイクリング" animated [(ngModel)]="searchText"
+      (ionChange)="wordChanged()"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div ion-fixed>
-    <ion-searchbar autocomplete="on" searchIcon="search" placeholder="キャノンボール" animated [(ngModel)]="searchText"
-      (ionChange)="wordChanged()"></ion-searchbar>
-  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div>
+          1 of 3
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          2 of 3
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          3 of 3
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+
 
 
   <ion-list>
