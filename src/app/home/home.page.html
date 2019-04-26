@@ -50,7 +50,7 @@
 
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="platform.is('desktop')">
   <ion-toolbar>
     <ion-title>Footer</ion-title>
     copyrightだかなんだか
