@@ -8,6 +8,8 @@ import { Platform } from '@ionic/angular';
 })
 export class HomePage {
 
+  user;
+
   constructor(
     public platform: Platform,
   ) { }
@@ -16,5 +18,10 @@ export class HomePage {
   }
 
   ionViewDidEnter() {
+  }
+
+  logout(){
+  }
+  toLoginPage () {    
   }
 }

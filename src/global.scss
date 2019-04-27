@@ -40,3 +40,18 @@
 .map-editIcon {
   opacity: 0.6;
 }
+
+.login-button {
+  font-size:0.9em;
+  color:white;
+  border: solid #ff82ac 1px;
+  border-radius: 4px;
+}
+.login-button-mobile {
+  position: absolute;
+  backgound: white;
+  top: 5px;
+  right: 5px;
+  background: #ff346a !important;
+  color: white !important;
+}
