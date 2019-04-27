@@ -12,10 +12,14 @@
         <h2>Upgrade<br>ルートラボ</h2>
       </ion-col>
 
-      <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile') && user" expand="block"
-        fill="outline" (click)="logout()" layout="icon-end"> Hello! {{ user.displayName }}</ion-button>
-      <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile') && !user" expand="block"
-        fill="outline" (click)="toLoginPage()" layout="icon-end"> ログイン・登録</ion-button>
+
+      <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile')" expand="block" fill="outline"
+        (click)="logout()" layout="icon-end" #logoutButton><img src="{{photoURL}}">
+      </ion-button>
+
+      <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile')" expand="block" fill="outline"
+        (click)="toLoginPage()" layout="icon-end" #loginButton> ログイン・登録
+      </ion-button>
 
     </ion-row>
 

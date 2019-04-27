@@ -5,7 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { User } from 'firebase';
 import { NavController } from '@ionic/angular';
-
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-root',
@@ -40,6 +40,7 @@ export class AppComponent implements OnInit {
     public auth: AngularFireAuth,
     private navCtrl: NavController,
     public events: Events,
+    private storage: Storage,
   ) {
     this.initializeApp();
     this.initializeAuth();
@@ -54,9 +55,6 @@ export class AppComponent implements OnInit {
     });
     this.events.subscribe('user:logout', () => {
       this.logout();
-    });
-    this.events.subscribe('user:getUser', () => {
-      return this.getUser();
     });
   }
 
@@ -81,10 +79,13 @@ export class AppComponent implements OnInit {
       if (user) {
         console.log('login done');
         this.user = user;
-        // User is signed in.
-        console.log(user);
-        console.log(user.displayName);
-        console.log(user.uid);
+        this.storage.set('user.uid', user.uid);
+        this.storage.set('user.displayName', user.displayName);
+        // TODO : 画像が設定されていない場合はデフォ画像を入れたい
+        this.storage.set('user.photoURL', user.photoURL);
+
+        // TODO : ログインのexpireをstorageに入れるべきでは?
+
       } else {
         console.log('logout done');
         this.user = null;

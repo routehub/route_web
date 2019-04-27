@@ -49,9 +49,14 @@
 }
 .login-button-mobile {
   position: absolute;
-  backgound: white;
   top: 5px;
   right: 5px;
   background: #ff346a !important;
+  border : none;
   color: white !important;
+  display: none; /* homeで書き換え */
+}
+.login-button img {
+    width: 30px;
+    height: 30px;
 }
