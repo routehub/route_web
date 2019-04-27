@@ -19,9 +19,22 @@
   */
 
   .popover-content {
-    width: 500px;
+    width: 80%;
     top: 120px !important;
   }
+
+  .popover-arrow {
+    top: 91px !important;
+    left: unset !important;
+    right: 70px !important;
+    width: 20px;
+    position: absolute;
+    height: 20px;
+    z-index: 9999;
+    border: 15px solid transparent;
+    border-bottom: 15px solid #ffffff;
+  }
+  
 }
 
 .map-editIcon {
