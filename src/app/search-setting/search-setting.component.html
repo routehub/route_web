@@ -15,10 +15,10 @@
     <ion-label>
       距離(km)
     </ion-label>
-    <ion-range min="0" max="600" step="10" ticks="true" color="primary" dualKnobs="true" pin="true" snaps="true"
+    <ion-range min="0" max="1500" step="10" ticks="true" color="primary" dualKnobs="true" pin="true" snaps="true"
       disabled="{{isDistDisabled}}" [(ngModel)]="kmrange">
       <ion-label slot="start">0</ion-label>
-      <ion-label slot="end">600km</ion-label>
+      <ion-label slot="end">1,500km</ion-label>
     </ion-range>
   </ion-item>
 
@@ -27,10 +27,10 @@
     <ion-label>
       獲得標高(m)
     </ion-label>
-    <ion-range min=" 0" max="8000" step="100" ticks="true" color="primary" dualKnobs="true" pin="true" snaps="true"
+    <ion-range min=" 0" max="10000" step="100" ticks="true" color="primary" dualKnobs="true" pin="true" snaps="true"
       disabled="{{isElevDisabled}}" [(ngModel)]="elevrange">
       <ion-label slot="start">0</ion-label>
-      <ion-label slot="end">8,000m</ion-label>
+      <ion-label slot="end">10,000m</ion-label>
     </ion-range>
   </ion-item>
 
