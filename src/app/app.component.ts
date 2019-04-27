@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+
 
 @Component({
   selector: 'app-root',
@@ -16,19 +16,21 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: '検索',
-      url: '/list',
-      icon: 'list'
+      title: 'ルートを取込',
+      url: '/migration',
+      icon: 'add'//'cloud-download'
     },
     {
-      title: 'ルートラボから取込',
-      url: '/migration',
-      icon: 'cloud-download'
+      title: 'ルートを検索',
+      url: '/list',
+      icon: 'search'
     }
   ];
 
+  public tabslot = 'top';
+
   constructor(
-    private platform: Platform,
+    public platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar
   ) {
@@ -39,6 +41,12 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+
+      // モバイル出ないときのデザイン調整
+      if (!this.platform.is('mobile')) {
+        this.tabslot = 'top';
+        this.appPages.shift();
+      }
     });
   }
 }

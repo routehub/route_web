@@ -1,1 +1,25 @@
-
+.list-thumb {
+    transition: opacity 1s;
+    opacity: 0;
+    min-height: 150px;
+    min-width: 200px;
+    max-width: 400px; /* 読み込み途中であばれることがあるので。。 */
+}
+.list-thumb.ng-lazyloaded {
+  opacity: 1;
+}
+.list-body {
+  width:200px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.search-setting-button {
+  zoom:200%;
+}
+ion-popover {
+  .popover-content {
+    width: 500px !important;
+  }
+}

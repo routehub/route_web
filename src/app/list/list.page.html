@@ -1,35 +1,50 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+    <ion-buttons start>
+
+      <ion-searchbar autocomplete="on" searchIcon="search" placeholder="サイクリング" animated [(ngModel)]="query"
+        (ionChange)="wordChanged()"></ion-searchbar>
+
+      <button layout="end" ion-button icon-only>
+        <ion-icon class="search-setting-button" name="settings" color="medium" (click)="presentSettingmenu($event)">
+        </ion-icon>
+      </button>
     </ion-buttons>
-    <ion-title>
-      検索
-    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div ion-fixed>
-    <ion-searchbar autocomplete="on" searchIcon="search" placeholder="キャノンボール" animated [(ngModel)]="searchText"
-      (ionChange)="wordChanged()"></ion-searchbar>
-  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6 col-md-4 col-xl-3 *ngFor="let item of items">
 
+        <ion-card class="one-image" (click)="pageSelected(item)">
+          <ion-card-header>
+            <img class="list-thumb" lazyLoad='{{item.thumburl}}' offset="50" />
+          </ion-card-header>
 
-  <ion-list>
-    <ion-item *ngFor="let item of items">
-      <ion-icon [name]="item.icon" slot="start"></ion-icon>
-      <ion-item (click)="pageSelected(item)">{{item.title}}</ion-item>
-      <ion-item slot="end">{{item.author}}</ion-item>
-    </ion-item>
-  </ion-list>
-  <!--
-    <div *ngIf="selectedItem" padding>
-      You navigated here from <b>{{selectedItem.title }}</b>
-    </div>
-  -->
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="doInfinite($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+          <ion-card-content>
+            <ion-card-title>{{item.title}}</ion-card-title>
+            <ion-card-subtitle class="list-body">{{item.body}}</ion-card-subtitle>
+            <ul>
+              <li>投稿者：{{item.author}}</li>
+              <li>投稿日：{{item.created_at}}</li>
+              <li>距離：25.0km</li>
+              <li>最大標高差：38m</li>
+              <li>獲得標高：29m</li>
+              <li>GPSだったらアイコンだしたい</li>
+            </ul>
+          </ion-card-content>
+
+        </ion-card>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-infinite-scroll threshold="200px" (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="読み込み中...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
+
 </ion-content>

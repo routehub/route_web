@@ -9,6 +9,8 @@
   z-index: 999;
   margin: 10px 10px 0 0;
   color: #00000075;
+  background: #ffffff;
+  border-radius: 20px;
 }
 .watch-location._active {
   color : #3880ffc4
@@ -18,4 +20,14 @@
   zoom:180%;
   color : #3880ffc4;
   margin: 5px;
+}
+
+.watch-backbutton {
+  zoom: 200%;
+}
+.toolbar-background {
+  background: none;
+}
+.leaflet-marker-icon {
+  image-rendering: pixelated;
 }

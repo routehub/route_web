@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { IonInfiniteScroll, NavController/*, NavParams */ } from '@ionic/angular';
+import { IonInfiniteScroll, NavController, PopoverController } from '@ionic/angular';
+import { SearchSettingComponent } from '../search-setting/search-setting.component';
 
 @Component({
   selector: 'app-list',
@@ -9,52 +10,84 @@ import { IonInfiniteScroll, NavController/*, NavParams */ } from '@ionic/angular
 })
 export class ListPage implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-  @ViewChild('searchbar') searchbar_elem: ElementRef;
 
-  private selectedItem: any;
   private search_url = 'https://dev-api.routelabo.com/route/1.0.0/search';
-  private icons = [
-    'flask',
-    'wifi',
-    'beer',
-    'football',
-    'basketball',
-    'paper-plane',
-    'american-football',
-    'boat',
-    'bluetooth',
-    'build'
-  ];
-  public items: Array<{ id: string, title: string; author: string; icon: string }> = [];
+  private staticmap_url = 'https://map.yahooapis.jp/map/V1/static';
+  private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
+
+  /**
+   * 検索用パラメーター
+   */
   private page = 0;
-  private query = '';
-  searchText = '';
-  constructor(private http: HttpClient, public navCtrl: NavController/*, public navParams: NavParams*/) {
-    this.search(this.query, this.page);
-  }
+  private per_page = 4; // デフォルトはモバイル向けの件数
+  public query = ''; // viewとも共通
 
-  public wordChanged() {
-    this.page = 0;
-    this.query = this.searchText;
-    this.items = [];
-    this.search(this.query, this.page);
-  }
+  /**
+   * ルート情報モジュール
+   */
+  items: Array<{
+    id: string,
+    title: string;
+    body: string;
+    author: string;
+    thumburl: string;
+    created_at: string;
+  }> = [];
 
-  doInfinite(event) {
-    console.dir('infini');
-    this.page++;
-    this.search(this.query, this.page);
+
+  constructor(
+    private http: HttpClient,
+    public navCtrl: NavController,
+    public popoverController: PopoverController,
+  ) {
   }
 
   ngOnInit() {
+    // ウィンドウサイズによって、取得する量を変える（早くしたい&API叩きすぎたくない
+    console.dir(window.innerWidth)
+    if (window.innerWidth > 600) {
+      this.per_page = 10;
+    }
+    if (window.innerWidth > 800) {
+      this.per_page = 12;
+    }
+    if (window.innerWidth > 1200) {
+      this.per_page = 16;
+    }
+    this.search();
+  }
+
+  /***
+   * 設定メニュー
+   */
+  async presentSettingmenu(ev: any) {
+    const popover = await this.popoverController.create({
+      component: SearchSettingComponent,
+      event: ev,
+      translucent: true,
+      cssClass: 'search-settingmenu',
+    });
+    return await popover.present();
+  }
+
+
+  wordChanged() {
+    this.page = 0;
+    this.items = [];
+    this.search();
+  }
+
+  doInfinite(event) {
+    this.page++;
+    this.search();
   }
 
   pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
 
-  public search(query, page): Promise<any[]> {
-    return this.http.get(this.search_url + '?q=' + query + '&page=' + page).toPromise()
+  search(): Promise<any[]> {
+    return this.http.get(this.search_url + '?q=' + this.query + '&per_page=' + this.per_page + '&page=' + this.page).toPromise()
       .then((res: any) => {
         if (!res.results) {
           return;
@@ -64,8 +97,10 @@ export class ListPage implements OnInit {
           this.items.push({
             id: r.id,
             title: r.title,
+            body: this.getBodyHead(r.body),
             author: r.author,
-            icon: 'beer'
+            thumburl: this.getThumbUrl(r.summary),
+            created_at: r.created_at,
           });
 
           this.infiniteScroll.complete();
@@ -74,12 +109,23 @@ export class ListPage implements OnInit {
         const response: any = res;
         return response;
       });
-
-    'http://localhost:8080/route/1.0.0/route?id=4355bc819e024a613f92f6c13ccd8bd9'
   }
 
-  // add back when alpha.4 is out
-  // navigate(item) {
-  //   this.router.navigate(['/list', JSON.stringify(item)]);
-  // }
+  private getBodyHead(body) {
+    let limit = 70;
+    if (body.length < limit) {
+      return body;
+    }
+    return body.substr(0, limit) + '...';
+  }
+
+  private getThumbUrl(summary) {
+    let line = summary.slice(11, -1).split(',').map(pos => {
+      let p = pos.split(' ');
+      return p[1] + ',' + p[0];
+    }).join(',');
+    return this.staticmap_url + '?appid=' + this.thumbappid
+      + '&autoscale=on&scalebar=off&width=300&height=200&l=' + '0,0,255,105,3,' // rgb, a, weight
+      + line;
+  }
 }

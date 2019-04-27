@@ -31,6 +31,7 @@
     "core-js": "^2.5.4",
     "leaflet": "^1.4.0",
     "leaflet.elevation": "astridx/Leaflet.Elevation#L.Browser.touch",
+    "ng-lazyload-image": "^5.1.2",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.29"
   },

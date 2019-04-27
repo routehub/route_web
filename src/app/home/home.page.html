@@ -1,14 +1,58 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>
-      ルートラポ
-    </ion-title>
-  </ion-toolbar>
 </ion-header>
-
 <ion-content>
-  <div class="mainmap" #map></div>
+  <ion-grid style="padding:0">
+    <ion-row>
+      <ion-col class="titleimage" *ngIf="platform.is('desktop')">
+        <h2>Upgrade<br>ルートラボ</h2>
+      </ion-col>
+
+      <ion-col class="titleimage titleimage-mobile" *ngIf="platform.is('mobile')">
+        <h1><img src="./assets/logo-white.png" alt="routelabo"></h1>
+        <h2>Upgrade<br>ルートラボ</h2>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        埋め込み地図1
+      </ion-col>
+      <ion-col>
+        検索モジュール
+      </ion-col>
+      <ion-col>
+        埋め込み地図2
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <p>
+          ポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエム
+        </p>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        使い方ガイド
+      </ion-col>
+      <ion-col>
+        Team
+        ブログリンク
+      </ion-col>
+      <ion-col>
+        寄付リンク
+        問い合わせフォーム
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>
+
+<ion-footer *ngIf="platform.is('desktop')">
+  <ion-toolbar>
+    <ion-title>Footer</ion-title>
+    copyrightだかなんだか
+  </ion-toolbar>
+</ion-footer>

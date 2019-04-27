@@ -9,3 +9,34 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+
+
+.search-settingmenu {
+  /* ここは好みかなぁ
+  ion-backdrop {
+    background: none !important;
+  }
+  */
+
+  .popover-content {
+    width: 80%;
+    top: 120px !important;
+  }
+
+  .popover-arrow {
+    top: 91px !important;
+    left: unset !important;
+    right: 70px !important;
+    width: 20px;
+    position: absolute;
+    height: 20px;
+    z-index: 9999;
+    border: 15px solid transparent;
+    border-bottom: 15px solid #ffffff;
+  }
+  
+}
+
+.map-editIcon {
+  opacity: 0.6;
+}

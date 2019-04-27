@@ -1,0 +1,57 @@
+<ion-item-group>
+
+  <ion-item>
+    <ion-select interface="popover">
+      <ion-select-option value="keyword" selected>キーワード検索</ion-select-option>
+      <ion-select-option value="author">作成名検索</ion-select-option>
+      <ion-select-option value="tag">タグ検索</ion-select-option>
+    </ion-select>
+    <ion-input></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-checkbox (ionChange)="distCheckboxChanged($event)">
+    </ion-checkbox>
+    <ion-label>
+      距離(km)
+    </ion-label>
+    <ion-range min="0" max="600" step="10" ticks="true" color="primary" dualKnobs="true" pin="true" snaps="true"
+      disabled="{{isDistDisabled}}" [(ngModel)]="kmrange">
+      <ion-label slot="start">0</ion-label>
+      <ion-label slot="end">600km</ion-label>
+    </ion-range>
+  </ion-item>
+
+  <ion-item>
+    <ion-checkbox (ionChange)="elevCheckboxChanged($event)"></ion-checkbox>
+    <ion-label>
+      獲得標高(m)
+    </ion-label>
+    <ion-range min=" 0" max="8000" step="100" ticks="true" color="primary" dualKnobs="true" pin="true" snaps="true"
+      disabled="{{isElevDisabled}}" [(ngModel)]="elevrange">
+      <ion-label slot="start">0</ion-label>
+      <ion-label slot="end">8,000m</ion-label>
+    </ion-range>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>
+      並び順
+    </ion-label>
+    <ion-select interface="popover">
+      <ion-select-option value="-dist">距離順(降順)</ion-select-option>
+      <ion-select-option value="dist">距離順(昇順)</ion-select-option>
+
+      <ion-select-option value="-elevation">獲得標高順(降順)</ion-select-option>
+      <ion-select-option value="elevation">獲得標高順(昇順)</ion-select-option>
+
+      <ion-select-option value="-created_at">作成日(降順)</ion-select-option>
+      <ion-select-option value="created_at">作成日(昇順)</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-button expand="full" color="primary">この条件で検索</ion-button>
+
+
+
+</ion-item-group>
