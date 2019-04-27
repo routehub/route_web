@@ -9,12 +9,12 @@ import { PopoverController } from '@ionic/angular';
 export class SearchSettingComponent implements OnInit {
 
   kmrange = {
-    upper: 30,
-    lower: 80,
+    upper: 150,
+    lower: 400,
   }
   elevrange = {
-    upper: 800,
-    lower: 2000,
+    upper: 1000,
+    lower: 6000,
   }
   isDistDisabled = "true";
   isElevDisabled = "true";
