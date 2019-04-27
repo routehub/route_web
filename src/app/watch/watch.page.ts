@@ -58,10 +58,14 @@ export class WatchPage implements OnInit {
   ) { }
 
   ionViewDidEnter() {
-    window.document.querySelector('ion-tab-bar').style.display = 'none';
+    if (this.platform.is('mobile')) {
+      window.document.querySelector('ion-tab-bar').style.display = 'none';
+    }
   }
   ionViewDidLeave() {
-    window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
+    if (this.platform.is('mobile')) {
+      window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
+    }
   }
 
   ngOnInit() {
