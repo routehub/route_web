@@ -12,6 +12,10 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RouteinfoPageModule } from './routeinfo/routeinfo.module';
 
+import { environment } from '../environments/environment';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -21,6 +25,8 @@ import { RouteinfoPageModule } from './routeinfo/routeinfo.module';
     AppRoutingModule,
     RouteinfoPageModule,
     LazyLoadImageModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule
   ],
   providers: [
     StatusBar,

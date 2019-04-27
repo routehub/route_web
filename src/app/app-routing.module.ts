@@ -20,7 +20,8 @@ const routes: Routes = [
     loadChildren: './watch/watch.module#WatchPageModule'
   },
   { path: 'migration', loadChildren: './migration/migration.module#MigrationPageModule' },
-  { path: 'routeinfo', loadChildren: './routeinfo/routeinfo.module#RouteinfoPageModule' }
+  { path: 'routeinfo', loadChildren: './routeinfo/routeinfo.module#RouteinfoPageModule' },
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' }
 ];
 
 @NgModule({
