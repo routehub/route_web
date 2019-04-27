@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform, Events } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -12,16 +12,21 @@ export class HomePage {
 
   constructor(
     public platform: Platform,
+    public events: Events,
   ) { }
 
   ionViewWillEnter() {
+    this.user = this.events.publish('user.getUser');
+    console.dir(this.user);
   }
 
   ionViewDidEnter() {
   }
 
-  logout(){
+  logout() {
+    this.events.publish('user:logout');
   }
-  toLoginPage () {    
+  toLoginPage() {
+    this.events.publish('user:toLoginPage');
   }
 }

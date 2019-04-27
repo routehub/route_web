@@ -14,10 +14,10 @@
       </ion-tab-button>
 
       <ion-tab-button layout="icon-end">
-        <ion-button *ngIf="user" style="font-size:0.9em; color:white; border: solid #ff82ac 1px;border-radius: 4px;"
-          expand="block" fill="outline" (click)="logout()"> Hello! {{ user.displayName }}</ion-button>
-        <ion-button *ngIf="!user" style="font-size:0.9em; color:white; border: solid #ff82ac 1px;border-radius: 4px;"
-          expand="block" fill="outline" (click)="toLoginPage()"> ログイン・登録</ion-button>
+        <ion-button *ngIf="user" class="login-button" expand="block" fill="outline" (click)="logout()"> Hello!
+          {{ user.displayName }}</ion-button>
+        <ion-button *ngIf="!user" class="login-button" expand="block" fill="outline" (click)="toLoginPage()"> ログイン・登録
+        </ion-button>
 
       </ion-tab-button>
 

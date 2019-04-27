@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { Platform, Events } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -11,7 +11,7 @@ import { NavController } from '@ionic/angular';
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public appPages = [
     {
       title: 'トップ',
@@ -38,10 +38,26 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     public auth: AngularFireAuth,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    public events: Events,
   ) {
     this.initializeApp();
     this.initializeAuth();
+  }
+
+  ngOnInit() {
+    /**
+     * 共通化するイベントの登録
+     */
+    this.events.subscribe('user:toLoginPage', () => {
+      this.toLoginPage();
+    });
+    this.events.subscribe('user:logout', () => {
+      this.logout();
+    });
+    this.events.subscribe('user:getUser', () => {
+      return this.getUser();
+    });
   }
 
   initializeApp() {
@@ -83,5 +99,9 @@ export class AppComponent {
 
   logout() {
     this.auth.auth.signOut();
+  }
+
+  getUser() {
+    return this.user;
   }
 }
