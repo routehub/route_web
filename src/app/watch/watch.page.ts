@@ -1,3 +1,4 @@
+import { LoginPage } from './../login/login.page';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
@@ -24,6 +25,7 @@ export class WatchPage implements OnInit {
   title: any;
   watch_location_subscribe: any;
   watch: any;
+  currenPossitionMarker: any;
   elevation_controll: any;
   route_geojson = {
     "type": "FeatureCollection",
@@ -201,19 +203,38 @@ export class WatchPage implements OnInit {
   toggleLocation() {
     let watch_button_dom = document.getElementsByClassName('watch-location')[0];
 
+    // 無効化
     if (this.watch_location_subscribe && this.watch_location_subscribe.isStopped !== true) {
       console.log('watch stop gps');
       watch_button_dom.classList.remove('_active');
       this.watch_location_subscribe.unsubscribe();
+      if (this.currenPossitionMarker) {
+        this.map.removeLayer(this.currenPossitionMarker);
+        this.currenPossitionMarker = null;
+      }
       return;
     }
 
+    // 有効化
     console.log('watch start gps');
     watch_button_dom.classList.add('_active');
     this.watch_location_subscribe = this.watch.subscribe((pos) => {
       this.watch.subscribe((pos) => {
         if (this.watch_location_subscribe.isStopped === true) {
           return;
+        }
+        let latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude);
+
+        if (!this.currenPossitionMarker) {
+          let gpsIcon = new L.icon({
+            iconUrl: '/assets/icon/gps_icon.png',
+            iconSize: [20, 20], // size of the icon
+            iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
+          });
+          this.currenPossitionMarker = new L.marker(latlng, { icon: gpsIcon }).addTo(this.map);
+        } else {
+          this.currenPossitionMarker.setLatLng(latlng);
         }
 
         this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true });
