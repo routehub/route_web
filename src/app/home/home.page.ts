@@ -7,6 +7,7 @@ import { Platform } from '@ionic/angular';
   styleUrls: ['home.page.scss']
 })
 export class HomePage {
+  titleimageheight = { height: window.outerHeight + 'px' }
 
   constructor(
     public platform: Platform,

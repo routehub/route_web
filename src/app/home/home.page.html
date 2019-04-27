@@ -7,7 +7,7 @@
         <h2>Upgrade<br>ルートラボ</h2>
       </ion-col>
 
-      <ion-col class="titleimage titleimage-mobile" *ngIf="platform.is('mobile')">
+      <ion-col class="titleimage titleimage-mobile" [ngStyle]="titleimageheight" *ngIf="platform.is('mobile')">
         <h1><img src="./assets/logo-white.png" alt="routelabo"></h1>
         <h2>Upgrade<br>ルートラボ</h2>
       </ion-col>
