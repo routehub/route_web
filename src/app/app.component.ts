@@ -89,6 +89,10 @@ export class AppComponent implements OnInit {
       } else {
         console.log('logout done');
         this.user = null;
+
+        this.storage.remove('user.uid');
+        this.storage.remove('user.displayName');
+        this.storage.remove('user.photoURL');
         // No user is signed in.
       }
     });

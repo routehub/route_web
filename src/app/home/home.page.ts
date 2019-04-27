@@ -30,6 +30,9 @@ export class HomePage {
 
     var that = this;
     this.storage.get('user.photoURL').then((photoURL) => {
+      if (photoURL == null) {
+        throw new Error('not login');
+      }
       that.photoURL = photoURL;
       that.logoutButton.el.style.display = 'block';
       that.logoutButton.el.style.color = '#ffffff00';
