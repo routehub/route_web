@@ -57,6 +57,13 @@ export class WatchPage implements OnInit {
     public platform: Platform,
   ) { }
 
+  ionViewDidEnter() {
+    window.document.querySelector('ion-tab-bar').style.display = 'none';
+  }
+  ionViewDidLeave() {
+    window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
+  }
+
   ngOnInit() {
     window.dispatchEvent(new Event('resize'));
 
