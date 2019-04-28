@@ -80,31 +80,35 @@ export class MigrationPage implements OnInit {
     this.routeurl = '';
   }
 
-  checkque () {
+  checkque() {
     this.items.map(item => {
       if (item.color !== '') {
         return;
       }
 
-      this.http.get(this.migrate_url + '?id=' + item.id).toPromise()
-      .then((res: any) => {
-        if (res.error) {
-          item.title = 'すでに登録済みです';
+
+      this.http.post(this.migrate_url, {
+        id: item.id,
+        firebase_uid: 'dummy' // FIXME: ダミー
+      }).toPromise()
+        .then((res: any) => {
+          if (res.error) {
+            item.title = 'すでに登録済みです';
+            item.color = 'danger';
+            return;
+          }
+          item.title = res.title;
+          item.author = res.auhor;
+          item.color = 'primary';
+        })
+        .catch(fallback => {
+          console.dir(fallback);
           item.color = 'danger';
-          return;
-        }
-        item.title = res.title;
-        item.author = res.auhor;
-        item.color = 'primary';
-      })
-      .catch(fallback => {
-        console.dir(fallback);
-        item.color = 'danger';
-      });
+        });
     });
   }
 
-  pageSelected (item) {
+  pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
 
