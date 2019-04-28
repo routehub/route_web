@@ -86,11 +86,17 @@ export class MigrationPage implements OnInit {
         return;
       }
 
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/x-www-form-urlencoded'
+        })
+      };
+
 
       this.http.post(this.migrate_url, {
         id: item.id,
         firebase_uid: 'dummy' // FIXME: ダミー
-      }).toPromise()
+      }, httpOptions).toPromise()
         .then((res: any) => {
           if (res.error) {
             item.title = 'すでに登録済みです';
