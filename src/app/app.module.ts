@@ -15,6 +15,7 @@ import { RouteinfoPageModule } from './routeinfo/routeinfo.module';
 import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { IonicStorageModule } from '@ionic/storage';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,7 +27,8 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
     RouteinfoPageModule,
     LazyLoadImageModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    IonicStorageModule.forRoot(),
   ],
   providers: [
     StatusBar,

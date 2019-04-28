@@ -40,3 +40,23 @@
 .map-editIcon {
   opacity: 0.6;
 }
+
+.login-button {
+  font-size:0.9em;
+  color:white;
+  border: solid #ff82ac 1px;
+  border-radius: 4px;
+}
+.login-button-mobile {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #ff346a !important;
+  border : none;
+  color: white !important;
+  display: none; /* homeで書き換え */
+}
+.login-button img {
+    width: 30px;
+    height: 30px;
+}

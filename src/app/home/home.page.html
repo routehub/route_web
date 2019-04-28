@@ -11,6 +11,16 @@
         <h1><img src="./assets/logo-white.png" alt="routelabo"></h1>
         <h2>Upgrade<br>ルートラボ</h2>
       </ion-col>
+
+
+      <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile')" expand="block" fill="outline"
+        (click)="logout()" layout="icon-end" #logoutButton><img src="{{photoURL}}">
+      </ion-button>
+
+      <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile')" expand="block" fill="outline"
+        (click)="toLoginPage()" layout="icon-end" #loginButton> ログイン・登録
+      </ion-button>
+
     </ion-row>
 
     <ion-row>

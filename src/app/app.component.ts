@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { Platform, Events } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { User } from 'firebase';
 import { NavController } from '@ionic/angular';
-
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public appPages = [
     {
       title: 'トップ',
@@ -38,10 +38,24 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     public auth: AngularFireAuth,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    public events: Events,
+    private storage: Storage,
   ) {
     this.initializeApp();
     this.initializeAuth();
+  }
+
+  ngOnInit() {
+    /**
+     * 共通化するイベントの登録
+     */
+    this.events.subscribe('user:toLoginPage', () => {
+      this.toLoginPage();
+    });
+    this.events.subscribe('user:logout', () => {
+      this.logout();
+    });
   }
 
   initializeApp() {
@@ -65,13 +79,20 @@ export class AppComponent {
       if (user) {
         console.log('login done');
         this.user = user;
-        // User is signed in.
-        console.log(user);
-        console.log(user.displayName);
-        console.log(user.uid);
+        this.storage.set('user.uid', user.uid);
+        this.storage.set('user.displayName', user.displayName);
+        // TODO : 画像が設定されていない場合はデフォ画像を入れたい
+        this.storage.set('user.photoURL', user.photoURL);
+
+        // TODO : ログインのexpireをstorageに入れるべきでは?
+
       } else {
         console.log('logout done');
         this.user = null;
+
+        this.storage.remove('user.uid');
+        this.storage.remove('user.displayName');
+        this.storage.remove('user.photoURL');
         // No user is signed in.
       }
     });
@@ -83,5 +104,9 @@ export class AppComponent {
 
   logout() {
     this.auth.auth.signOut();
+  }
+
+  getUser() {
+    return this.user;
   }
 }
