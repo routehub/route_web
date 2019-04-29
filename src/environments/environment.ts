@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  // TODO 本番運用用に変更する
+  // warn: devと同じ
   firebase: {
     apiKey: 'AIzaSyB0msydnFuVba0qJGT5geWMNqiYjzvN35M',
     authDomain: 'route-lab-63f4a.firebaseapp.com',
