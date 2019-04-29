@@ -93,14 +93,14 @@ export class MigrationPage implements OnInit {
         const idToken = await firebase.auth().currentUser.getIdToken(true);
 
         // オブジェクトだとBE側のBodyのkeyに全部入りしてたのでとりあえずJSONで
-        const json = 'id=' + item.id + '&' + 'firebase_id_token=' + idToken;
+        const paramString = 'id=' + item.id + '&' + 'firebase_id_token=' + idToken;
         const httpOptions = {
           headers: new HttpHeaders(
             'Content-Type:application/x-www-form-urlencoded'
           )
         };
 
-        const res: any = await this.http.post(this.migrate_url, json, httpOptions).toPromise();
+        const res: any = await this.http.post(this.migrate_url, paramString, httpOptions).toPromise();
 
         if (res.error) {
           item.title = 'すでに登録済みです';
