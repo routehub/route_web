@@ -1,6 +1,8 @@
 import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
 
 @Component({
@@ -13,7 +15,8 @@ export class MigrationPage implements OnInit {
 
   public routeurl: string;
   public items: Array<{ id: string, title: string; author: string; icon: string; color: string; }> = [];
-  private migrate_url = 'https://dev-api.routelabo.com/route/1.0.0/migrate';
+  // private migrate_url = 'https://dev-api.routelabo.com/route/1.0.0/migrate';
+  private migrate_url = 'http://localhost:8080/route/1.0.0/migrate';
 
   constructor(private http: HttpClient, public navCtrl: NavController) { }
 
@@ -80,14 +83,25 @@ export class MigrationPage implements OnInit {
     this.routeurl = '';
   }
 
-  checkque () {
-    this.items.map(item => {
+  checkque() {
+    this.items.map(async item => {
       if (item.color !== '') {
         return;
       }
 
-      this.http.get(this.migrate_url + '?id=' + item.id).toPromise()
-      .then((res: any) => {
+      try {
+        const idToken = await firebase.auth().currentUser.getIdToken(true);
+
+        // オブジェクトだとBE側のBodyのkeyに全部入りしてたのでとりあえずJSONで
+        const paramString = 'id=' + item.id + '&' + 'firebase_id_token=' + idToken;
+        const httpOptions = {
+          headers: new HttpHeaders(
+            'Content-Type:application/x-www-form-urlencoded'
+          )
+        };
+
+        const res: any = await this.http.post(this.migrate_url, paramString, httpOptions).toPromise();
+
         if (res.error) {
           item.title = 'すでに登録済みです';
           item.color = 'danger';
@@ -96,15 +110,14 @@ export class MigrationPage implements OnInit {
         item.title = res.title;
         item.author = res.auhor;
         item.color = 'primary';
-      })
-      .catch(fallback => {
+      } catch (fallback) {
         console.dir(fallback);
         item.color = 'danger';
-      });
+      }
     });
   }
 
-  pageSelected (item) {
+  pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
 

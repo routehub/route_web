@@ -15,23 +15,29 @@ export class AppComponent implements OnInit {
   public appPages = [
     {
       title: 'トップ',
-      url: '/',
-      icon: 'home'
+      icon: 'home',
+      route: () => {
+        this.navCtrl.navigateForward('/');
+      }
     },
     {
       title: 'ルートを取込',
-      url: '/migration',
-      icon: 'add'//'cloud-download'
+      icon: 'add', // 'cloud-download'
+      route: () => {
+        this.navCtrl.navigateForward(this.isLogin() ? '/migration' : '/login');
+      }
     },
     {
       title: 'ルートを検索',
-      url: '/list',
-      icon: 'search'
+      icon: 'search',
+      route: () => {
+        this.navCtrl.navigateForward('/list');
+      }
     }
   ];
 
   public tabslot = 'top';
-  public user: User;
+  private user: User;
 
   constructor(
     public platform: Platform,
@@ -96,6 +102,14 @@ export class AppComponent implements OnInit {
         // No user is signed in.
       }
     });
+  }
+
+  isLogin() {
+    return this.user !== null;
+  }
+
+  routing() {
+    return this.isLogin() ? '/migration' : '/login';
   }
 
   toLoginPage() {
