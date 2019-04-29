@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
+import * as firebase from 'firebase';
 
 
 @Component({
@@ -80,14 +81,18 @@ export class MigrationPage implements OnInit {
     this.routeurl = '';
   }
 
-  checkque () {
-    this.items.map(item => {
+  checkque() {
+    this.items.map(async item => {
       if (item.color !== '') {
         return;
       }
 
-      this.http.get(this.migrate_url + '?id=' + item.id).toPromise()
-      .then((res: any) => {
+      try {
+        const idToken = await firebase.auth().currentUser.getIdToken(true);
+        console.log(idToken);
+
+        const res: any = await this.http.get(this.migrate_url + '?id=' + item.id).toPromise();
+
         if (res.error) {
           item.title = 'すでに登録済みです';
           item.color = 'danger';
@@ -96,15 +101,14 @@ export class MigrationPage implements OnInit {
         item.title = res.title;
         item.author = res.auhor;
         item.color = 'primary';
-      })
-      .catch(fallback => {
-        console.dir(fallback);
+      } catch (error) {
+        console.dir(error);
         item.color = 'danger';
-      });
+      }
     });
   }
 
-  pageSelected (item) {
+  pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
 
