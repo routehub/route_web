@@ -1,7 +1,8 @@
 import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
 
 @Component({
@@ -89,9 +90,16 @@ export class MigrationPage implements OnInit {
 
       try {
         const idToken = await firebase.auth().currentUser.getIdToken(true);
-        console.log(idToken);
 
-        const res: any = await this.http.get(this.migrate_url + '?id=' + item.id).toPromise();
+        // オブジェクトだとBE側のBodyのkeyに全部入りしてたのでとりあえずJSONで
+        const json = 'id=' + item.id + '&' + 'firebase_id_token=' + idToken;
+        const httpOptions = {
+          headers: new HttpHeaders(
+            'Content-Type:application/x-www-form-urlencoded'
+          )
+        };
+
+        const res: any = await this.http.post(this.migrate_url, json, httpOptions).toPromise();
 
         if (res.error) {
           item.title = 'すでに登録済みです';
