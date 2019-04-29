@@ -1,12 +1,12 @@
 export const environment = {
   production: true,
-  // TODO 本番運用用に変更する
+  // warn: devと同じ
   firebase: {
-    apiKey: 'AIzaSyAUNac1J0FeWxE82q3kwuHfkds9aPz-VE8',
-    authDomain: 'route-lab.firebaseapp.com',
-    databaseURL: 'https://route-lab.firebaseio.com',
-    projectId: 'route-lab',
-    storageBucket: 'route-lab.appspot.com',
-    messagingSenderId: '409666348022'
+    apiKey: 'AIzaSyB0msydnFuVba0qJGT5geWMNqiYjzvN35M',
+    authDomain: 'route-lab-63f4a.firebaseapp.com',
+    databaseURL: 'https://route-lab-63f4a.firebaseio.com',
+    projectId: 'route-lab-63f4a',
+    storageBucket: 'route-lab-63f4a.appspot.com',
+    messagingSenderId: '1000468098052'
   }
 };
