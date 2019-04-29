@@ -15,7 +15,8 @@ export class MigrationPage implements OnInit {
 
   public routeurl: string;
   public items: Array<{ id: string, title: string; author: string; icon: string; color: string; }> = [];
-  private migrate_url = 'https://dev-api.routelabo.com/route/1.0.0/migrate';
+  // private migrate_url = 'https://dev-api.routelabo.com/route/1.0.0/migrate';
+  private migrate_url = 'http://localhost:8080/route/1.0.0/migrate';
 
   constructor(private http: HttpClient, public navCtrl: NavController) { }
 
@@ -109,8 +110,8 @@ export class MigrationPage implements OnInit {
         item.title = res.title;
         item.author = res.auhor;
         item.color = 'primary';
-      } catch (error) {
-        console.dir(error);
+      } catch (fallback) {
+        console.dir(fallback);
         item.color = 'danger';
       }
     });

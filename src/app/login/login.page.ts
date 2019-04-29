@@ -23,7 +23,7 @@ export class LoginPage implements OnInit {
         firebase.auth.TwitterAuthProvider.PROVIDER_ID,
         firebase.auth.EmailAuthProvider.PROVIDER_ID
       ],
-      signInSuccessUrl: 'http://localhost:8102/home'
+      signInSuccessUrl: 'https://dev.routelabo.com/home'
     };
     ui.start('#firebaseui-auth-container', uiCofig);
   }
