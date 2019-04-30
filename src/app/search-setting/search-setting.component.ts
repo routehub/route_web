@@ -16,7 +16,7 @@ enum SearchQueryType {
 export class SearchSettingComponent implements OnInit {
 
   kmrange = {
-    upper: 150,
+    upper: 150, // デフォルト値です
     lower: 400,
   }
   elevrange = {
