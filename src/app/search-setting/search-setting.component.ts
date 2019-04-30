@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, NavParams } from '@ionic/angular';
 
 @Component({
   selector: 'app-search-setting',
@@ -19,7 +19,12 @@ export class SearchSettingComponent implements OnInit {
   isDistDisabled = "true";
   isElevDisabled = "true";
 
-  constructor(private popoverCtrl: PopoverController) { }
+  constructor(
+    private popoverCtrl: PopoverController,
+    navParams: NavParams,
+  ) {
+    console.dir(navParams.get('query'));
+  }
 
   ngOnInit() {
   }
