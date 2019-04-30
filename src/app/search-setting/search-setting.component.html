@@ -38,15 +38,15 @@
     <ion-label>
       並び順
     </ion-label>
-    <ion-select interface="popover">
-      <ion-select-option value="-dist">距離順(降順)</ion-select-option>
-      <ion-select-option value="dist">距離順(昇順)</ion-select-option>
+    <ion-select interface="popover" (ionChange)="changeSortType($event)">
+      <ion-select-option value="dist_desc">距離順(降順)</ion-select-option>
+      <ion-select-option value="dist_asc">距離順(昇順)</ion-select-option>
 
-      <ion-select-option value="-elevation">獲得標高順(降順)</ion-select-option>
-      <ion-select-option value="elevation">獲得標高順(昇順)</ion-select-option>
+      <ion-select-option value="elevation_desc">獲得標高順(降順)</ion-select-option>
+      <ion-select-option value="elevation_asc">獲得標高順(昇順)</ion-select-option>
 
-      <ion-select-option value="-created_at">作成日(降順)</ion-select-option>
-      <ion-select-option value="created_at">作成日(昇順)</ion-select-option>
+      <ion-select-option value="created_at_desc">作成日(降順)</ion-select-option>
+      <ion-select-option value="created_at_asc">作成日(昇順)</ion-select-option>
     </ion-select>
   </ion-item>
 

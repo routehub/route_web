@@ -6,7 +6,14 @@ enum SearchQueryType {
   tag = 'tag',
   author = 'author',
 }
-
+enum SearchSortType {
+  dist_asc = 'dist_asc',
+  dist_desc = 'dist_desc',
+  elevation_asc = 'elevation_asc',
+  elevation_desc = 'elevation_desc',
+  created_at_asc = 'created_at_asc',
+  created_at_desc = 'created_at_desc',
+}
 @Component({
   selector: 'app-search-setting',
   templateUrl: './search-setting.component.html',
@@ -28,7 +35,8 @@ export class SearchSettingComponent implements OnInit {
 
   query: string;
 
-  search_type: SearchQueryType;
+  query_type: SearchQueryType = SearchQueryType.keyword;
+  sort_type: SearchSortType = SearchSortType.created_at_desc;
 
   constructor(
     private popoverCtrl: PopoverController,
@@ -61,15 +69,18 @@ export class SearchSettingComponent implements OnInit {
   }
 
   changeSearchType(event) {
-    switch (event.detail.value) {
-      case SearchQueryType.author:
-        this.search_type = SearchQueryType.author;
-        break;
-      case SearchQueryType.tag:
-        this.search_type = SearchQueryType.tag;
-        break;
-      default:
-        this.search_type = SearchQueryType.keyword;
+    if (!event.detail.value) {
+      this.query_type = SearchQueryType.keyword;
+    } else {
+      this.query_type = event.detail.value;
+    }
+  }
+
+  changeSortType(event) {
+    if (!event.detail.value) {
+      this.sort_type = SearchSortType.created_at_desc;
+    } else {
+      this.sort_type = event.detail.value;
     }
   }
 
