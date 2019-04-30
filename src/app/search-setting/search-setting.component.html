@@ -1,12 +1,12 @@
 <ion-item-group>
 
   <ion-item>
-    <ion-select interface="popover">
+    <ion-select interface="popover" (ionChange)="changeSearchType($event)">
       <ion-select-option value="keyword" selected>キーワード検索</ion-select-option>
       <ion-select-option value="author">作成名検索</ion-select-option>
       <ion-select-option value="tag">タグ検索</ion-select-option>
     </ion-select>
-    <ion-input></ion-input>
+    <ion-input>{{query}}</ion-input>
   </ion-item>
 
   <ion-item>
@@ -50,7 +50,7 @@
     </ion-select>
   </ion-item>
 
-  <ion-button expand="full" color="primary">この条件で検索</ion-button>
+  <ion-button expand="full" color="primary" (click)="search()">この条件で検索</ion-button>
 
 
 

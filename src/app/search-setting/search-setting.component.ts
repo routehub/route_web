@@ -1,11 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController, NavParams } from '@ionic/angular';
 
+enum SearchQueryType {
+  keyword = 'keyword',
+  tag = 'tag',
+  author = 'author',
+}
+
 @Component({
   selector: 'app-search-setting',
   templateUrl: './search-setting.component.html',
   styleUrls: ['./search-setting.component.scss'],
 })
+
 export class SearchSettingComponent implements OnInit {
 
   kmrange = {
@@ -19,11 +26,15 @@ export class SearchSettingComponent implements OnInit {
   isDistDisabled = "true";
   isElevDisabled = "true";
 
+  query: string;
+
+  search_type: SearchQueryType;
+
   constructor(
     private popoverCtrl: PopoverController,
     navParams: NavParams,
   ) {
-    console.dir(navParams.get('query'));
+    this.query = navParams.get('query');
   }
 
   ngOnInit() {
@@ -42,6 +53,23 @@ export class SearchSettingComponent implements OnInit {
       this.isElevDisabled = "false";
     } else {
       this.isElevDisabled = "true";
+    }
+  }
+
+  search() {
+    console.dir(this);
+  }
+
+  changeSearchType(event) {
+    switch (event.detail.value) {
+      case SearchQueryType.author:
+        this.search_type = SearchQueryType.author;
+        break;
+      case SearchQueryType.tag:
+        this.search_type = SearchQueryType.tag;
+        break;
+      default:
+        this.search_type = SearchQueryType.keyword;
     }
   }
 
