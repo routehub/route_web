@@ -65,7 +65,16 @@ export class SearchSettingComponent implements OnInit {
   }
 
   search() {
-    console.dir(this);
+    // 検索ロジックは元でヨロシクー
+    this.popoverCtrl.dismiss({
+      query: this.query,
+      query_type: this.query_type,
+      sort_type: this.sort_type,
+      kmrange: this.kmrange,
+      elevrange: this.elevrange,
+      isDistDisabled: this.isDistDisabled === 'true' ? true : false,
+      isElevDisabled: this.isElevDisabled === 'true' ? true : false,
+    });
   }
 
   changeSearchType(event) {
@@ -83,5 +92,4 @@ export class SearchSettingComponent implements OnInit {
       this.sort_type = event.detail.value;
     }
   }
-
 }
