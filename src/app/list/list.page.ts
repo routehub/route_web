@@ -75,11 +75,12 @@ export class ListPage implements OnInit {
     });
     await popover.present();
     popover.onDidDismiss().then(search_opt => {
-      console.dir(search_opt);
-
       if (!search_opt.data) {
         return;
       }
+
+      // 検索オプションデバッグはこれよ
+      //console.dir(search_opt);
 
       this.query = search_opt.data.query;
       this.query_type = search_opt.data.query_type;
