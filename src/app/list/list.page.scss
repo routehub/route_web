@@ -23,3 +23,11 @@ ion-popover {
     width: 500px !important;
   }
 }
+
+ion-grid {
+  --ion-grid-columns: 24;
+}
+
+ion-card-header {
+  padding: 0 0 16px 0;
+}
