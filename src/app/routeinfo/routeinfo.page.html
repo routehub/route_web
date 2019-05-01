@@ -1,37 +1,39 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>ルート情報</ion-title>
+    <ion-title>{{route.title}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
     <ion-item>
-      <ion-label>タイトル : + GPSタグ</ion-label>
+      <ion-label>作成者 <a href="list/?author={{route.author}}">{{route.author}}</a></ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>作成者 :</ion-label>
+      <ion-label>作成日 {{route.create_at}} </ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>作成日時 :</ion-label>
+      <ion-label>タグ {{route.tags}}</ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>距離</ion-label>
+      <ion-label>{{route.body}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>距離 {{route.dist}}km</ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>標高</ion-label>
+      <ion-label>標高 {{route.elevation}}m</ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>最大獲得標高差</ion-label>
+      <ion-label>最大獲得標高差 {{route.elevation_diff}}m</ion-label>
     </ion-item>
     <ion-item>
       <ion-label>平均斜度（全体、上り、下り）</ion-label>
+      <ion-label>{{route.slope_sum}}% {{route.slope_upper}}% {{route.slope_lower}}%</ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>想定所要時間</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>Export .gpx, .fit</ion-label>
+      <ion-label>想定所要時間 {{route.time}}時間　(自転車)</ion-label>
     </ion-item>
   </ion-list>
   <ion-button color="light" expand="block" (click)="closeModal()">閉じる</ion-button>

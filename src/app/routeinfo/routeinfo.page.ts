@@ -8,12 +8,15 @@ import { ModalController, NavParams } from '@ionic/angular';
 })
 export class RouteinfoPage implements OnInit {
 
+  route: any;
+
   constructor(
     private modalController: ModalController,
     private navParams: NavParams
   ) { }
 
   ngOnInit() {
+    this.route = this.navParams.get('route');
   }
   async closeModal() {
     await this.modalController.dismiss();
