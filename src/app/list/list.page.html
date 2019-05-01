@@ -24,17 +24,29 @@
           </ion-card-header>
 
           <ion-card-content>
+            <p class="create_at">{{item.created_at}}</p>
             <ion-card-title>{{item.title}}</ion-card-title>
             <ion-card-subtitle class="list-body">{{item.body}}</ion-card-subtitle>
-            <ul>
-              <li>投稿者：{{item.author}}</li>
-              <li>投稿日：{{item.created_at}}</li>
-              <li>距離：25.0km</li>
-              <li>最大標高差：38m</li>
-              <li>獲得標高：29m</li>
-              <li>GPSだったらアイコンだしたい</li>
+            <ul class="route-info">
+              <li>総距離<br />XXX.Xkm</li>
+              <li>最大標高差<br />XXXXm</li>
+              <li>獲得標高<br />XXXm</li>
+              <!-- <li>GPSだったらアイコンだしたい</li> -->
+            </ul>
+            <ul class="startgoal-info">
+              <li><span>スタート</span>愛知県名古屋市名東区藤が丘</li>
+              <li><span>ゴール</span>豊田市井上町5丁目</li>
             </ul>
           </ion-card-content>
+
+          <hr class="card-author-border" />
+
+          <ion-item lines="none" class="card-author">
+            <ion-avatar slot="start">
+              <ion-img src="https://pbs.twimg.com/profile_images/1116003788433711104/QgeszHNu_400x400.jpg"></ion-img>
+            </ion-avatar>
+            <ion-label lines="none">{{item.author}}</ion-label>
+          </ion-item>
 
         </ion-card>
 

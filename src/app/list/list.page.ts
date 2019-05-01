@@ -142,7 +142,7 @@ export class ListPage implements OnInit {
             id: r.id,
             title: r.title,
             body: this.getBodyHead(r.body),
-            author: r.author,
+            author: r.author === '' ? '名も無きルート引き' : r.author,
             thumburl: this.getThumbUrl(r.summary),
             created_at: r.created_at,
           });
