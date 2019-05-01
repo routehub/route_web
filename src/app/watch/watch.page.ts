@@ -278,7 +278,7 @@ export class WatchPage implements OnInit {
   async presentRouteInfoPage() {
     const modal = await this.modalCtrl.create({
       component: RouteinfoPage,
-      componentProps: {}
+      componentProps: { route: this.route_data }
     });
     return await modal.present();
   }
