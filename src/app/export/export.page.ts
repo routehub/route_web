@@ -89,16 +89,19 @@ export class ExportPage implements OnInit {
 
   exportKml() {
     const route = this.route;
-    var kml = ejs.render(this.kmlTemplate, {
+    var kmlString = ejs.render(this.kmlTemplate, {
       title: route.title,
       author: route.author,
       link: '',
       body: route.body,
-      coordinates: route.pos.map(p => {
-        return p.join(',');
-      }).join("\n"),
+      coordinates: route.pos.map(p => { return p.join(','); }).join("\n"),
     });
-    console.dir(kml);
+
+    var blob = new Blob([kmlString], { "type": "application/vnd.google-earth.kml+xml" });
+    let link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = route.title + '.kml';
+    link.click()
   }
 
 }
