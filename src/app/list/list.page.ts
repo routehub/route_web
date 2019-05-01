@@ -72,6 +72,7 @@ export class ListPage implements OnInit {
       event: ev,
       translucent: true,
       cssClass: 'search-settingmenu',
+      mode: 'md',
     });
     await popover.present();
     popover.onDidDismiss().then(search_opt => {
