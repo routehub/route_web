@@ -1,3 +1,4 @@
+import { async } from '@angular/core/testing';
 import { LoginPage } from './../login/login.page';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -10,6 +11,7 @@ import 'leaflet.elevation/src/L.Control.Elevation.js';
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
+import { ExportPage } from '../export/export.page';
 import { Platform } from '@ionic/angular';
 
 @Component({
@@ -48,6 +50,16 @@ export class WatchPage implements OnInit {
       "line-width": 6,
       "line-opacity": 0.7,
     }
+  };
+
+  private route_data = {
+    title: '',
+    author: '',
+    body: '',
+    create_at: '',
+    pos: [],
+    ele: [],
+    time: [],
   };
 
   constructor(
@@ -120,10 +132,17 @@ export class WatchPage implements OnInit {
     this.get(id).then(function (route: any) {
       // タイトル変更
       that.title = route.title;
+      that.route_data.title = that.title;
+      that.route_data.author = route.author;
+      that.route_data.body = route.body;
+
       // 線を引く
       let pos = route.pos.split(',').map(p => { return p.split(' ') });
+      that.route_data.pos = pos;
+
       // 標高も足しておく
       let level = route.level.split(',');
+      that.route_data.ele = level;
       for (var i = 0; i < level.length; i++) {
         pos[i].push(level[i] * 1);
       }
@@ -267,5 +286,11 @@ export class WatchPage implements OnInit {
     this.navCtrl.navigateBack("/list");
   }
 
-
+  async presentRouteExportPage() {
+    const modal = await this.modalCtrl.create({
+      component: ExportPage,
+      componentProps: { route: this.route_data }
+    });
+    return await modal.present();
+  }
 }

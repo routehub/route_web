@@ -21,7 +21,8 @@ const routes: Routes = [
   },
   { path: 'migration', loadChildren: './migration/migration.module#MigrationPageModule' },
   { path: 'routeinfo', loadChildren: './routeinfo/routeinfo.module#RouteinfoPageModule' },
-  { path: 'login', loadChildren: './login/login.module#LoginPageModule' }
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
+  { path: 'export', loadChildren: './export/export.module#ExportPageModule' }
 ];
 
 @NgModule({

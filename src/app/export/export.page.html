@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>エクスポート</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <p style="margin: 20px;">
+    コメント点を、waypoint付きでデバイスに送信します。<br>
+    GarminConnectをスマートフォンに入れていて、端末と接続している場合にはBluetooth通信でデバイスにルートを送信することが可能です。<br>
+    すべての端末にて動作検証できていませんが、動くこと確認できましたら追記いたしますので、ご一報をお願いします。
+  </p>
+
+  <ion-list>
+    <ion-item (click)="exportKml()">
+      <ion-label>Googleマイマップへ送る(.kml)</ion-label>
+    </ion-item>
+    <!--
+    <ion-item>
+      <ion-label>Garminデバイスに送る(.fit)</ion-label>
+    </ion-item>
+  -->
+    <ion-item (click)="exportGpx()">
+      <ion-label>Garminデバイスに送る(.gpx)</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-button color="light" expand="block" (click)="closeModal()">閉じる</ion-button>
+
+</ion-content>
