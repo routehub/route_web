@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { PreloadingStrategy, PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { Observable, of } from 'rxjs';
 
 const routes: Routes = [
   {
@@ -24,10 +25,19 @@ const routes: Routes = [
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
   { path: 'export', loadChildren: './export/export.module#ExportPageModule' }
 ];
+export class SimpleLoadingStrategy implements PreloadingStrategy {
+  preload(route: Route, load: Function): Observable<any> {
+    if (route.data && route.data.preload) {
+      return load();
+    }
+    return of(null);
+  }
+}
 
 @NgModule({
+  providers: [SimpleLoadingStrategy],
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: SimpleLoadingStrategy })
   ],
   exports: [RouterModule]
 })
