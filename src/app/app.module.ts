@@ -11,6 +11,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RouteinfoPageModule } from './routeinfo/routeinfo.module';
+import { ExportPageModule } from './export/export.module';
 
 import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
@@ -25,6 +26,7 @@ import { IonicStorageModule } from '@ionic/storage';
     IonicModule.forRoot(),
     AppRoutingModule,
     RouteinfoPageModule,
+    ExportPageModule,
     LazyLoadImageModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

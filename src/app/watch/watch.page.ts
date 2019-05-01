@@ -1,3 +1,4 @@
+import { async } from '@angular/core/testing';
 import { LoginPage } from './../login/login.page';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -10,6 +11,7 @@ import 'leaflet.elevation/src/L.Control.Elevation.js';
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
+import { ExportPage } from '../export/export.page';
 import { Platform } from '@ionic/angular';
 
 @Component({
@@ -267,5 +269,11 @@ export class WatchPage implements OnInit {
     this.navCtrl.navigateBack("/list");
   }
 
-
+  async presentRouteExportPage () {
+    const modal = await this.modalCtrl.create({
+      component: ExportPage,
+      componentProps: {}
+    });
+    return await modal.present();
+  }
 }
