@@ -1,12 +1,12 @@
 <ion-item-group>
 
   <ion-item>
-    <ion-select interface="popover">
+    <ion-select interface="popover" (ionChange)="changeSearchType($event)">
       <ion-select-option value="keyword" selected>キーワード検索</ion-select-option>
       <ion-select-option value="author">作成名検索</ion-select-option>
       <ion-select-option value="tag">タグ検索</ion-select-option>
     </ion-select>
-    <ion-input></ion-input>
+    <ion-input [(ngModel)]="query"></ion-input>
   </ion-item>
 
   <ion-item>
@@ -38,19 +38,19 @@
     <ion-label>
       並び順
     </ion-label>
-    <ion-select interface="popover">
-      <ion-select-option value="-dist">距離順(降順)</ion-select-option>
-      <ion-select-option value="dist">距離順(昇順)</ion-select-option>
+    <ion-select interface="popover" (ionChange)="changeSortType($event)">
+      <ion-select-option value="dist_desc">距離順(降順)</ion-select-option>
+      <ion-select-option value="dist_asc">距離順(昇順)</ion-select-option>
 
-      <ion-select-option value="-elevation">獲得標高順(降順)</ion-select-option>
-      <ion-select-option value="elevation">獲得標高順(昇順)</ion-select-option>
+      <ion-select-option value="elevation_desc">獲得標高順(降順)</ion-select-option>
+      <ion-select-option value="elevation_asc">獲得標高順(昇順)</ion-select-option>
 
-      <ion-select-option value="-created_at">作成日(降順)</ion-select-option>
-      <ion-select-option value="created_at">作成日(昇順)</ion-select-option>
+      <ion-select-option value="created_at_desc">作成日(降順)</ion-select-option>
+      <ion-select-option value="created_at_asc">作成日(昇順)</ion-select-option>
     </ion-select>
   </ion-item>
 
-  <ion-button expand="full" color="primary">この条件で検索</ion-button>
+  <ion-button expand="full" color="primary" (click)="search()">この条件で検索</ion-button>
 
 
 
