@@ -7,10 +7,13 @@
 <ion-content>
   <ion-list>
     <ion-item>
-      <ion-label>作成者 {{route.author}}</ion-label>
+      <ion-label>作成者 <a href="list/?author={{route.author}}">{{route.author}}</a></ion-label>
     </ion-item>
     <ion-item>
       <ion-label>作成日 {{route.create_at}} </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>タグ {{route.tags}}</ion-label>
     </ion-item>
     <ion-item>
       <ion-label>{{route.body}}</ion-label>
