@@ -6,7 +6,7 @@
       <ion-select-option value="author">作成名検索</ion-select-option>
       <ion-select-option value="tag">タグ検索</ion-select-option>
     </ion-select>
-    <ion-input>{{query}}</ion-input>
+    <ion-input [(ngModel)]="query"></ion-input>
   </ion-item>
 
   <ion-item>

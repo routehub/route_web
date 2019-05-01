@@ -77,6 +77,10 @@ export class ListPage implements OnInit {
     popover.onDidDismiss().then(search_opt => {
       console.dir(search_opt);
 
+      if (!search_opt.data) {
+        return;
+      }
+
       this.query = search_opt.data.query;
       this.query_type = search_opt.data.query_type;
       this.sort_type = search_opt.data.sort_type;
