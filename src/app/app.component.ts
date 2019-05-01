@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
   ];
 
   public tabslot = 'top';
-  private user: User;
+  public user: User;
 
   constructor(
     public platform: Platform,

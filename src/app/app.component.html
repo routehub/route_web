@@ -26,7 +26,7 @@
 
 
     <ion-tab-bar slot="bottom" color="primary" translucent="true" *ngIf="platform.is('mobile')">
-      <ion-tab-button [routerLink]="[p.url]" *ngFor="let p of appPages">
+      <ion-tab-button (click)="p.route()" *ngFor="let p of appPages">
         <ion-label>{{p.title}}</ion-label>
         <ion-icon [name]="p.icon"></ion-icon>
         <!--        <ion-badge>10</ion-badge> -->
