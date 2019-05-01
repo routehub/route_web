@@ -21,6 +21,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
     integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
     crossorigin="" />
+  <link rel="stylesheet" href="/assets//leaflet.elevation-0.0.4.css" />
+
   <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
     integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
     crossorigin=""></script>
@@ -28,7 +30,8 @@
 
   <style>
     .steelblue-theme.leaflet-control.elevation .background {
-      border-radius: 5px
+      border-radius: 5px;
+      background: none;
     }
 
     .steelblue-theme.leaflet-control.elevation .axis line,
@@ -90,16 +93,26 @@
       background: linear-gradient(to bottom, #ffffff00, #ffffff9e);
     }
 
-    .leaflet-bottom .leaflet-control {
-      margin-bottom: 0;
-    }
-
     .steelblue-theme .leaflet-overlay-pane .height-focus {
       stroke: #0000ff;
       fill: #0000ff;
     }
-  </style>
-  <style>
+
+    /*
+    .elevation.leaflet-control {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+*/
+    .leaflet-bottom .leaflet-control {
+      margin-bottom: -10px;
+    }
+
+    .leaflet-right .leaflet-control {
+      margin-right: 0;
+    }
+
     .searchbar-input {
       border: 0 !important;
       box-shadow: none !important;

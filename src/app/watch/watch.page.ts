@@ -6,8 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
-// TODO: forkして自前のブランチでマージしてビルドしたやつを利用する
-import 'leaflet.elevation/src/L.Control.Elevation.js';
+import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
@@ -111,19 +110,32 @@ export class WatchPage implements OnInit {
     yahoo.addTo(this.map);
 
     // elevation
+    console.dir(L.control.elevation);
+    console.dir(Elevation);
     this.elevation_controll = L.control.elevation({
       position: 'bottomright',
       theme: 'steelblue-theme',
       // TODO : ウィンドウサイズ変更イベントに対応する
-      width: window.innerWidth,
-      height: 100,
+      width: window.innerWidth - 10,
+      height: 150,
       margins: {
-        top: 20,
-        right: 30,
-        bottom: 20,
-        left: 40
+        top: 0,
+        right: 5,
+        bottom: 0,
+        left: 0,
       },
       useHeightIndicator: true,
+      isInnerLabel: true,
+      tooltips: true,
+      tooltipsLabel: {
+        dist: '距離',
+        elevation: '標高',
+        slope: '斜度',
+        distDiff: '距離差',
+        elevationDiff: '標高差',
+        slopeAverage: '平均斜度',
+      },
+      addSlope: true,
     });
     this.elevation_controll.addTo(this.map);
 

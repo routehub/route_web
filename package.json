@@ -36,7 +36,7 @@
     "firebaseui": "^3.6.0",
     "gpx-builder": "^2.0.1",
     "leaflet": "^1.4.0",
-    "leaflet.elevation": "astridx/Leaflet.Elevation#L.Browser.touch",
+    "leaflet.elevation": "ctyo/Leaflet.Elevation#innerlabel_tooltips",
     "ng-lazyload-image": "^5.1.2",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.29"
