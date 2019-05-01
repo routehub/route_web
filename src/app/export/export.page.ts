@@ -22,33 +22,38 @@ export class ExportPage implements OnInit {
   }
 
   exportGpx() {
-    const { Point } = GarminBuilder.MODELS;
-    const points = [
-      new Point(51.02832496166229, 15.515156626701355, {
-        ele: 314.715,
-        time: new Date('2018-06-10T17:29:35Z'),
-        hr: 120,
-      }),
-      new Point(51.12832496166229, 15.615156626701355, {
-        ele: 314.715,
-        time: new Date('2018-06-10T17:39:35Z'),
-        hr: 121,
-      }),
-    ];
+    const route = this.navParams.get('route');
+    console.dir(route);
+    const { Metadata, Person, Point } = GarminBuilder.MODELS;
 
+    const meta = new Metadata({
+      name: route.title,
+      author: new Person({
+        name: route.author,
+      }),
+      //      link
+    })
+
+    var points = [];
+    for (let i = 0; i < route.pos.length; i++) {
+      let pos = route.pos[i];
+      points.push(
+        new Point(pos[1], pos[0], {
+          ele: pos[2],
+          // なにか追加したいデータあればする。
+          // time: new Date('2018-06-10T17:29:35Z'),
+          // hr: 120,
+        }));
+    }
     const gpxData = new GarminBuilder();
-
+    gpxData.setMetadata(meta);
     gpxData.setSegmentPoints(points);
+    const gpxString = buildGPX(gpxData.toObject());
 
-    console.log(buildGPX(gpxData.toObject()));
-    /*
-    let a = document.createElement('a');
-    document.body.appendChild(a);
-    a.setAttribute('style', 'display: none');
-    //    a.href = url;
-    //    a.download = title;
-    a.click();
-    //    window.URL.revokeObjectURL(url);
-    */
+    var blob = new Blob([gpxString], { "type": "application/gpx+xml" });
+    let link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = route.title + '.gpx';
+    link.click()
   }
 }

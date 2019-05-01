@@ -52,6 +52,15 @@ export class WatchPage implements OnInit {
     }
   };
 
+  private route_data = {
+    title: '',
+    author: '',
+    create_at: '',
+    pos: [],
+    ele: [],
+    time: [],
+  };
+
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
@@ -122,10 +131,16 @@ export class WatchPage implements OnInit {
     this.get(id).then(function (route: any) {
       // タイトル変更
       that.title = route.title;
+      that.route_data.title = that.title;
+      that.route_data.author = route.author;
+
       // 線を引く
       let pos = route.pos.split(',').map(p => { return p.split(' ') });
+      that.route_data.pos = pos;
+
       // 標高も足しておく
       let level = route.level.split(',');
+      that.route_data.ele = level;
       for (var i = 0; i < level.length; i++) {
         pos[i].push(level[i] * 1);
       }
@@ -269,10 +284,10 @@ export class WatchPage implements OnInit {
     this.navCtrl.navigateBack("/list");
   }
 
-  async presentRouteExportPage () {
+  async presentRouteExportPage() {
     const modal = await this.modalCtrl.create({
       component: ExportPage,
-      componentProps: {}
+      componentProps: { route: this.route_data }
     });
     return await modal.present();
   }
