@@ -18,14 +18,14 @@
     <ion-row>
       <ion-col size="24" sizeXs="12" sizeMd="6" sizeXl="4" size *ngFor="let item of items">
 
-        <ion-card class="one-image" (click)="pageSelected(item)">
-          <ion-card-header>
+        <ion-card class="one-image">
+          <ion-card-header (click)="pageSelected(item)">
             <img class="list-thumb" lazyLoad='{{item.thumburl}}' offset="50" />
           </ion-card-header>
 
           <ion-card-content>
             <p class="create_at">{{item.created_at}}</p>
-            <ion-card-title>{{item.title}}</ion-card-title>
+            <ion-card-title (click)="pageSelected(item)">{{item.title}}</ion-card-title>
             <ion-card-subtitle class="list-body">{{item.body}}</ion-card-subtitle>
             <ul class="route-info">
               <li>総距離<br />XXX.Xkm</li>
