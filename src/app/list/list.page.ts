@@ -169,7 +169,7 @@ export class ListPage implements OnInit {
       return p[1] + ',' + p[0];
     }).join(',');
     return this.staticmap_url + '?appid=' + this.thumbappid
-      + '&autoscale=on&scalebar=off&width=300&height=200&l=' + '0,0,255,105,3,' // rgb, a, weight
+      + '&autoscale=on&scalebar=off&width=450&height=300&l=' + '0,0,255,105,4,' // rgb, a, weight
       + line;
   }
 }
