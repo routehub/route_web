@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { buildGPX, GarminBuilder } from 'gpx-builder';
+import ejs from 'ejs';
 
 @Component({
   selector: 'app-export',
@@ -9,12 +10,15 @@ import { buildGPX, GarminBuilder } from 'gpx-builder';
 })
 export class ExportPage implements OnInit {
 
+  route: any;
+
   constructor(
     private modalController: ModalController,
     private navParams: NavParams
   ) { }
 
   ngOnInit() {
+    this.route = this.navParams.get('route');
   }
 
   async closeModal() {
@@ -22,9 +26,8 @@ export class ExportPage implements OnInit {
   }
 
   exportGpx() {
-    const route = this.navParams.get('route');
-    console.dir(route);
     const { Metadata, Person, Point } = GarminBuilder.MODELS;
+    const route = this.route;
 
     const meta = new Metadata({
       name: route.title,
@@ -56,4 +59,46 @@ export class ExportPage implements OnInit {
     link.download = route.title + '.gpx';
     link.click()
   }
+
+
+  private kmlTemplate = `
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+<name><%=title%></name>
+<atom:author>
+<atom:name><%=author%></atom:name>
+</atom:author>
+<atom:link href="<%=link%>" />
+<description><![CDATA[<%=body%>]]></description>
+<Placemark>
+<Style>
+<LineStyle>
+<color>99ff0000</color>
+<width>6</width>
+</LineStyle>
+</Style>
+<LineString>
+<coordinates>
+<%=coordinates%>
+</coordinates>
+</LineString>
+</Placemark>
+</Document>
+</kml>`;
+
+  exportKml() {
+    const route = this.route;
+    var kml = ejs.render(this.kmlTemplate, {
+      title: route.title,
+      author: route.author,
+      link: '',
+      body: route.body,
+      coordinates: route.pos.map(p => {
+        return p.join(',');
+      }).join("\n"),
+    });
+    console.dir(kml);
+  }
+
 }

@@ -55,6 +55,7 @@ export class WatchPage implements OnInit {
   private route_data = {
     title: '',
     author: '',
+    body: '',
     create_at: '',
     pos: [],
     ele: [],
@@ -133,6 +134,7 @@ export class WatchPage implements OnInit {
       that.title = route.title;
       that.route_data.title = that.title;
       that.route_data.author = route.author;
+      that.route_data.body = route.body;
 
       // 線を引く
       let pos = route.pos.split(',').map(p => { return p.split(' ') });

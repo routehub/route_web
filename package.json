@@ -31,6 +31,7 @@
     "angularfire2": "^5.1.2",
     "cordova-plugin-geolocation": "4.0.1",
     "core-js": "^2.5.4",
+    "ejs": "^2.6.1",
     "firebase": "^5.10.1",
     "firebaseui": "^3.6.0",
     "gpx-builder": "^2.0.1",
