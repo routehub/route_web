@@ -210,9 +210,11 @@ export class WatchPage implements OnInit {
       // 描画範囲をよろしくする
       let line = turf.lineString(pos);
       let bbox = turfbbox(line); // lonlat問題...
+      const latplus = Math.abs(bbox[1] - bbox[3]) * 0.1;
+      const lonplus = Math.abs(bbox[0] - bbox[2]) * 0.1;
       that.map.fitBounds([ // いい感じの範囲にするために調整
-        [bbox[1] * 1 - 0.05, bbox[0] * 1 - 0.05],
-        [bbox[3] * 1 + 0.05, bbox[2] * 1 + 0.05]
+        [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
+        [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
       ]);
     });
   }
