@@ -33,6 +33,7 @@
     "core-js": "^2.5.4",
     "firebase": "^5.10.1",
     "firebaseui": "^3.6.0",
+    "gpx-builder": "^2.0.1",
     "leaflet": "^1.4.0",
     "leaflet.elevation": "astridx/Leaflet.Elevation#L.Browser.touch",
     "ng-lazyload-image": "^5.1.2",
