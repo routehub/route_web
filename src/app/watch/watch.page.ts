@@ -103,17 +103,7 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    let center: any = [35.681, 139.767];
-    this.map = L.map(this.map_elem.nativeElement, { center: center, zoom: 9, zoomControl: false });
-    let yahoo = L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512');
-    // FIXME: 実行時にもとクラスの定義を書き換えちゃってる
-    yahoo.__proto__.getTileUrl = function (coord) {
-      let z = coord.z + 1;
-      let x = coord.x;
-      let y = Math.pow(2, coord.z - 1) - coord.y - 1;
-      return 'https://map.c.yimg.jp/m?x=' + x + '&y=' + y + '&z=' + z + '&r=1&style=base:standard&size=512';
-    }
-    yahoo.addTo(this.map);
+    this.map = this.routemap.createMap(this.map_elem.nativeElement);
 
     // elevation
     this.elevation_controll = L.control.elevation({

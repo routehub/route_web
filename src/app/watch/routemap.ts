@@ -3,13 +3,13 @@ import * as L from 'leaflet';
 
 export class Routemap {
 
-    public gpsIcon = new L.icon({
+    gpsIcon = new L.icon({
         iconUrl: '/assets/icon/gps_icon.png',
         iconSize: [20, 20], // size of the icon
         iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
     });
-    public startIcon = new L.icon({
+    startIcon = new L.icon({
         iconUrl: '/assets/icon/start_icon.png',
         iconSize: [50, 27], // size of the icon
         iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
@@ -34,6 +34,30 @@ export class Routemap {
         popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor    
         className: 'map-editIcon',
     });
+
+    private getYahooLayer() {
+        let layer = new L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512');
+        // FIXME: 実行時にもとクラスの定義を書き換えちゃってる
+        layer.__proto__.getTileUrl = function (coord) {
+            let z = coord.z + 1;
+            let x = coord.x;
+            let y = Math.pow(2, coord.z - 1) - coord.y - 1;
+            return 'https://map.c.yimg.jp/m?x=' + x + '&y=' + y + '&z=' + z + '&r=1&style=base:standard&size=512';
+        }
+        return layer;
+    }
+
+    constructor() {
+
+    }
+
+    createMap(mapele) {
+        let center: any = [35.681, 139.767];
+        let map = L.map(mapele, { center: center, zoom: 9, zoomControl: false });
+        this.getYahooLayer().addTo(map);
+        return map;
+    }
+
 
 }
 
