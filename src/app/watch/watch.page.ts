@@ -12,7 +12,6 @@ import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { Platform } from '@ionic/angular';
 import { Routemap } from './routemap';
-import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
 
 @Component({
   selector: 'app-watch',
@@ -72,7 +71,6 @@ export class WatchPage implements OnInit {
     public navCtrl: NavController,
     public platform: Platform,
   ) {
-    console.dir(Elevation); // アクセスすることによって、変数展開してる...
     this.routemap = new Routemap();
   }
 

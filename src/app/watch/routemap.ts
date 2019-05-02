@@ -76,6 +76,7 @@ export class Routemap {
     }
 
     constructor() {
+        Elevation;
     }
 
     createMap(mapele) {
