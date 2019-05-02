@@ -10,7 +10,17 @@ export class MyPage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    // ログイン確認
+
+    // 非ログインの場合は /loginへ遷移
+
   }
+
+  ionViewWillEnter() {
+    // searchでfirebase_tokenで検索
+
+  }
+
 
   // TODO ログアウトリンクはこのページのどこかに置く
 
