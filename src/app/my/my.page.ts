@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { NavController } from '@ionic/angular';
+import { NavController, Events } from '@ionic/angular';
 import { ɵPLATFORM_WORKER_UI_ID } from '@angular/common';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -30,6 +30,7 @@ export class MyPage implements OnInit {
     private navCtrl: NavController,
     private storage: Storage,
     private http: HttpClient,
+    public events: Events,
   ) { }
 
   ngOnInit() {
@@ -117,7 +118,9 @@ export class MyPage implements OnInit {
       + line;
   }
 
-
-  // TODO ログアウトリンクはこのページのどこかに置く
+  logout() {
+    this.events.publish('user:logout');
+    this.navCtrl.navigateForward('/login');
+  }
 
 }
