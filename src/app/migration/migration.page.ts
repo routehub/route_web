@@ -109,7 +109,7 @@ export class MigrationPage implements OnInit {
         }
         item.title = res.title;
         item.author = res.auhor;
-        item.color = 'primary';
+        item.color = 'success';
       } catch (fallback) {
         console.dir(fallback);
         item.color = 'danger';
