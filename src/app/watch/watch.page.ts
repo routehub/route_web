@@ -28,7 +28,7 @@ export class WatchPage implements OnInit {
   watch_location_subscribe: any;
   watch: any;
   currenPossitionMarker: any;
-  elevation_controll: any;
+  elevation: any;
   route_geojson = {
     "type": "FeatureCollection",
     "features": [
@@ -95,7 +95,7 @@ export class WatchPage implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   sizeChange(event) {
-    if (!this.elevation_controll) {
+    if (!this.elevation) {
       return;
     }
     // todo
@@ -103,35 +103,9 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.map = this.routemap.createMap(this.map_elem.nativeElement);
-
-    // elevation
-    this.elevation_controll = L.control.elevation({
-      position: 'bottomright',
-      theme: 'steelblue-theme',
-      // TODO : ウィンドウサイズ変更イベントに対応する
-      width: window.innerWidth - 10,
-      height: 150,
-      margins: {
-        top: 0,
-        right: 5,
-        bottom: 0,
-        left: 0,
-      },
-      useHeightIndicator: true,
-      isInnerLabel: true,
-      tooltips: true,
-      tooltipsLabel: {
-        dist: '距離',
-        elevation: '標高',
-        slope: '斜度',
-        distDiff: '距離差',
-        elevationDiff: '標高差',
-        slopeAverage: '平均斜度',
-      },
-      addSlope: true,
-    });
-    this.elevation_controll.addTo(this.map);
+    let routemap = this.routemap.createMap(this.map_elem.nativeElement);
+    this.map = routemap.map;
+    this.elevation = routemap.elevation;
 
     const id = this.route.snapshot.paramMap.get('id');
     var that = this;
@@ -158,7 +132,7 @@ export class WatchPage implements OnInit {
         "color": "#0000ff",
         "width": 6,
         "opacity": 0.7,
-        onEachFeature: that.elevation_controll.addData.bind(that.elevation_controll)
+        onEachFeature: that.elevation.addData.bind(that.elevation)
       }).addTo(that.map);
 
       let start = L.marker([pos[0][1], pos[0][0]], { icon: that.routemap.startIcon }).addTo(that.map);

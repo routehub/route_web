@@ -1,5 +1,6 @@
+import { Events } from '@ionic/angular';
 import * as L from 'leaflet';
-//import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
+import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
 
 export class Routemap {
 
@@ -48,14 +49,42 @@ export class Routemap {
     }
 
     constructor() {
-
     }
 
     createMap(mapele) {
         let center: any = [35.681, 139.767];
         let map = L.map(mapele, { center: center, zoom: 9, zoomControl: false });
         this.getYahooLayer().addTo(map);
-        return map;
+
+
+        // elevation
+        let elevation = L.control.elevation({
+            position: 'bottomright',
+            theme: 'steelblue-theme',
+            // TODO : ウィンドウサイズ変更イベントに対応する
+            width: window.innerWidth - 10,
+            height: 150,
+            margins: {
+                top: 0,
+                right: 5,
+                bottom: 0,
+                left: 0,
+            },
+            useHeightIndicator: true,
+            isInnerLabel: true,
+            tooltips: true,
+            tooltipsLabel: {
+                dist: '距離',
+                elevation: '標高',
+                slope: '斜度',
+                distDiff: '距離差',
+                elevationDiff: '標高差',
+                slopeAverage: '平均斜度',
+            },
+            addSlope: true,
+        }).addTo(map);
+
+        return { map: map, elevation: elevation };
     }
 
 
