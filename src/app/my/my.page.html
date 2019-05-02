@@ -1,0 +1,91 @@
+<!--
+<ion-header>
+  <ion-toolbar>
+    <ion-title>my</ion-title>
+  </ion-toolbar>
+</ion-header>
+-->
+<ion-content>
+  <ion-item>
+    <ion-thumbnail slot="start">
+      <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+    </ion-thumbnail>
+
+    <ion-item-group>
+      <ion-item>
+        <ion-label>ユーザー名</ion-label>
+        <ion-label text-wrap>
+          最近ロードに乗ってない最近ロードに乗ってない最近ロードに乗ってない最近ロードに乗ってない<br>最近ロードに乗ってない最近ロードに乗ってない最近ロードに乗ってない最近ロードに乗ってない
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ul>
+          <li>
+            <ion-icon name="logo-twitter"></ion-icon>
+          </li>
+          <li>
+            <ion-icon name="logo-facebook"></ion-icon>
+          </li>
+        </ul>
+      </ion-item>
+
+    </ion-item-group>
+  </ion-item>
+
+
+
+  <ion-item-group>
+    <ion-segment>
+      <ion-segment-button value="post">
+        <ion-label>投稿したルート</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="like">
+        <ion-label>いいねしたルート</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+
+
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-card class="one-image">
+            <ion-card-header>
+              <img class="list-thumb"
+                src="https://pbs.twimg.com/profile_images/1116003788433711104/QgeszHNu_400x400.jpg" offset="50" />
+            </ion-card-header>
+
+            <ion-card-content>
+              <p class="create_at">{{item.created_at}}</p>
+              <ion-card-title>{{item.title}}</ion-card-title>
+              <ion-card-subtitle class="list-body">{{item.body}}</ion-card-subtitle>
+              <ul class="route-info">
+                <li>総距離<br />XXX.Xkm</li>
+                <li>最大標高差<br />XXXXm</li>
+                <li>獲得標高<br />XXXm</li>
+                <!-- <li>GPSだったらアイコンだしたい</li> -->
+              </ul>
+              <ul class="startgoal-info">
+                <li><span>スタート</span>愛知県名古屋市名東区藤が丘</li>
+                <li><span>ゴール</span>豊田市井上町5丁目</li>
+              </ul>
+            </ion-card-content>
+
+            <hr class="card-author-border" />
+
+            <ion-item lines="none" class="card-author">
+              <ion-avatar slot="start">
+                <ion-img src="https://pbs.twimg.com/profile_images/1116003788433711104/QgeszHNu_400x400.jpg"></ion-img>
+              </ion-avatar>
+              <ion-label lines="none">{{item.author}}</ion-label>
+            </ion-item>
+
+          </ion-card>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item-group>
+
+</ion-content>

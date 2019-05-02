@@ -14,7 +14,7 @@
       </ion-tab-button>
 
       <ion-tab-button layout="icon-end">
-        <ion-button *ngIf="user" class="login-button" expand="block" fill="outline" (click)="logout()"> Hello!
+        <ion-button *ngIf="user" class="login-button" expand="block" fill="outline" routerLink="/my"> Hello!
           {{ user.displayName }}</ion-button>
         <ion-button *ngIf="!user" class="login-button" expand="block" fill="outline" (click)="toLoginPage()"> ログイン・登録
         </ion-button>
