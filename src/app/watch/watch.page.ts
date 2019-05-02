@@ -6,12 +6,13 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
-import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { Platform } from '@ionic/angular';
+import { Routemap } from './routemap';
+import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
 
 @Component({
   selector: 'app-watch',
@@ -61,6 +62,8 @@ export class WatchPage implements OnInit {
     time: [],
   };
 
+  routemap: Routemap;
+
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
@@ -68,7 +71,10 @@ export class WatchPage implements OnInit {
     public modalCtrl: ModalController,
     public navCtrl: NavController,
     public platform: Platform,
-  ) { }
+  ) {
+    console.dir(Elevation); // アクセスすることによって、変数展開してる...
+    this.routemap = new Routemap();
+  }
 
   ionViewDidEnter() {
     if (this.platform.is('mobile')) {
@@ -110,8 +116,6 @@ export class WatchPage implements OnInit {
     yahoo.addTo(this.map);
 
     // elevation
-    console.dir(L.control.elevation);
-    console.dir(Elevation);
     this.elevation_controll = L.control.elevation({
       position: 'bottomright',
       theme: 'steelblue-theme',
@@ -167,34 +171,8 @@ export class WatchPage implements OnInit {
         onEachFeature: that.elevation_controll.addData.bind(that.elevation_controll)
       }).addTo(that.map);
 
-      // icon 追加
-      var startIcon = new L.icon({
-        iconUrl: '/assets/icon/start_icon.png',
-        iconSize: [50, 27], // size of the icon
-        iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
-        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
-      });
-      let start = L.marker([pos[0][1], pos[0][0]], { icon: startIcon }).addTo(that.map);
-      let goalIcon = new L.icon({
-        iconUrl: '/assets/icon/goal_icon.png',
-        iconSize: [50, 27], // size of the icon
-        iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
-        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
-      });
-      let goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: goalIcon }).addTo(that.map);
-      let commentIcon = new L.icon({
-        iconUrl: '/assets/icon/comment_icon.png',
-        iconSize: [20, 20], // size of the icon
-        iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
-        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
-      });
-      let editIcon = new L.icon({
-        iconUrl: '/assets/icon/edit_icon.png',
-        iconSize: [14, 14], // size of the icon
-        iconAnchor: [7, 7], // point of the icon which will correspond to marker's location
-        popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor    
-        className: 'map-editIcon',
-      });
+      let start = L.marker([pos[0][1], pos[0][0]], { icon: that.routemap.startIcon }).addTo(that.map);
+      let goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: that.routemap.goalIcon }).addTo(that.map);
 
       for (let i = 0; i < route.kind.length; i++) {
         if (i === 0 || i === route.kind.length - 1) {
@@ -204,7 +182,7 @@ export class WatchPage implements OnInit {
         if (route.kind[i] === '1') {
           let j = i / 2;
           if (pos[j]) {
-            let edit = L.marker([pos[j][1], pos[j][0]], { icon: editIcon }).addTo(that.map);
+            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
           } else {
             console.log(j, pos.length);
           }
@@ -214,7 +192,7 @@ export class WatchPage implements OnInit {
       if (note && note.length > 0) {
         for (let i = 0; i < note.length; i++) {
           let j = note[i].pos;
-          let edit = L.marker([pos[j][1], pos[j][0]], { icon: commentIcon }).addTo(that.map);
+          let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.commentIcon }).addTo(that.map);
         }
       }
 
@@ -258,13 +236,7 @@ export class WatchPage implements OnInit {
         let latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude);
 
         if (!this.currenPossitionMarker) {
-          let gpsIcon = new L.icon({
-            iconUrl: '/assets/icon/gps_icon.png',
-            iconSize: [20, 20], // size of the icon
-            iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
-            popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
-          });
-          this.currenPossitionMarker = new L.marker(latlng, { icon: gpsIcon }).addTo(this.map);
+          this.currenPossitionMarker = new L.marker(latlng, { icon: this.routemap.gpsIcon }).addTo(this.map);
         } else {
           this.currenPossitionMarker.setLatLng(latlng);
         }
