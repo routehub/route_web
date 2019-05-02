@@ -8,14 +8,14 @@
 <ion-content>
   <ion-item>
     <ion-thumbnail slot="start">
-      <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+      <img src="{{photoURL}}">
     </ion-thumbnail>
 
     <ion-item-group>
       <ion-item>
-        <ion-label>ユーザー名</ion-label>
+        <ion-label>{{displayName}}</ion-label>
         <ion-label text-wrap>
-          最近ロードに乗ってない最近ロードに乗ってない最近ロードに乗ってない最近ロードに乗ってない<br>最近ロードに乗ってない最近ロードに乗ってない最近ロードに乗ってない最近ロードに乗ってない
+          {{body}}
         </ion-label>
       </ion-item>
       <ion-item>
