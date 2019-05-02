@@ -36,10 +36,10 @@
 
   <ion-item-group>
     <ion-segment>
-      <ion-segment-button value="post">
+      <ion-segment-button value="post" (click)="showMyRoute()">
         <ion-label>投稿したルート</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="like">
+      <ion-segment-button value="like" (click)="showLikeRoute()">
         <ion-label>いいねしたルート</ion-label>
       </ion-segment-button>
     </ion-segment>
@@ -49,16 +49,15 @@
 
     <ion-grid>
       <ion-row>
-        <ion-col>
+        <ion-col size="24" sizeXs="12" sizeMd="6" sizeXl="4" size *ngFor="let item of items">
           <ion-card class="one-image">
-            <ion-card-header>
-              <img class="list-thumb"
-                src="https://pbs.twimg.com/profile_images/1116003788433711104/QgeszHNu_400x400.jpg" offset="50" />
+            <ion-card-header (click)="pageSelected(item)">
+              <img class="list-thumb" lazyLoad='{{item.thumburl}}' offset="50" />
             </ion-card-header>
 
             <ion-card-content>
               <p class="create_at">{{item.created_at}}</p>
-              <ion-card-title>{{item.title}}</ion-card-title>
+              <ion-card-title (click)="pageSelected(item)">{{item.title}}</ion-card-title>
               <ion-card-subtitle class="list-body">{{item.body}}</ion-card-subtitle>
               <ul class="route-info">
                 <li>総距離<br />XXX.Xkm</li>
