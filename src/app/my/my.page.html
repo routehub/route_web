@@ -5,28 +5,30 @@
   <ion-img width="1080" height="360"
     src="https://gendai.ismedia.jp/mwimgs/6/c/-/img_6cbfa25cd466b50438131eb1a22911e0111248.jpg">
   </ion-img>
-  <ion-item-group>
-    <ion-item lines="none">
-      <ion-avatar item-start class="ion-avatar">
-        <img src="{{photoURL}}">
-      </ion-avatar>
-      <span (click)="logout()">ログアウト</span>
-      <ion-label>{{displayName}}</ion-label>
-      <ion-label text-wrap>
-        {{body}}
-      </ion-label>
-    </ion-item>
-    <ion-item lines="none">
-      <ul>
-        <li>
+  <ion-grid>
+    <ion-row align-items-center>
+      <ion-col size-md>
+        <ion-avatar class="ion-avatar">
+          <img src="{{photoURL}}">
+        </ion-avatar>
+      </ion-col>
+      <ion-col size-lg>
+        <ion-row>
+          <ion-label>{{displayName}}</ion-label>
+          <span (click)="logout()">ログアウト</span>
+        </ion-row>
+        <ion-row>
+          <ion-label text-wrap>
+            {{body}}
+          </ion-label>
+        </ion-row>
+        <ion-row>
           <ion-icon name="logo-twitter"></ion-icon>
-        </li>
-        <li>
           <ion-icon name="logo-facebook"></ion-icon>
-        </li>
-      </ul>
-    </ion-item>
-  </ion-item-group>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-item-divider></ion-item-divider>
   <ion-item-group>
     <ion-segment>
