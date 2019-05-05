@@ -17,6 +17,7 @@ export class MigrationPage implements OnInit {
   public items: Array<{ id: string, title: string; author: string; icon: string; color: string; }> = [];
   private migrate_url = 'https://dev-api.routelabo.com/route/1.0.0/migrate';
   //private migrate_url = 'http://localhost:8080/route/1.0.0/migrate';
+  private parse_shorturl_url = 'https://dev-api.routelabo.com/route/1.0.0/parse_shorturl';
 
   constructor(private http: HttpClient, public navCtrl: NavController) { }
 
@@ -26,7 +27,7 @@ export class MigrationPage implements OnInit {
   ionViewWillEnter() {
   }
 
-  onPaste(event) {
+  async onPaste(event) {
     event.preventDefault();
     //    if (window.clipboardData && window.clipboardData.getData) { // IE pollyfillされるかな...
     //      var pastedText = window.clipboardData.getData('Text');
@@ -59,17 +60,19 @@ export class MigrationPage implements OnInit {
       });
     }
 
-    this.checkque();
+    await this.checkque();
   }
 
-  importUrl() {
+  async importUrl() {
     if (!this.routeurl) {
       return;
     }
     let m = this.routeurl.match(/watch\?id=(.*?)$/);
-    console.dir(m);
 
     if (!m) {
+      let ret = this.parseShorUrl(this.routeurl);
+      let m = ret.url.match(/watch\?id=(.*?)$/);
+
       return;
     }
     this.items.push({
@@ -79,11 +82,11 @@ export class MigrationPage implements OnInit {
       icon: '',
       color: '',
     });
-    this.checkque();
+    await this.checkque();
     this.routeurl = '';
   }
 
-  checkque() {
+  async checkque() {
     this.items.map(async item => {
       if (item.color !== '') {
         return;
@@ -115,6 +118,13 @@ export class MigrationPage implements OnInit {
         item.color = 'danger';
       }
     });
+  }
+
+  async parseShorUrl(url) {
+    let ret = await this.http.get(this.parse_shorturl_url + '?url=' + url).toPromise().then((res: any) => {
+      return res;
+    });
+    return ret;
   }
 
   pageSelected(item) {
