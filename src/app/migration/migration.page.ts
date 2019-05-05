@@ -17,7 +17,7 @@ export class MigrationPage implements OnInit {
   public items: Array<{ id: string, title: string; author: string; icon: string; color: string; }> = [];
   private migrate_url = 'https://dev-api.routelabo.com/route/1.0.0/migrate';
   //private migrate_url = 'http://localhost:8080/route/1.0.0/migrate';
-  private parse_shorturl_url = 'https://dev-api.routelabo.com/route/1.0.0/parse_shorturl';
+  private parse_shorturl_url = 'https://dev-api.routelabo.com/route/1.0.0/expand_shorturl';
 
   constructor(private http: HttpClient, public navCtrl: NavController) { }
 
@@ -70,10 +70,12 @@ export class MigrationPage implements OnInit {
     let m = this.routeurl.match(/watch\?id=(.*?)$/);
 
     if (!m) {
-      let ret = this.parseShorUrl(this.routeurl);
-      let m = ret.url.match(/watch\?id=(.*?)$/);
-
-      return;
+      let ret = await this.parseShorUrl(this.routeurl);
+      console.dir(ret);
+      m = String(ret).match(/watch\?id=(.*?)$/);
+      if (!m) {
+        return;
+      }
     }
     this.items.push({
       id: m[1],
@@ -121,10 +123,9 @@ export class MigrationPage implements OnInit {
   }
 
   async parseShorUrl(url) {
-    let ret = await this.http.get(this.parse_shorturl_url + '?url=' + url).toPromise().then((res: any) => {
-      return res;
+    return await this.http.get(this.parse_shorturl_url + '?url=' + url).toPromise().then((res: any) => {
+      return res.url;
     });
-    return ret;
   }
 
   pageSelected(item) {
