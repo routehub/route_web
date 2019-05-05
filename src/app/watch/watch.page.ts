@@ -52,6 +52,7 @@ export class WatchPage implements OnInit {
   };
 
   private route_data = {
+    id: '',
     title: '',
     author: '',
     body: '',
@@ -106,12 +107,14 @@ export class WatchPage implements OnInit {
     this.elevation = routemap.elevation;
 
     const id = this.route.snapshot.paramMap.get('id');
+      this.route_data.id = id;
+      
     var that = this;
     this.get(id).then(function (route: any) {
       // タイトル変更
       that.title = route.title;
       that.route_data.title = that.title;
-      that.route_data.author = route.author;
+    route_data.author = route.author;
       that.route_data.body = route.body;
 
       // 線を引く
