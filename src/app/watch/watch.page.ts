@@ -230,7 +230,7 @@ export class WatchPage implements OnInit {
   }
 
   public back() {
-    this.navCtrl.navigateBack("/list");
+    this.navCtrl.back();
   }
 
   async presentRouteExportPage() {
