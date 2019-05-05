@@ -23,6 +23,7 @@ export class ListPage implements OnInit {
   public query = ''; // viewとも共通
   private query_type = '';
   private sort_type = '';
+  private order_type = '';
   private dist_opt = '';
   private elev_opt = '';
 
@@ -86,6 +87,7 @@ export class ListPage implements OnInit {
       this.query = search_opt.data.query;
       this.query_type = search_opt.data.query_type;
       this.sort_type = search_opt.data.sort_type;
+      this.order_type = search_opt.data.order_type;
 
       if (!search_opt.data.isDistDisabled) {
         this.dist_opt = search_opt.data.kmrange.lower + ':' + search_opt.data.kmrange.upper;
@@ -123,8 +125,9 @@ export class ListPage implements OnInit {
   private create_searchquery() {
     return this.search_url
       + '?q=' + this.query
-      + '&query_type=' + this.query_type
+      + '&mode=' + this.query_type
       + '&sort=' + this.sort_type
+      + '&order=' + this.order_type
       + '&dist_opt=' + this.dist_opt
       + '&elev_opt=' + this.elev_opt
       + '&per_page=' + this.per_page + '&page=' + this.page;
