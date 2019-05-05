@@ -2,9 +2,11 @@
 </ion-header>
 
 <ion-content>
+  <!---
   <ion-img width="1080" height="360"
     src="https://gendai.ismedia.jp/mwimgs/6/c/-/img_6cbfa25cd466b50438131eb1a22911e0111248.jpg">
   </ion-img>
+-->
   <ion-grid>
     <ion-row align-items-center>
       <ion-col size-md>
@@ -15,8 +17,11 @@
       <ion-col size-lg>
         <ion-row>
           <ion-label>{{displayName}}</ion-label>
+        </ion-row>
+        <ion-row>
           <span (click)="logout()">ログアウト</span>
         </ion-row>
+        <!--
         <ion-row>
           <ion-label text-wrap>
             {{body}}
@@ -26,6 +31,7 @@
           <ion-icon name="logo-twitter"></ion-icon>
           <ion-icon name="logo-facebook"></ion-icon>
         </ion-row>
+      -->
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -35,9 +41,11 @@
       <ion-segment-button value="post" (click)="showMyRoute()">
         <ion-label>投稿したルート</ion-label>
       </ion-segment-button>
+      <!--
       <ion-segment-button value="like" (click)="showLikeRoute()">
         <ion-label>いいねしたルート</ion-label>
       </ion-segment-button>
+    -->
     </ion-segment>
 
 

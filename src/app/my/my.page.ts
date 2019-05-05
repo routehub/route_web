@@ -3,7 +3,9 @@ import { Storage } from '@ionic/storage';
 import { NavController, Events } from '@ionic/angular';
 import { ɵPLATFORM_WORKER_UI_ID } from '@angular/common';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
 @Component({
   selector: 'app-my',
@@ -16,6 +18,7 @@ export class MyPage implements OnInit {
   photoURL;
   displayName;
   body = "最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない"
+  idToken;
 
   items: Array<{
     id: string,
@@ -38,13 +41,11 @@ export class MyPage implements OnInit {
     var that = this;
     // TODO : なんかココらへん処理をまとめたほうが良さそう, JSONで格納したほうがよさそう
     this.storage.get('user.uid').then((uid) => {
-      // 非ログインの場合は /loginへ遷移
-      if (ɵPLATFORM_WORKER_UI_ID == null) {
+      if (ɵPLATFORM_WORKER_UI_ID == null || uid == '') {
         this.navCtrl.navigateForward('/login');
       }
       that.uid = uid;
     }).catch(e => {
-      // 非ログインの場合は /loginへ遷移
       this.navCtrl.navigateForward('/login');
     });
     this.storage.get('user.displayName').then((displayName) => {
@@ -59,7 +60,8 @@ export class MyPage implements OnInit {
   showMyRoute() {
     this.items = [];
     // TODO : APIのエントリーポイントを変える
-    const url = environment.api.host + environment.api.search_path + '?q=kaz.141&mode=author';
+    const url = environment.api.host + environment.api.my_path;
+
     this.get(url);
   }
 
@@ -78,7 +80,21 @@ export class MyPage implements OnInit {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
   async get(url) {
-    return this.http.get(url).toPromise()
+    if (!this.idToken) {
+      this.idToken = await firebase.auth().currentUser.getIdToken(true);
+      if (!this.idToken || this.idToken === '') {
+        this.navCtrl.navigateForward('/login');
+      }
+    }
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': ' application/x-www-form-urlencoded',
+      })
+    };
+    httpOptions.headers.set('fireabase_auth_token', this.idToken);
+
+    return this.http.get(url, httpOptions).toPromise()
       .then((res: any) => {
         if (!res.results) {
           return;
