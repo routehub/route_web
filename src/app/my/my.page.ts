@@ -87,7 +87,7 @@ export class MyPage implements OnInit {
     }
 
     // あきらめ
-    url += '?firebase_auth_token=' + this.idToken;
+    url += '?firebase_id_token=' + this.idToken;
 
     const httpOptions = {
       headers: new HttpHeaders({
