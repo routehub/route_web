@@ -59,7 +59,6 @@ export class MyPage implements OnInit {
 
   showMyRoute() {
     this.items = [];
-    // TODO : APIのエントリーポイントを変える
     const url = environment.api.host + environment.api.my_path;
 
     this.get(url);
@@ -86,6 +85,9 @@ export class MyPage implements OnInit {
         this.navCtrl.navigateForward('/login');
       }
     }
+
+    // あきらめ
+    url += '?firebase_auth_token=' + this.idToken;
 
     const httpOptions = {
       headers: new HttpHeaders({
