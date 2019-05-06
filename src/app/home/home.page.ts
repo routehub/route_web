@@ -13,7 +13,7 @@ export class HomePage {
   user;
   photoURL;
   nowCheckLogin = false;
-  query: string;
+  query: string = '';
 
   @ViewChild('logoutButton') logoutButton: any;
   @ViewChild('loginButton') loginButton: any;
