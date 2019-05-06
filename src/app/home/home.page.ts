@@ -39,7 +39,7 @@ export class HomePage {
       }
       that.photoURL = photoURL;
       that.logoutButton.el.style.display = 'block';
-      that.logoutButton.el.style.color = '#ffffff00';
+      that.logoutButton.el.style.color = '#ffffff9c';
     }).catch(e => {
       that.loginButton.el.style.display = 'block';
     });
