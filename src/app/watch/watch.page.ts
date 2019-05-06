@@ -114,7 +114,7 @@ export class WatchPage implements OnInit {
       // タイトル変更
       that.title = route.title;
       that.route_data.title = that.title;
-    route_data.author = route.author;
+    that.route_data.author = route.author;
       that.route_data.body = route.body;
 
       // 線を引く
