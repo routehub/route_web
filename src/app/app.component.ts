@@ -21,14 +21,21 @@ export class AppComponent implements OnInit {
       }
     },
     {
-      title: 'ルートを取込',
-      icon: 'add', // 'cloud-download'
+      title: 'ルートラボ取込',
+      icon: 'cloud-download',
       route: () => {
         this.navCtrl.navigateForward(this.isLogin() ? '/migration' : '/login');
       }
     },
     {
-      title: 'ルートを検索',
+      title: 'ルート作成',
+      icon: 'add',
+      route: () => {
+        window.alert('作成中ですぅ')
+      }
+    },
+    {
+      title: '検索',
       icon: 'search',
       route: () => {
         this.navCtrl.navigateForward('/list');
