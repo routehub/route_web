@@ -18,7 +18,7 @@ export class ListPage implements OnInit {
   /**
    * 検索用パラメーター
    */
-  private page = 0;
+  private page = 1;
   private per_page = 4; // デフォルトはモバイル向けの件数
   public query = ''; // viewとも共通
   private query_type = '';
@@ -99,14 +99,14 @@ export class ListPage implements OnInit {
         this.elev_opt = '';
       }
 
-      this.page = 0;
+      this.page = 1;
       this.items = [];
       this.search();
     });
   }
 
   wordChanged() {
-    this.page = 0;
+    this.page = 1;
     this.items = [];
     this.search();
     this.infiniteScroll.disabled = false;
