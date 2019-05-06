@@ -6,7 +6,7 @@
       <ion-col class="titleimage" *ngIf="platform.is('desktop')">
         <h2>UPGRADE ルートラボ</h2>
         <p>
-          ルートラボに足りない機能・作りたいやつを<br>サクサク追加していくアプリです。<br>
+          ルートラボに足りない機能・作りたいやつを<br>サクサク追加していくアプリです<br>
           <span style="color:rgba(255, 255, 255, 0.295)">(おこられない感じで勝手に)</span>
         </p>
 
@@ -38,19 +38,51 @@
 
     </ion-row>
 
-    <ion-row>
-      <ion-col>
-        埋め込み地図1
+    <ion-row style="max-width:900px;margin:auto;">
+      <ion-col *ngIf="platform.is('desktop')">
+        <iframe height='405' width='100%' frameborder='0' allowtransparency='true' scrolling='no'
+          src='https://dev.routelabo.com/embed/a09d69610acfcf763f662406162fc3bf'></iframe>
       </ion-col>
       <ion-col>
-        検索モジュール
-      </ion-col>
-      <ion-col>
-        埋め込み地図2
+
+        <ion-list style="height:400px; overflow-y: scroll;">
+          <ion-item>
+            <ion-label>アップグレード完了/予定</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-checkbox slot="start" checked="true"></ion-checkbox>
+            <ion-label>GPXエクスポート内容コメントを追加</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-checkbox slot="start" checked="true"></ion-checkbox>
+            <ion-label>ルート閲覧で標高の拡大機能を追加</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-checkbox slot="start" checked="false"></ion-checkbox>
+            <ion-label>編集ポイントを引き継いだルートコピー機能</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-checkbox slot="start" checked="false"></ion-checkbox>
+            <ion-label>スマホでルート作成</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-checkbox slot="start" checked="false"></ion-checkbox>
+            <ion-label>ルート以外の近くのお店等の情報も追加可能に</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-checkbox slot="start" checked="false"></ion-checkbox>
+            <ion-label>時刻表/キューシート機能</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>随時追加します（<a target="_blank"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSfJvjsA_bOCGHkHMTTze11Jwy-_AF1RbV88YKpQNK85jxtUwA/viewform">要望があればこちらにどうぞ</a>）
+            </ion-label>
+          </ion-item>
+        </ion-list>
       </ion-col>
     </ion-row>
 
-    <ion-row>
+    <ion-row style="max-width:900px;margin:auto;">
       <ion-col>
         <p>
           ポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエムポエム
@@ -58,7 +90,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row>
+    <ion-row style="max-width:900px;margin:auto;">
       <ion-col>
         使い方ガイド
       </ion-col>
@@ -73,11 +105,9 @@
     </ion-row>
   </ion-grid>
 
-</ion-content>
 
-<ion-footer *ngIf="platform.is('desktop')">
-  <ion-toolbar>
+  <footer *ngIf="platform.is('desktop')">
     <ion-title>Footer</ion-title>
     copyrightだかなんだか
-  </ion-toolbar>
-</ion-footer>
+  </footer>
+</ion-content>
