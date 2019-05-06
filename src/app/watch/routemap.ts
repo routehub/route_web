@@ -84,6 +84,9 @@ export class Routemap {
         let map = L.map(mapele, { center: center, zoom: 9, zoomControl: false });
         this.getYahooLayer().addTo(map);
 
+        //スケールコントロールを追加（オプションはフィート単位を非表示）
+        // TODO画面の設計を考えてじゃまにならないように配置したい
+        //L.control.scale({ imperial: false }).addTo(map);
 
         // elevation
         let elevation = L.control.elevation({
