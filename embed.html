@@ -3,8 +3,8 @@
   xmlns='http://www.w3.org/TR/html5'>
 
 <head>
-  <title>ルートラボ
-  </title>
+  <title>ルートラボ</title>
+  <meta charset="utf-8">
   <meta content='noindex' name='robots'>
   <meta content='yes' name='apple-mobile-web-app-capable'>
   <meta content='black' name='apple-mobile-web-app-status-bar-style'>
@@ -200,117 +200,119 @@
 
 </body>
 <script>
-
-
-  var map = L.map('map', { zoomControl: false }).setView([36.575, 135.984], 5);
+  // mapはglobalにする
+  map = L.map('map', { zoomControl: false });
   var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
     maxZoom: 19
   });
   tileLayer.addTo(map);
+  map.on('load', function () {
+    var params = (new URL(document.location)).searchParams;
+    var id = params.get('id');
+    $.get('https://dev-api.routelabo.com/route/1.0.0/route?id=' + id, {})
+      .done(function (data) {
+        setRouteMap(data);
+      });
+  });
+  map.setView([36.575, 135.984], 5);
 
-  var params = (new URL(document.location)).searchParams;
-  var id = params.get('id');
-  $.get('https://dev-api.routelabo.com/route/1.0.0/route?id=' + id, {})
-    .done(function (d) {
-      $('#title>a').text(d.results.title || '');
-      $('#title>a').attr('href', 'https://dev.routelabo.com/watch/' + d.results.id);
-      $('#author').text(d.results.author || '');
-      $('#created_at').text(d.results.created_at || '');
-      $('#dist').text(d.results.dist || '0.0km');
-      $('#elevation').text(d.results.elevation || '0.0m');
+  function setRouteMap(d) {
+    $('#title>a').text(d.results.title || '');
+    $('#title>a').attr('href', 'https://dev.routelabo.com/watch/' + d.results.id);
+    $('#author').text(d.results.author || '');
+    $('#created_at').text(d.results.created_at || '');
+    $('#dist').text(d.results.dist || '0.0km');
+    $('#elevation').text(d.results.elevation || '0.0m');
 
-      // 線を引く
-      var pos = d.results.pos.split(',').map(p => { return p.split(' ') });
-      // 標高も足しておく
-      var level = d.results.level.split(',');
-      for (var i = 0; i < level.length; i++) {
-        pos[i].push(level[i] * 1);
+    // 線を引く
+    var pos = d.results.pos.split(',').map(p => { return p.split(' ') });
+    // 標高も足しておく
+    var level = d.results.level.split(',');
+    for (var i = 0; i < level.length; i++) {
+      pos[i].push(level[i] * 1);
+    }
+    var route_geojson = {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "LineString",
+            "coordinates": pos,
+          }
+        },
+      ],
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#0000ff",
+        "line-width": 6,
+        "line-opacity": 0.7,
       }
-      var route_geojson = {
-        "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-              "type": "LineString",
-              "coordinates": pos,
-            }
-          },
-        ],
-        "layout": {
-          "line-join": "round",
-          "line-cap": "round"
-        },
-        "paint": {
-          "line-color": "#0000ff",
-          "line-width": 6,
-          "line-opacity": 0.7,
-        }
-      };
-      // elevation
-      var elevation = L.control.elevation({
-        position: 'bottomright',
-        theme: 'steelblue-theme',
-        // TODO : ウィンドウサイズ変更イベントに対応する
-        width: window.innerWidth - 10,
-        height: 80,
-        margins: {
-          top: 0,
-          right: 5,
-          bottom: 0,
-          left: 0,
-        },
-        useHeightIndicator: true,
-        isInnerLabel: true,
-        tooltips: false,
-        tooltipsLabel: {
-          dist: '距離',
-          elevation: '標高',
-          slope: '斜度',
-          distDiff: '距離差',
-          elevationDiff: '標高差',
-          slopeAverage: '平均斜度',
-        },
-        addSlope: true,
-      }).addTo(map);
-      L.geoJSON(route_geojson, {
-        "color": "#0000ff",
-        "width": 6,
-        "opacity": 0.7,
-        onEachFeature: elevation.addData.bind(elevation)
-      }).addTo(map);
+    };
+    // elevation
+    var elevation = L.control.elevation({
+      position: 'bottomright',
+      theme: 'steelblue-theme',
+      // TODO : ウィンドウサイズ変更イベントに対応する
+      width: window.innerWidth - 10,
+      height: 80,
+      margins: {
+        top: 0,
+        right: 5,
+        bottom: 0,
+        left: 0,
+      },
+      useHeightIndicator: true,
+      isInnerLabel: true,
+      tooltips: false,
+      tooltipsLabel: {
+        dist: '距離',
+        elevation: '標高',
+        slope: '斜度',
+        distDiff: '距離差',
+        elevationDiff: '標高差',
+        slopeAverage: '平均斜度',
+      },
+      addSlope: true,
+    }).addTo(map);
+    L.geoJSON(route_geojson, {
+      "color": "#0000ff",
+      "width": 6,
+      "opacity": 0.7,
+      onEachFeature: elevation.addData.bind(elevation)
+    }).addTo(map);
 
 
-      var startIcon = new L.icon({
-        iconUrl: 'https://dev.routelabo.com/assets/icon/start_icon.png',
-        iconSize: [50, 27], // size of the icon
-        iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
-        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
-      });
-      var goalIcon = new L.icon({
-        iconUrl: 'https://dev.routelabo.com/assets/icon/goal_icon.png',
-        iconSize: [50, 27], // size of the icon
-        iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
-        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
-      });
-      let start = L.marker([pos[0][1], pos[0][0]], { icon: startIcon }).addTo(map);
-      let goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: goalIcon }).addTo(map);
-
-      // 描画範囲をよろしくする
-      let line = turf.lineString(pos);
-      let bbox = turf.bbox(line); // lonlat問題...
-      const latplus = Math.abs(bbox[1] - bbox[3]) * 0.1;
-      const lonplus = Math.abs(bbox[0] - bbox[2]) * 0.1;
-      map.fitBounds([ // いい感じの範囲にするために調整
-        [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
-        [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
-      ]);
-
-
-
+    var startIcon = new L.icon({
+      iconUrl: 'https://dev.routelabo.com/assets/icon/start_icon.png',
+      iconSize: [50, 27], // size of the icon
+      iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
+      popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
     });
+    var goalIcon = new L.icon({
+      iconUrl: 'https://dev.routelabo.com/assets/icon/goal_icon.png',
+      iconSize: [50, 27], // size of the icon
+      iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
+      popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
+    });
+    let start = L.marker([pos[0][1], pos[0][0]], { icon: startIcon }).addTo(map);
+    let goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: goalIcon }).addTo(map);
+
+    // 描画範囲をよろしくする
+    let line = turf.lineString(pos);
+    let bbox = turf.bbox(line); // lonlat問題...
+    const latplus = Math.abs(bbox[1] - bbox[3]) * 0.1;
+    const lonplus = Math.abs(bbox[0] - bbox[2]) * 0.1;
+    map.fitBounds([ // いい感じの範囲にするために調整
+      [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
+      [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
+    ]);
+  }
 
 </script>
 
