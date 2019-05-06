@@ -129,7 +129,7 @@ export class WatchPage implements OnInit {
       }
 
       that.route_geojson.features[0].geometry.coordinates = pos;
-      L.geoJSON(that.route_geojson, {
+      L.geoJson(that.route_geojson, {
         "color": "#0000ff",
         "width": 6,
         "opacity": 0.7,
