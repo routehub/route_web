@@ -118,12 +118,13 @@
 
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"> </script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css">
 <link rel="stylesheet" href="https://dev.routelabo.com/assets/leaflet.elevation-0.0.4.css">
-<script src="https://dev.routelabo.com/assets/leaflet.elevation-0.0.4.min.js"> </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.min.js"> </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js" charset="utf-8"></script>
+<script src="https://dev.routelabo.com/assets/leaflet.elevation-0.0.4.min.js"> </script>
+
 <style>
   .steelblue-theme.leaflet-control.elevation .background {
     border-radius: 5px;
@@ -293,7 +294,7 @@
       },
       addSlope: true,
     }).addTo(map);
-    L.geoJSON(route_geojson, {
+    L.geoJson(route_geojson, {
       "color": "#0000ff",
       "width": 6,
       "opacity": 0.7,
