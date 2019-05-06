@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang='ja' xmlns:fb='http://www.facebook.com/2008/fbml' xmlns:og='http://opengraphprotocol.org/schema/'
+  xmlns='http://www.w3.org/TR/html5'>
+
+<head>
+  <title>ルートラボ
+  </title>
+  <meta content='noindex' name='robots'>
+  <meta content='yes' name='apple-mobile-web-app-capable'>
+  <meta content='black' name='apple-mobile-web-app-status-bar-style'>
+  <meta content='width = device-width, initial-scale = 1, maximum-scale = 1, user-scalable = yes' name='viewport'>
+  <script type='application/ld+json'>
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "ルートラボ",
+  "url": "https://routelabo.com/",
+  "logo": ","
+  "sameAs": [
+    "https://twitter.com/routelabo",
+    "https://blog.routelabo.com"
+  ]
+}
+</script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"> </script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css">
+  <link rel="stylesheet" href="https://dev.routelabo.com/assets/leaflet.elevation-0.0.4.css">
+  <script src="https://dev.routelabo.com/assets/leaflet.elevation-0.0.4.min.js"> </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.min.js"> </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js" charset="utf-8"></script>
+
+
+  <style>
+    html,
+    body,
+    .wrapper {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      color: white;
+      font-size: 13px;
+    }
+
+    header {
+      width: 100%;
+    }
+
+    header {
+      height: 65px;
+      background-color: #ff346a;
+    }
+
+    h1 {
+      margin: 0;
+      margin: 10px 0 0 20px;
+      float: left;
+    }
+
+    h1>a>img {
+      height: 30px;
+    }
+
+    ul {
+      display: inline-flex;
+      list-style: none;
+      margin: 5px;
+    }
+
+    a,
+    a:visited {
+      color: white;
+      text-decoration: none;
+    }
+
+    .map {
+      width: 100%;
+      height: 300px;
+      background-color: #99ddff
+    }
+
+    #title {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+
+
+
+
+    .steelblue-theme.leaflet-control.elevation .background {
+      border-radius: 5px;
+      background: none;
+    }
+
+    .steelblue-theme.leaflet-control.elevation .axis line,
+    .steelblue-theme.leaflet-control.elevation .axis path {
+      fill: none;
+      stroke: #0d1821;
+      stroke-width: 2
+    }
+
+    .steelblue-theme.leaflet-control.elevation .mouse-drag {
+      fill: #ff1c1c4a;
+    }
+
+    .steelblue-theme.leaflet-control.elevation .elevation-toggle {
+      cursor: pointer;
+      box-shadow: 0 1px 7px rgba(0, 0, 0, .4);
+      -webkit-border-radius: 5px;
+      border-radius: 5px;
+      width: 36px;
+      height: 36px;
+      background-color: #f8f8f9
+    }
+
+    .steelblue-theme.leaflet-control.elevation .elevation-toggle-icon {
+      background: url(images/elevation-steelblue.png) no-repeat center center
+    }
+
+    .steelblue-theme.leaflet-control.elevation .area {
+      fill: #0100ff96;
+    }
+
+    .steelblue-theme.leaflet-control.elevation .mouse-focus-line {
+      pointer-events: none;
+      stroke-width: 1;
+      stroke: #0d1821
+    }
+
+    .steelblue-theme.leaflet-control.elevation-collapsed .background {
+      display: none
+    }
+
+    .steelblue-theme.leaflet-control.elevation-collapsed .elevation-toggle {
+      display: block
+    }
+
+    .steelblue-theme.height-focus {
+      stroke: #4682b4;
+      fill: #0100ff96;
+
+    }
+
+    .steelblue-theme.height-focus.line {
+      pointer-events: none;
+      stroke-width: 2
+    }
+
+
+    .steelblue-theme .leaflet-control.elevation .background {
+      background: linear-gradient(to bottom, #ffffff00, #ffffff9e);
+    }
+
+    .steelblue-theme .leaflet-overlay-pane .height-focus {
+      stroke: #0000ff;
+      fill: #0000ff;
+    }
+
+    /*
+    .elevation.leaflet-control {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+*/
+    .leaflet-bottom .leaflet-control {
+      margin-bottom: -10px;
+    }
+
+    .leaflet-right .leaflet-control {
+      margin-right: 0;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header>
+      <h1><a href="https://dev.routelabo.com/"><img src="https://dev.routelabo.com/assets/logo-white.png"
+            alt="routelabo"></a></h1>
+      <ul>
+        <li id="title"><a target="_blank" href=""></a></li>
+        <li id="created_at"></li>
+      </ul>
+
+      <ul>
+        <li id="author"></li>
+        <li id="dist"></li>
+        <li id="elevation"></li>
+      </ul>
+    </header>
+    <div class="map" id="map">
+    </div>
+  </div>
+
+
+
+</body>
+<script>
+
+
+  var map = L.map('map', { zoomControl: false }).setView([36.575, 135.984], 5);
+  var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    maxZoom: 19
+  });
+  tileLayer.addTo(map);
+
+  var params = (new URL(document.location)).searchParams;
+  var id = params.get('id');
+  $.get('https://dev-api.routelabo.com/route/1.0.0/route?id=' + id, {})
+    .done(function (d) {
+      $('#title>a').text(d.results.title || '');
+      $('#title>a').attr('href', 'https://dev.routelabo.com/watch/' + d.results.id);
+      $('#author').text(d.results.author || '');
+      $('#created_at').text(d.results.created_at || '');
+      $('#dist').text(d.results.dist || '0.0km');
+      $('#elevation').text(d.results.elevation || '0.0m');
+
+      // 線を引く
+      var pos = d.results.pos.split(',').map(p => { return p.split(' ') });
+      // 標高も足しておく
+      var level = d.results.level.split(',');
+      for (var i = 0; i < level.length; i++) {
+        pos[i].push(level[i] * 1);
+      }
+      var route_geojson = {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "LineString",
+              "coordinates": pos,
+            }
+          },
+        ],
+        "layout": {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        "paint": {
+          "line-color": "#0000ff",
+          "line-width": 6,
+          "line-opacity": 0.7,
+        }
+      };
+      // elevation
+      var elevation = L.control.elevation({
+        position: 'bottomright',
+        theme: 'steelblue-theme',
+        // TODO : ウィンドウサイズ変更イベントに対応する
+        width: window.innerWidth - 10,
+        height: 80,
+        margins: {
+          top: 0,
+          right: 5,
+          bottom: 0,
+          left: 0,
+        },
+        useHeightIndicator: true,
+        isInnerLabel: true,
+        tooltips: false,
+        tooltipsLabel: {
+          dist: '距離',
+          elevation: '標高',
+          slope: '斜度',
+          distDiff: '距離差',
+          elevationDiff: '標高差',
+          slopeAverage: '平均斜度',
+        },
+        addSlope: true,
+      }).addTo(map);
+      L.geoJSON(route_geojson, {
+        "color": "#0000ff",
+        "width": 6,
+        "opacity": 0.7,
+        onEachFeature: elevation.addData.bind(elevation)
+      }).addTo(map);
+
+
+      var startIcon = new L.icon({
+        iconUrl: 'https://dev.routelabo.com/assets/icon/start_icon.png',
+        iconSize: [50, 27], // size of the icon
+        iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
+      });
+      var goalIcon = new L.icon({
+        iconUrl: 'https://dev.routelabo.com/assets/icon/goal_icon.png',
+        iconSize: [50, 27], // size of the icon
+        iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
+      });
+      let start = L.marker([pos[0][1], pos[0][0]], { icon: startIcon }).addTo(map);
+      let goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: goalIcon }).addTo(map);
+
+      // 描画範囲をよろしくする
+      let line = turf.lineString(pos);
+      let bbox = turf.bbox(line); // lonlat問題...
+      const latplus = Math.abs(bbox[1] - bbox[3]) * 0.1;
+      const lonplus = Math.abs(bbox[0] - bbox[2]) * 0.1;
+      map.fitBounds([ // いい感じの範囲にするために調整
+        [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
+        [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
+      ]);
+
+
+
+    });
+
+</script>
+
+</html>

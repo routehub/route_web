@@ -7,12 +7,13 @@ enum SearchQueryType {
   author = 'author',
 }
 enum SearchSortType {
-  dist_asc = 'dist_asc',
-  dist_desc = 'dist_desc',
-  elevation_asc = 'elevation_asc',
-  elevation_desc = 'elevation_desc',
-  created_at_asc = 'created_at_asc',
-  created_at_desc = 'created_at_desc',
+  dist = 'dist',
+  elevation = 'elevation',
+  created_at = 'created_at',
+}
+enum SearchSortOrder {
+  asc = 'asc',
+  desc = 'desc',
 }
 @Component({
   selector: 'app-search-setting',
@@ -36,7 +37,8 @@ export class SearchSettingComponent implements OnInit {
   query: string;
 
   query_type: SearchQueryType = SearchQueryType.keyword;
-  sort_type: SearchSortType = SearchSortType.created_at_desc;
+  sort_type: SearchSortType = SearchSortType.created_at;
+  order_type: SearchSortOrder = SearchSortOrder.desc;
 
   constructor(
     private popoverCtrl: PopoverController,
@@ -70,6 +72,7 @@ export class SearchSettingComponent implements OnInit {
       query: this.query,
       query_type: this.query_type,
       sort_type: this.sort_type,
+      order_type: this.order_type,
       kmrange: this.kmrange,
       elevrange: this.elevrange,
       isDistDisabled: this.isDistDisabled === 'true' ? true : false,
@@ -87,9 +90,11 @@ export class SearchSettingComponent implements OnInit {
 
   changeSortType(event) {
     if (!event.detail.value) {
-      this.sort_type = SearchSortType.created_at_desc;
+      this.sort_type = SearchSortType.created_at;
+      this.order_type = SearchSortOrder.desc;
     } else {
-      this.sort_type = event.detail.value;
+      this.sort_type = event.detail.value.split('/')[0];
+      this.order_type = event.detail.value.split('/')[1];
     }
   }
 }
