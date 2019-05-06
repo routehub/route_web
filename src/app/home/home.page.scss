@@ -1,21 +1,22 @@
 .titleimage {
-  background: url("https://lh3.googleusercontent.com/PJmcWEtpggJij44T-fOOM8dqv08AX6XnQpGxVXmmVkk304Pgp9DFxMuuFnioPQBiJkzNlQRxuYQfA0iElmUgxnyOR0WmB_AFtlx__EEr9ep35u35cW61LBGkiYBWqxNWokGqyFuaobgzDKh_JjdV2Pjjja82sQnt1rkmxmKqTNvPJKBexTrb05TEcjArq1YM2HcWx2C6lbFfnQLIOiwffN-8kAQcbGeeHmjqB3oEGgjP1UZeDyw52CTTkzkIGOAl7CfdgEhQySvzk_mLKaIeduTBQnCiqs8eJ7O-WxaqSZFi0HXKfNODn2bFTYSv5jdAd3jDF8CQvYLL5CTtUGlty_YmKROYMnEhSXmlAzRtBq-kXORRMQ8xxjKd75ZhN19S4FYF0hL7GinNFuKnG48xqWWVbptqscweMCzjHzwY4AXn5AoiSnt2FrN13Eqh2jOn6YN8s-NrEYhOq-j3AH3RdJUT9w25X0o952lzjlT5_lOE6PrmjiX8M-ZRbPbl9EBgQkDeANhn-VaoXoWH_hjWAdgSOlIyEfGTeILtgCgebzjWNvWsaXMquVrN5MZYWU-HxfEqOAWZdnzHZ5F9AYgoH15YFcJKsirb90L2_Fk1uHapH3PQGQrYxAIGeJI2KfPzSt7-XCBAqKtYDX-U0CW2WSmYMTUqoPPK=w2526-h1894-no") no-repeat;
+  background: url("/assets/usui.jpg") no-repeat;
   background-size: cover;
   background-position: center center;
   color: white;
   margin:0;
   text-align: center;
-  height:500px;
+  height:400px;
   overflow: hidden;
 }
+
 .titleimage > h2 {
-  margin-top : 100px;
-  font-size: 130px;
+  margin-top : 40px;
+  font-size: 50px;
   font-weight: 900;
 }
 .titleimage-mobile > h2 {
-  margin-top : calc(65% - 75px);
-  font-size: 70px;
+  margin-top : 10px;
+  font-size: 50px;
   font-weight: 900;
 }
 .titleimage-mobile > h1 {
