@@ -49,8 +49,6 @@ export class ListPage implements OnInit {
   }
 
   ngOnInit() {
-    // ウィンドウサイズによって、取得する量を変える（早くしたい&API叩きすぎたくない
-    console.dir(window.innerWidth)
     if (window.innerWidth > 600) {
       this.per_page = 10;
     }
@@ -111,6 +109,7 @@ export class ListPage implements OnInit {
     this.page = 0;
     this.items = [];
     this.search();
+    this.infiniteScroll.disabled = false;
   }
 
   doInfinite(event) {
@@ -138,6 +137,10 @@ export class ListPage implements OnInit {
       .then((res: any) => {
         if (!res.results) {
           return;
+        }
+
+        if (res.results.length === 0) {
+          this.infiniteScroll.disabled = true;
         }
         for (let i = 0; i < res.results.length; i++) {
           let r = res.results[i];
