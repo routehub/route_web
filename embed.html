@@ -22,15 +22,6 @@
   ]
 }
 </script>
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"> </script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css">
-  <link rel="stylesheet" href="https://dev.routelabo.com/assets/leaflet.elevation-0.0.4.css">
-  <script src="https://dev.routelabo.com/assets/leaflet.elevation-0.0.4.min.js"> </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.min.js"> </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js" charset="utf-8"></script>
-
-
   <style>
     html,
     body,
@@ -76,7 +67,7 @@
 
     .map {
       width: 100%;
-      height: 300px;
+      height: 100%;
       background-color: #99ddff
     }
 
@@ -85,98 +76,24 @@
       font-size: 1.2em;
     }
 
-
-
-
-
-    .steelblue-theme.leaflet-control.elevation .background {
-      border-radius: 5px;
-      background: none;
-    }
-
-    .steelblue-theme.leaflet-control.elevation .axis line,
-    .steelblue-theme.leaflet-control.elevation .axis path {
-      fill: none;
-      stroke: #0d1821;
-      stroke-width: 2
-    }
-
-    .steelblue-theme.leaflet-control.elevation .mouse-drag {
-      fill: #ff1c1c4a;
-    }
-
-    .steelblue-theme.leaflet-control.elevation .elevation-toggle {
-      cursor: pointer;
-      box-shadow: 0 1px 7px rgba(0, 0, 0, .4);
-      -webkit-border-radius: 5px;
-      border-radius: 5px;
-      width: 36px;
-      height: 36px;
-      background-color: #f8f8f9
-    }
-
-    .steelblue-theme.leaflet-control.elevation .elevation-toggle-icon {
-      background: url(images/elevation-steelblue.png) no-repeat center center
-    }
-
-    .steelblue-theme.leaflet-control.elevation .area {
-      fill: #0100ff96;
-    }
-
-    .steelblue-theme.leaflet-control.elevation .mouse-focus-line {
-      pointer-events: none;
-      stroke-width: 1;
-      stroke: #0d1821
-    }
-
-    .steelblue-theme.leaflet-control.elevation-collapsed .background {
-      display: none
-    }
-
-    .steelblue-theme.leaflet-control.elevation-collapsed .elevation-toggle {
-      display: block
-    }
-
-    .steelblue-theme.height-focus {
-      stroke: #4682b4;
-      fill: #0100ff96;
-
-    }
-
-    .steelblue-theme.height-focus.line {
-      pointer-events: none;
-      stroke-width: 2
-    }
-
-
-    .steelblue-theme .leaflet-control.elevation .background {
-      background: linear-gradient(to bottom, #ffffff00, #ffffff9e);
-    }
-
-    .steelblue-theme .leaflet-overlay-pane .height-focus {
-      stroke: #0000ff;
-      fill: #0000ff;
-    }
-
-    /*
-    .elevation.leaflet-control {
+    .loading {
       position: absolute;
-      bottom: 0;
-      right: 0;
-    }
-*/
-    .leaflet-bottom .leaflet-control {
-      margin-bottom: -10px;
-    }
-
-    .leaflet-right .leaflet-control {
-      margin-right: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: #ff346a url("https://dev.routelabo.com/assets/logo-white.png") no-repeat center;
+      background-size: contain;
+      z-index: 99999;
+      transition: 0.5s ease-out;
     }
   </style>
 
 </head>
 
 <body>
+  <div class="loading">
+
+  </div>
   <div class="wrapper">
     <header>
       <h1><a target="_blank" href="https://dev.routelabo.com/"><img
@@ -199,6 +116,98 @@
 
 
 </body>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"> </script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css">
+<link rel="stylesheet" href="https://dev.routelabo.com/assets/leaflet.elevation-0.0.4.css">
+<script src="https://dev.routelabo.com/assets/leaflet.elevation-0.0.4.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js" charset="utf-8"></script>
+<style>
+  .steelblue-theme.leaflet-control.elevation .background {
+    border-radius: 5px;
+    background: none;
+  }
+
+  .steelblue-theme.leaflet-control.elevation .axis line,
+  .steelblue-theme.leaflet-control.elevation .axis path {
+    fill: none;
+    stroke: #0d1821;
+    stroke-width: 2
+  }
+
+  .steelblue-theme.leaflet-control.elevation .mouse-drag {
+    fill: #ff1c1c4a;
+  }
+
+  .steelblue-theme.leaflet-control.elevation .elevation-toggle {
+    cursor: pointer;
+    box-shadow: 0 1px 7px rgba(0, 0, 0, .4);
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    width: 36px;
+    height: 36px;
+    background-color: #f8f8f9
+  }
+
+  .steelblue-theme.leaflet-control.elevation .elevation-toggle-icon {
+    background: url(images/elevation-steelblue.png) no-repeat center center
+  }
+
+  .steelblue-theme.leaflet-control.elevation .area {
+    fill: #0100ff96;
+  }
+
+  .steelblue-theme.leaflet-control.elevation .mouse-focus-line {
+    pointer-events: none;
+    stroke-width: 1;
+    stroke: #0d1821
+  }
+
+  .steelblue-theme.leaflet-control.elevation-collapsed .background {
+    display: none
+  }
+
+  .steelblue-theme.leaflet-control.elevation-collapsed .elevation-toggle {
+    display: block
+  }
+
+  .steelblue-theme.height-focus {
+    stroke: #4682b4;
+    fill: #0100ff96;
+
+  }
+
+  .steelblue-theme.height-focus.line {
+    pointer-events: none;
+    stroke-width: 2
+  }
+
+
+  .steelblue-theme .leaflet-control.elevation .background {
+    background: linear-gradient(to bottom, #ffffff00, #ffffff9e);
+  }
+
+  .steelblue-theme .leaflet-overlay-pane .height-focus {
+    stroke: #0000ff;
+    fill: #0000ff;
+  }
+
+  /*
+    .elevation.leaflet-control {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+*/
+  .leaflet-bottom .leaflet-control {
+    margin-bottom: -10px;
+  }
+
+  .leaflet-right .leaflet-control {
+    margin-right: 0;
+  }
+</style>
 <script>
   // mapはglobalにする
   map = L.map('map', { zoomControl: false });
@@ -208,6 +217,8 @@
   });
   tileLayer.addTo(map);
   map.on('load', function () {
+    $('.loading').css('top', '-' + window.innerHeight + 'px');
+
     var params = (new URL(document.location)).searchParams;
     var id = params.get('id');
     $.get('https://dev-api.routelabo.com/route/1.0.0/route?id=' + id, {})
@@ -255,12 +266,13 @@
       }
     };
     // elevation
+    var elevHeight = window.innerHeight <= 500 ? 80 : 150;
     var elevation = L.control.elevation({
       position: 'bottomright',
       theme: 'steelblue-theme',
       // TODO : ウィンドウサイズ変更イベントに対応する
       width: window.innerWidth - 10,
-      height: 80,
+      height: elevHeight,
       margins: {
         top: 0,
         right: 5,
