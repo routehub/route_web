@@ -106,26 +106,38 @@
       </ion-col>
     </ion-row>
 
+    <ion-row style="max-width:500px;margin:auto;    margin-bottom: 50px;">
+      <ion-list style="width:100%">
+        <ion-item>
+          <ion-label>お知らせ</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>βリリースの準備中です。 2019/5/5</ion-label>
+        </ion-item>
+      </ion-list>
+
+    </ion-row>
+
     <ion-row style="max-width:900px;margin:auto;">
       <ion-col>
-        使い方ガイド
+        使い方ガイド<br>
         <img src="http://placehold.jp/24/cc9999/993333/150x100.png">
       </ion-col>
       <ion-col>
-        Team
-        ブログリンク
+        ブログリンク<br>
+        寄付リンク<br>
         <img src="http://placehold.jp/24/cc9999/993333/150x100.png">
       </ion-col>
       <ion-col>
-        寄付リンク
+        公式Twitter<br>
         <img src="http://placehold.jp/24/cc9999/993333/150x100.png">
       </ion-col>
     </ion-row>
   </ion-grid>
 
 
-  <footer *ngIf="platform.is('desktop')" style="max-width:900px;margin:auto;">
-    <ion-title>Footer</ion-title>
-    copyrightだかなんだか
+
+  <footer *ngIf="platform.is('desktop')">
+    routelabo.com © 2019 / プライバシーポリシー / 利用規約 / お問い合わせ
   </footer>
 </ion-content>
