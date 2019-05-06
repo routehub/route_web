@@ -14,8 +14,9 @@
       </ion-tab-button>
 
       <ion-tab-button layout="icon-end">
-        <ion-button *ngIf="user" class="login-button" expand="block" fill="outline" routerLink="/my"> Hello!
-          {{ user.displayName }}</ion-button>
+        <ion-avatar *ngIf="user" routerLink="/my" style="width:40px;height:40px;background-color:white;">
+          <img src="{{ user.photoURL }}">
+        </ion-avatar>
         <ion-button *ngIf="!user" class="login-button" expand="block" fill="outline" (click)="toLoginPage()"> ログイン・登録
         </ion-button>
 
