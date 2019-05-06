@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { Platform, Events } from '@ionic/angular';
+import { Platform, Events, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 
 @Component({
@@ -13,6 +13,8 @@ export class HomePage {
   user;
   photoURL;
   nowCheckLogin = false;
+  query: string;
+
   @ViewChild('logoutButton') logoutButton: any;
   @ViewChild('loginButton') loginButton: any;
 
@@ -20,6 +22,7 @@ export class HomePage {
     public platform: Platform,
     public events: Events,
     private storage: Storage,
+    public navCtrl: NavController,
   ) {
 
   }
@@ -40,6 +43,10 @@ export class HomePage {
     }).catch(e => {
       that.loginButton.el.style.display = 'block';
     });
+  }
+
+  search() {
+    this.navCtrl.navigateForward('/list?q=' + this.query);
   }
 
   logout() {
