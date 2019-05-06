@@ -14,6 +14,7 @@ export class HomePage {
   photoURL;
   nowCheckLogin = false;
   query: string = '';
+  list_style_class = 'funclist';
 
   @ViewChild('logoutButton') logoutButton: any;
   @ViewChild('loginButton') loginButton: any;
@@ -25,6 +26,12 @@ export class HomePage {
     public navCtrl: NavController,
   ) {
 
+  }
+
+  ngOnInit() {
+    if (this.platform.is('mobile')) {
+      this.list_style_class = '';
+    }
   }
 
   ionViewDidEnter() {
