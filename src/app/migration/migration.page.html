@@ -1,35 +1,30 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>ルートの取り込み</ion-title>
-  </ion-toolbar>
-</ion-header>
 <ion-content>
-  <ion-progress-bar color="primary" value="0.5"></ion-progress-bar>
 
-  <p class="migrate-discription">
+  <p class="migrate-discription" style="max-width:900px; margin:auto; margin-top:20px;margin-bottom:20px;">
     本サービスにデータを取り込むことにより、<br>
-    キューシートの表示やオフラインでの利用ができます。<br>
+    <!--    キューシートの表示やオフラインでの利用ができます。<br>-->
     URLが削除されているルート以外は取り込むことができます。
   </p>
 
 
-  <ion-item class="migrate-url-form">
+  <ion-item class="migrate-url-form" style="max-width:900px; margin:auto;">
     <ion-label position="stacked">取り込みたいルートラボのURLを入力</ion-label>
-    <ion-input type="url" placeholder="https://latlonglab.yahoo.co.jp/route/watch?id=xxxxxxx" [(ngModel)]="routeurl"></ion-input>
+    <ion-input type="url" placeholder="https://latlonglab.yahoo.co.jp/route/watch?id=xxxxxxx" [(ngModel)]="routeurl">
+    </ion-input>
     <ion-buttons slot="end">
       <ion-button color="primary" size="large" fill="solid" (click)="importUrl()">取込</ion-button>
     </ion-buttons>
   </ion-item>
 
 
-  <ion-item class="migrate-page-form">
+  <ion-item class="migrate-page-form" style="max-width:900px; margin:auto;">
     <ion-label position="stacked">マイページを貼り付けですべて取り込み</ion-label>
     <ion-item>
       <ion-textarea cols="120" rows="20" id="importarea" #importarea (paste)="onPaste($event)"></ion-textarea>
     </ion-item>
   </ion-item>
 
-  <ion-list>
+  <ion-list style="max-width:900px; margin:auto;">
     <ion-item *ngFor="let item of items">
       <!--<ion-spinner name="crescent" slot="start"></ion-spinner>-->
       <ion-icon name="checkmark-circle" [color]="item.color"></ion-icon>
