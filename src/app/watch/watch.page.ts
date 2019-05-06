@@ -107,14 +107,14 @@ export class WatchPage implements OnInit {
     this.elevation = routemap.elevation;
 
     const id = this.route.snapshot.paramMap.get('id');
-      this.route_data.id = id;
-      
+    this.route_data.id = id;
+
     var that = this;
     this.get(id).then(function (route: any) {
       // タイトル変更
       that.title = route.title;
       that.route_data.title = that.title;
-    that.route_data.author = route.author;
+      that.route_data.author = route.author;
       that.route_data.body = route.body;
 
       // 線を引く
@@ -153,6 +153,7 @@ export class WatchPage implements OnInit {
           }
         }
       }
+      // TODO データがバグってるので後で直す
       let note = JSON.parse(route.note);
       if (note && note.length > 0) {
         for (let i = 0; i < note.length; i++) {
