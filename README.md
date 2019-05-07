@@ -9,7 +9,7 @@ for develop
 
 ```
 $ npm install -g ionic
-$ git clone git clone git@bitbucket.org:routelab/route_web.git
+$ git clone git@bitbucket.org:routelab/route_web.git
 $ cd route_web
 $ npm install
 $ ionic serve
