@@ -10,10 +10,11 @@ export const environment = {
     messagingSenderId: '1000468098052'
   },
 
-    api: {
+  api: {
     'host': 'https://dev-api.routelabo.com/route/1.0.0',
     'search_path': '/search',
     'my_path': '/my',
+    'like_path': '/like',
     'staticmap_url': 'https://map.yahooapis.jp/map/V1/static',
     'thumbappid': "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-",
 
