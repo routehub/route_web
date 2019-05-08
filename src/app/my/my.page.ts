@@ -66,8 +66,7 @@ export class MyPage implements OnInit {
 
   showLikeRoute() {
     this.items = [];
-    // TODO : APIのエントリーポイントを変える
-    const url = environment.api.host + environment.api.search_path + '?q=北海道';
+    const url = environment.api.host + environment.api.like_path;
     this.get(url);
   }
 

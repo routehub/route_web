@@ -1,7 +1,7 @@
 import { async } from '@angular/core/testing';
 import { LoginPage } from './../login/login.page';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -12,6 +12,10 @@ import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { Platform } from '@ionic/angular';
 import { Routemap } from './routemap';
+import { Storage } from '@ionic/storage';
+import { environment } from '../../environments/environment';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
 @Component({
   selector: 'app-watch',
@@ -51,6 +55,9 @@ export class WatchPage implements OnInit {
     }
   };
 
+  favoriteIcon = 'heart-empty';
+  isFavorite = false;
+
   private route_data = {
     id: '',
     title: '',
@@ -71,6 +78,7 @@ export class WatchPage implements OnInit {
     public modalCtrl: ModalController,
     public navCtrl: NavController,
     public platform: Platform,
+    private storage: Storage,
   ) {
     this.routemap = new Routemap();
   }
@@ -172,6 +180,81 @@ export class WatchPage implements OnInit {
         [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
         [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
       ]);
+    });
+
+    /**
+     * いいねの取得
+     */
+    // ログインしているか確認
+    this.storage.get('user.uid').then((uid) => {
+      if (!uid || uid === "") {
+        return;
+      }
+      // ログインしていたらデータを取得
+      let is_favorite = this.getFavoriteStatus(this.route_data.id).then((ret: any) => {
+        if (!ret.results || ret.results.length === 0) {
+          return;
+        }
+        this.isFavorite = true;
+        this.favoriteIcon = 'heart';
+      });
+    });
+  }
+
+  async getFavoriteStatus(id): Promise<any[]> {
+    let firebase_id_token = await firebase.auth().currentUser.getIdToken(true);
+    let geturl = 'https://dev-api.routelabo.com/route/1.0.0/like';
+    return this.http.get(geturl + '?id=' + id + '&firebase_id_token=' + firebase_id_token).toPromise()
+      .then((res: any) => {
+        return res;
+      });
+  }
+
+  toggleFavorite() {
+    this.storage.get('user.uid').then(async (uid) => {
+      if (!uid || uid === "") {
+        window.alert('ログイン・ユーザー登録をしてください');
+        return;
+      }
+      console.dir(uid);
+      let firebase_id_token = await firebase.auth().currentUser.getIdToken(true);
+      console.dir(firebase_id_token);
+      if (!this.isFavorite) {
+        // いいね登録する
+        this.isFavorite = true;
+        this.favoriteIcon = 'heart';
+        // post
+        const httpOptions = {
+          headers: new HttpHeaders(
+            'Content-Type:application/x-www-form-urlencoded'
+          )
+        };
+        let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
+        this.http.post(url,
+          'id=' + this.route_data.id + '&' + 'firebase_id_token=' + firebase_id_token,
+          httpOptions).toPromise();
+        /*{
+        id: this.route_data.id,
+        firebase_id_token: firebase_id_token
+      }*/
+
+      } else {
+        // いいね削除する
+        this.isFavorite = false;
+        this.favoriteIcon = 'heart-empty';
+        // delete
+        let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
+        let httpOptions = {
+          headers: new HttpHeaders(
+            'Content-Type:application/x-www-form-urlencoded'
+          ),
+          params: new HttpParams()
+            .set('id', this.route_data.id)
+            .set('firebase_id_token', String(firebase_id_token)),
+        };
+        this.http.delete(url).toPromise();
+
+      }
     });
   }
 
