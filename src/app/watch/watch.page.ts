@@ -215,14 +215,14 @@ export class WatchPage implements OnInit {
   }
 
   toggleFavorite() {
-    this.storage.get('user.uid').then((uid) => {
+    this.storage.get('user.uid').then(async (uid) => {
       if (!uid || uid === "") {
         window.alert('ログイン・ユーザー登録をしてください');
         return;
       }
-    }).then(() => {
-      let firebase_id_token = firebase.auth().currentUser.getIdToken(true);
-
+      console.dir(uid);
+      let firebase_id_token = await firebase.auth().currentUser.getIdToken(true);
+      console.dir(firebase_id_token);
       if (!this.isFavorite) {
         // いいね登録する
         this.isFavorite = true;
@@ -232,7 +232,7 @@ export class WatchPage implements OnInit {
         this.http.post(url, {
           id: this.route_data.id,
           firebase_id_token: firebase_id_token
-        });
+        }).toPromise();
 
       } else {
         // いいね削除する
@@ -249,7 +249,7 @@ export class WatchPage implements OnInit {
             .set('id', this.route_data.id)
             .set('firebase_id_token', String(firebase_id_token)),
         };
-        this.http.delete(url, httpOptions);
+        this.http.delete(url, httpOptions).toPromise();
 
       }
     });
