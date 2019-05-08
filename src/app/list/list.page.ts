@@ -61,6 +61,17 @@ export class ListPage implements OnInit {
     this.search();
   }
 
+  ionViewWillEnter(){
+   // URLのパラメーター処理
+    let url = window.location.href;
+    // URLのパラメーターをパースする
+    // 必要なパラメーターはメンバ変数に積む
+  }
+
+  changeURL () {
+    // メンバ変数からURLパラメーターを積んで動的に変更する
+  }
+
   /***
    * 設定メニュー
    */
@@ -153,6 +164,7 @@ export class ListPage implements OnInit {
             created_at: r.created_at,
           });
 
+          this.changeURL();
           this.infiniteScroll.complete();
         }
 
