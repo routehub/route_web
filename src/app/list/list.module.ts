@@ -26,6 +26,9 @@ import { ListPage } from './list.page';
       }
     ])
   ],
+  providers : [
+    Location,
+  ],
   declarations: [
     ListPage,
     SearchSettingComponent,

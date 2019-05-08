@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IonInfiniteScroll, NavController, PopoverController } from '@ionic/angular';
 import { SearchSettingComponent } from '../search-setting/search-setting.component';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-list',
@@ -45,6 +46,7 @@ export class ListPage implements OnInit {
     private http: HttpClient,
     public navCtrl: NavController,
     public popoverController: PopoverController,
+    private location: Location,
   ) {
   }
 
@@ -58,18 +60,44 @@ export class ListPage implements OnInit {
     if (window.innerWidth > 1200) {
       this.per_page = 16;
     }
-    this.search();
   }
 
   ionViewWillEnter(){
    // URLのパラメーター処理
-    let url = window.location.href;
-    // URLのパラメーターをパースする
-    // 必要なパラメーターはメンバ変数に積む
+   let param =  new URLSearchParams((new URL(window.location.href)).search);
+   console.dir(param);
+   this.query = param.get('query');
+   this.query_type = param.get('mode');
+   this.sort_type = param.get('sort_type');
+   this.order_type = param.get('order_type');
+   this.dist_opt = param.get('dist_opt');
+   this.elev_opt = param.get('elev_opt');
+
+   this.search();
   }
 
   changeURL () {
     // メンバ変数からURLパラメーターを積んで動的に変更する
+    let param = '';
+    if (this.query && this.query !== '') {
+      param += 'query=' + this.query + '&';
+    }
+    if (this.query_type && this.query_type !== 'keyword') {
+      param += 'mode=' + this.query_type + '&';
+    }
+    if (this.sort_type && this.sort_type !== 'created_at') {
+      param += 'sort_type=' + this.sort_type + '&';
+    }
+    if (this.order_type && this.order_type !== 'desc') {
+      param += 'order_type=' + this.order_type + '&';
+    }
+    if (this.dist_opt && this.dist_opt !== '') {
+      param += 'dist_opt=' + this.dist_opt + '&';
+    }
+    if (this.elev_opt && this.elev_opt !== '') {
+      param += 'elev_opt=' + this.elev_opt + '&';
+    }
+    this.location.replaceState("/list", param);
   }
 
   /***
