@@ -12,6 +12,10 @@ import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { Platform } from '@ionic/angular';
 import { Routemap } from './routemap';
+import { Storage } from '@ionic/storage';
+import { environment } from '../../environments/environment';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
 @Component({
   selector: 'app-watch',
@@ -74,6 +78,7 @@ export class WatchPage implements OnInit {
     public modalCtrl: ModalController,
     public navCtrl: NavController,
     public platform: Platform,
+    private storage: Storage,
   ) {
     this.routemap = new Routemap();
   }
@@ -104,7 +109,7 @@ export class WatchPage implements OnInit {
     // resizeしたあと1秒以上固定だったら標高グラフを削除して再描画
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     let routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
@@ -181,15 +186,32 @@ export class WatchPage implements OnInit {
      * いいねの取得
      */
     // ログインしているか確認
+    this.storage.get('user.uid').then((uid) => {
+      if (!uid || uid === "") {
+        return;
+      }
 
-    // ログインしていたらデータを取得
+      // ログインしていたらデータを取得
+      let is_favorite = await this.getFavoriteStatus(this.route_data.id);
 
-    // 登録されていたらボタンの見た目を変える
-    if (0) {
-      this.isFavorite = true;
-      this.favoriteIcon = 'heart';
-    }
+      // 登録されていたらボタンの見た目を変える
+      if (is_favorite) {
+        this.isFavorite = true;
+        this.favoriteIcon = 'heart';
+      }
+    });
+  }
 
+  async getFavoriteStatus(id): Promise<any[]> {
+    let firebase_id_token = await firebase.auth().currentUser.getIdToken(true);
+    let geturl = 'https://dev-api.routelabo.com/route/1.0.0/like';
+    return this.http.get(geturl + '?id=' + id + '&firebase_id_token' + firebase_id_token).toPromise()
+      .then((res: any) => {
+        if (!res.results) {
+          return;
+        }
+        return res.results;
+      });
   }
 
   toggleFavorite() {
@@ -200,10 +222,12 @@ export class WatchPage implements OnInit {
       // いいね登録する
       this.isFavorite = true;
       this.favoriteIcon = 'heart';
+      // post
     } else {
       // いいね削除する
       this.isFavorite = false;
       this.favoriteIcon = 'heart-empty';
+      // delete
     }
   }
 
