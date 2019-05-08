@@ -206,11 +206,7 @@ export class WatchPage implements OnInit {
     let geturl = 'https://dev-api.routelabo.com/route/1.0.0/like';
     return this.http.get(geturl + '?id=' + id + '&firebase_id_token=' + firebase_id_token).toPromise()
       .then((res: any) => {
-        console.dir(res);
-        if (!res.results) {
-          return;
-        }
-        return res.results;
+        return res;
       });
   }
 
@@ -228,11 +224,19 @@ export class WatchPage implements OnInit {
         this.isFavorite = true;
         this.favoriteIcon = 'heart';
         // post
+        const httpOptions = {
+          headers: new HttpHeaders(
+            'Content-Type:application/x-www-form-urlencoded'
+          )
+        };
         let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
-        this.http.post(url, {
-          id: this.route_data.id,
-          firebase_id_token: firebase_id_token
-        }).toPromise();
+        this.http.post(url,
+          'id=' + this.route_data.id + '&' + 'firebase_id_token=' + firebase_id_token,
+          httpOptions).toPromise();
+        /*{
+        id: this.route_data.id,
+        firebase_id_token: firebase_id_token
+      }*/
 
       } else {
         // いいね削除する
@@ -241,15 +245,14 @@ export class WatchPage implements OnInit {
         // delete
         let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
         let httpOptions = {
-          headers: new HttpHeaders({
-            'Content-Type': 'application/json',
-            //            'Authorization': 'my-auth-token'
-          }),
+          headers: new HttpHeaders(
+            'Content-Type:application/x-www-form-urlencoded'
+          ),
           params: new HttpParams()
             .set('id', this.route_data.id)
             .set('firebase_id_token', String(firebase_id_token)),
         };
-        this.http.delete(url, httpOptions).toPromise();
+        this.http.delete(url).toPromise();
 
       }
     });
