@@ -51,6 +51,9 @@ export class WatchPage implements OnInit {
     }
   };
 
+  favoriteIcon = 'heart-empty';
+  isFavorite = false;
+
   private route_data = {
     id: '',
     title: '',
@@ -173,6 +176,35 @@ export class WatchPage implements OnInit {
         [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
       ]);
     });
+
+    /**
+     * いいねの取得
+     */
+    // ログインしているか確認
+
+    // ログインしていたらデータを取得
+
+    // 登録されていたらボタンの見た目を変える
+    if (0) {
+      this.isFavorite = true;
+      this.favoriteIcon = 'heart';
+    }
+
+  }
+
+  toggleFavorite() {
+    // ログインしているか確認
+    // していなければログイン・登録アラートを出す
+
+    if (!this.isFavorite) {
+      // いいね登録する
+      this.isFavorite = true;
+      this.favoriteIcon = 'heart';
+    } else {
+      // いいね削除する
+      this.isFavorite = false;
+      this.favoriteIcon = 'heart-empty';
+    }
   }
 
 
