@@ -109,7 +109,7 @@ export class WatchPage implements OnInit {
     // resizeしたあと1秒以上固定だったら標高グラフを削除して再描画
   }
 
-  async ionViewWillEnter() {
+  ionViewWillEnter() {
     let routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
@@ -192,21 +192,23 @@ export class WatchPage implements OnInit {
       }
 
       // ログインしていたらデータを取得
-      let is_favorite = await this.getFavoriteStatus(this.route_data.id);
-
-      // 登録されていたらボタンの見た目を変える
-      if (is_favorite) {
+      let is_favorite = this.getFavoriteStatus(this.route_data.id).then((ret: any) => {
+        console.dir(ret);
+        if (!ret.results || ret.results.length === 0) {
+          return;
+        }
         this.isFavorite = true;
         this.favoriteIcon = 'heart';
-      }
+      });
     });
   }
 
   async getFavoriteStatus(id): Promise<any[]> {
     let firebase_id_token = await firebase.auth().currentUser.getIdToken(true);
     let geturl = 'https://dev-api.routelabo.com/route/1.0.0/like';
-    return this.http.get(geturl + '?id=' + id + '&firebase_id_token' + firebase_id_token).toPromise()
+    return this.http.get(geturl + '?id=' + id + '&firebase_id_token=' + firebase_id_token).toPromise()
       .then((res: any) => {
+        console.dir(res);
         if (!res.results) {
           return;
         }
