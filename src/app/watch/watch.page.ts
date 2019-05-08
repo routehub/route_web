@@ -1,7 +1,7 @@
 import { async } from '@angular/core/testing';
 import { LoginPage } from './../login/login.page';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -190,10 +190,8 @@ export class WatchPage implements OnInit {
       if (!uid || uid === "") {
         return;
       }
-
       // ログインしていたらデータを取得
       let is_favorite = this.getFavoriteStatus(this.route_data.id).then((ret: any) => {
-        console.dir(ret);
         if (!ret.results || ret.results.length === 0) {
           return;
         }
@@ -217,20 +215,44 @@ export class WatchPage implements OnInit {
   }
 
   toggleFavorite() {
-    // ログインしているか確認
-    // していなければログイン・登録アラートを出す
+    this.storage.get('user.uid').then((uid) => {
+      if (!uid || uid === "") {
+        window.alert('ログイン・ユーザー登録をしてください');
+        return;
+      }
+    }).then(() => {
+      let firebase_id_token = firebase.auth().currentUser.getIdToken(true);
 
-    if (!this.isFavorite) {
-      // いいね登録する
-      this.isFavorite = true;
-      this.favoriteIcon = 'heart';
-      // post
-    } else {
-      // いいね削除する
-      this.isFavorite = false;
-      this.favoriteIcon = 'heart-empty';
-      // delete
-    }
+      if (!this.isFavorite) {
+        // いいね登録する
+        this.isFavorite = true;
+        this.favoriteIcon = 'heart';
+        // post
+        let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
+        this.http.post(url, {
+          id: this.route_data.id,
+          firebase_id_token: firebase_id_token
+        });
+
+      } else {
+        // いいね削除する
+        this.isFavorite = false;
+        this.favoriteIcon = 'heart-empty';
+        // delete
+        let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
+        let httpOptions = {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            //            'Authorization': 'my-auth-token'
+          }),
+          params: new HttpParams()
+            .set('id', this.route_data.id)
+            .set('firebase_id_token', String(firebase_id_token)),
+        };
+        this.http.delete(url, httpOptions);
+
+      }
+    });
   }
 
 
