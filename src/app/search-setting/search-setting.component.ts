@@ -40,13 +40,15 @@ export class SearchSettingComponent implements OnInit {
   sort_type: SearchSortType = SearchSortType.created_at;
   order_type: SearchSortOrder = SearchSortOrder.desc;
 
+  sortkey: string;
+
   constructor(
     private popoverCtrl: PopoverController,
     private navParams: NavParams,
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(){
   }
 
   ionViewWillEnter() {
@@ -113,9 +115,12 @@ export class SearchSettingComponent implements OnInit {
     if (!event.detail.value) {
       this.sort_type = SearchSortType.created_at;
       this.order_type = SearchSortOrder.desc;
+      this.sortkey = SearchSortType.created_at + '/' + SearchSortOrder.desc;
     } else {
       this.sort_type = event.detail.value.split('/')[0];
       this.order_type = event.detail.value.split('/')[1];
+      this.sortkey = event.detail.value.split('/')[0] + '/' + event.detail.value.split('/')[1];
     }
+    console.log(this.sortkey);
   }
 }

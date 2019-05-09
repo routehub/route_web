@@ -22,9 +22,9 @@ export class ListPage implements OnInit {
   private page = 1;
   private per_page = 4; // デフォルトはモバイル向けの件数
   public query = ''; // viewとも共通
-  private query_type = '';
-  private sort_type = '';
-  private order_type = '';
+  private query_type = 'keyword';
+  private sort_type = 'created_at';
+  private order_type = 'desc';
   private dist_opt = '';
   private elev_opt = '';
 
@@ -65,7 +65,6 @@ export class ListPage implements OnInit {
   ionViewWillEnter(){
    // URLのパラメーター処理
    let param =  new URLSearchParams((new URL(window.location.href)).search);
-   console.dir(param);
    this.query = param.get('query') || '';
    this.query_type = param.get('mode');
    this.sort_type = param.get('sort_type');
@@ -97,6 +96,7 @@ export class ListPage implements OnInit {
     if (this.elev_opt && this.elev_opt !== '') {
       param += 'elev_opt=' + this.elev_opt + '&';
     }
+    //console.log(param);
     this.location.replaceState("/list", param);
   }
 
@@ -169,18 +169,30 @@ export class ListPage implements OnInit {
 
   private create_searchquery() {
     return this.search_url
-      + '?q=' + this.query
-      + '&mode=' + this.query_type
-      + '&sort=' + this.sort_type
-      + '&order=' + this.order_type
-      + '&dist_opt=' + this.dist_opt
-      + '&elev_opt=' + this.elev_opt
-      + '&per_page=' + this.per_page + '&page=' + this.page;
+      + '?q=' + this.q(this.query)
+      + '&mode=' + this.q(this.query_type)
+      + '&sort=' + this.q(this.sort_type)
+      + '&order=' + this.q(this.order_type)
+      + '&dist_opt=' + this.q(this.dist_opt)
+      + '&elev_opt=' + this.q(this.elev_opt)
+      + '&per_page=' + this.q(this.per_page)
+      + '&page=' + this.q(this.page)
+      ;
+  }
+
+  private q (query) {
+    if (!query) {
+      return '';
+    }
+    return query;
+
   }
 
   search(): Promise<any[]> {
     return this.http.get(this.create_searchquery()).toPromise()
       .then((res: any) => {
+        this.changeURL();
+
         if (!res.results) {
           return;
         }
@@ -199,7 +211,6 @@ export class ListPage implements OnInit {
             created_at: r.created_at,
           });
 
-          this.changeURL();
           this.infiniteScroll.complete();
         }
 

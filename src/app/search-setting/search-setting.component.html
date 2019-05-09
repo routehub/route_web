@@ -38,7 +38,7 @@
     <ion-label>
       並び順
     </ion-label>
-    <ion-select interface="popover" (ionChange)="changeSortType($event)">
+    <ion-select interface="popover" (ionChange)="changeSortType($event)" [(ngModel)]="sortkey">
       <ion-select-option value="dist/desc">距離順(降順)</ion-select-option>
       <ion-select-option value="dist/asc">距離順(昇順)</ion-select-option>
 
