@@ -62,20 +62,20 @@ export class ListPage implements OnInit {
     }
   }
 
-  ionViewWillEnter(){
-   // URLのパラメーター処理
-   let param =  new URLSearchParams((new URL(window.location.href)).search);
-   this.query = param.get('query') || '';
-   this.query_type = param.get('mode');
-   this.sort_type = param.get('sort_type');
-   this.order_type = param.get('order_type');
-   this.dist_opt = param.get('dist_opt');
-   this.elev_opt = param.get('elev_opt');
+  ionViewWillEnter() {
+    // URLのパラメーター処理
+    let param = new URLSearchParams((new URL(window.location.href)).search);
+    this.query = param.get('query') || '';
+    this.query_type = param.get('mode');
+    this.sort_type = param.get('sort_type');
+    this.order_type = param.get('order_type');
+    this.dist_opt = param.get('dist_opt');
+    this.elev_opt = param.get('elev_opt');
 
-   this.search();
+    this.search();
   }
 
-  changeURL () {
+  changeURL() {
     // メンバ変数からURLパラメーターを積んで動的に変更する
     let param = '';
     if (this.query && this.query !== '') {
@@ -126,7 +126,7 @@ export class ListPage implements OnInit {
       }
 
       // 検索オプションデバッグはこれよ
-      //console.dir(search_opt);
+      console.dir(search_opt);
 
       this.query = search_opt.data.query;
       this.query_type = search_opt.data.query_type;
@@ -180,7 +180,7 @@ export class ListPage implements OnInit {
       ;
   }
 
-  private q (query) {
+  private q(query) {
     if (!query) {
       return '';
     }
