@@ -106,7 +106,14 @@ export class ListPage implements OnInit {
   async presentSettingmenu(ev: any) {
     const popover = await this.popoverController.create({
       component: SearchSettingComponent,
-      componentProps: { query: this.query },
+      componentProps: { 
+        query: this.query,
+        query_type: this.query_type,
+        sort_type: this.sort_type,
+        order_type: this.order_type,
+        dist_opt: this.dist_opt,
+        elev_opt: this.elev_opt,
+      },
       event: ev,
       translucent: true,
       cssClass: 'search-settingmenu',

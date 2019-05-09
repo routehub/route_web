@@ -26,11 +26,11 @@ export class SearchSettingComponent implements OnInit {
   kmrange = {
     upper: 150, // デフォルト値です
     lower: 400,
-  }
+  };
   elevrange = {
     upper: 1000,
     lower: 6000,
-  }
+  };
   isDistDisabled = "true";
   isElevDisabled = "true";
 
@@ -42,12 +42,33 @@ export class SearchSettingComponent implements OnInit {
 
   constructor(
     private popoverCtrl: PopoverController,
-    navParams: NavParams,
+    private navParams: NavParams,
   ) {
-    this.query = navParams.get('query');
   }
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter() {
+    console.dir(this.navParams);
+    this.query = this.navParams.get('query');
+    this.query_type = this.navParams.get('query_type');
+    this.sort_type = this.navParams.get('sort_type');
+    this.order_type = this.navParams.get('order_type');
+    if (this.navParams.get('dist_opt')) {
+      let dist_opt = this.navParams.get('dist_opt').split(':');
+      this.kmrange = {
+        upper : dist_opt[0],
+        lower : dist_opt[1],
+      };
+    }
+    if (this.navParams.get('elev_opt')) {
+      let elev_opt = this.navParams.get('elev_opt').split(':');
+      this.kmrange = {
+        upper : elev_opt[0],
+        lower : elev_opt[1],
+      };
+    }
   }
 
 
