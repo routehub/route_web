@@ -53,7 +53,7 @@ export class HomePage {
   }
 
   search() {
-    this.navCtrl.navigateForward('/list?query=' + this.query);
+    this.navCtrl.navigateForward('/list?query=' + this.query + '&');
   }
 
   logout() {
