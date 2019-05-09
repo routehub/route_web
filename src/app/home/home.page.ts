@@ -8,12 +8,12 @@ import { Storage } from '@ionic/storage';
   styleUrls: ['home.page.scss']
 })
 export class HomePage {
-  titleimageheight = { height: window.outerHeight + 'px' }
+  titleimageheight = { height: window.outerHeight + 'px' };
 
   user;
   photoURL;
   nowCheckLogin = false;
-  query: string = '';
+  query = '';
   list_style_class = 'funclist';
 
   @ViewChild('logoutButton') logoutButton: any;
@@ -39,7 +39,7 @@ export class HomePage {
       return;
     }
 
-    var that = this;
+    let that = this;
     this.storage.get('user.photoURL').then((photoURL) => {
       if (photoURL == null) {
         throw new Error('not login');
@@ -53,7 +53,7 @@ export class HomePage {
   }
 
   search() {
-    this.navCtrl.navigateForward('/list?q=' + this.query);
+    this.navCtrl.navigateForward('/list?query=' + this.query);
   }
 
   logout() {

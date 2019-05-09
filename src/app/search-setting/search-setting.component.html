@@ -1,7 +1,7 @@
 <ion-item-group>
 
   <ion-item>
-    <ion-select interface="popover" (ionChange)="changeSearchType($event)">
+    <ion-select interface="popover" (ionChange)="changeSearchType($event)" [(ngModel)]="query_type">
       <ion-select-option value="keyword" selected>キーワード検索</ion-select-option>
       <ion-select-option value="author">作成名検索</ion-select-option>
       <ion-select-option value="tag">タグ検索</ion-select-option>
@@ -10,7 +10,7 @@
   </ion-item>
 
   <ion-item>
-    <ion-checkbox (ionChange)="distCheckboxChanged($event)">
+    <ion-checkbox (ionChange)="distCheckboxChanged($event)" [(ngModel)]="!isDistDisabled">
     </ion-checkbox>
     <ion-label>
       距離(km)
@@ -38,7 +38,7 @@
     <ion-label>
       並び順
     </ion-label>
-    <ion-select interface="popover" (ionChange)="changeSortType($event)">
+    <ion-select interface="popover" (ionChange)="changeSortType($event)" [(ngModel)]="sortkey">
       <ion-select-option value="dist/desc">距離順(降順)</ion-select-option>
       <ion-select-option value="dist/asc">距離順(昇順)</ion-select-option>
 
