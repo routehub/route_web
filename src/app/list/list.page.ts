@@ -66,7 +66,7 @@ export class ListPage implements OnInit {
    // URLのパラメーター処理
    let param =  new URLSearchParams((new URL(window.location.href)).search);
    console.dir(param);
-   this.query = param.get('query');
+   this.query = param.get('query') || '';
    this.query_type = param.get('mode');
    this.sort_type = param.get('sort_type');
    this.order_type = param.get('order_type');
@@ -106,7 +106,7 @@ export class ListPage implements OnInit {
   async presentSettingmenu(ev: any) {
     const popover = await this.popoverController.create({
       component: SearchSettingComponent,
-      componentProps: { 
+      componentProps: {
         query: this.query,
         query_type: this.query_type,
         sort_type: this.sort_type,

@@ -12,7 +12,7 @@
 
         <ion-buttons start style="min-width:400px; width:50%;margin:auto;margin-top:40px;">
 
-          <ion-searchbar searchIcon="none" autocomplete="on" searchIcon="search" placeholder="サイクリング" animated
+          <ion-searchbar (change)="search()" autocorrect="off" autocomplete="on" searchIcon="search" placeholder="サイクリング" animated
             [(ngModel)]="query">
           </ion-searchbar>
           <ion-button layout="end" (click)="search()">
