@@ -157,7 +157,7 @@ export class WatchPage implements OnInit {
           if (pos[j]) {
             let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
           } else {
-            console.log(j, pos.length);
+            //            console.log(j, pos.length);
           }
         }
       }
@@ -180,6 +180,7 @@ export class WatchPage implements OnInit {
         [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
         [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
       ]);
+      routemap.addAnimatedMarker(pos);
     });
 
     /**
