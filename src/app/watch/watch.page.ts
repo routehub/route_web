@@ -58,6 +58,9 @@ export class WatchPage implements OnInit {
   favoriteIcon = 'heart-empty';
   isFavorite = false;
 
+  private animatedMarker: any;
+  isPlaying: boolean;
+
   private route_data = {
     id: '',
     title: '',
@@ -180,7 +183,9 @@ export class WatchPage implements OnInit {
         [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
         [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
       ]);
-      routemap.addAnimatedMarker(pos);
+
+      // 再生モジュール追加
+      that.animatedMarker = routemap.addAnimatedMarker(pos);
     });
 
     /**
@@ -294,6 +299,16 @@ export class WatchPage implements OnInit {
         this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true });
       });
     });
+  }
+
+  togglePlay () {
+    if (this.isPlaying) {
+      this.animatedMarker.stop();
+      this.isPlaying = false;
+    } else {
+      this.animatedMarker.start();
+      this.isPlaying = true;
+    }
   }
 
 

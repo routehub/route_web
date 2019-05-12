@@ -125,7 +125,8 @@ export class Routemap {
                 let latlnglist = line.map(l => { return [l[1], l[0]]; });
                 let animatedMarker = L.animatedMarker(latlnglist, {});
                 map.addLayer(animatedMarker);
-                animatedMarker.start();
+                return animatedMarker;
+//                animatedMarker.start();
             },
         };
     }

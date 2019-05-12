@@ -16,6 +16,17 @@
   color : #3880ffc4
 }
 
+.watch-play {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  z-index: 999;
+  margin: 10px 10px 0 0;
+  color: #00000075;
+  background: #ffffff;
+  border-radius: 20px;
+}
+
 .route-info {
   zoom:180%;
   margin: 5px;
