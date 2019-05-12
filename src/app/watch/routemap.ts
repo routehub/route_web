@@ -1,6 +1,7 @@
 import { Events } from '@ionic/angular';
 import * as L from 'leaflet';
 import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
+import * as AnimatedMarker from './animatedMarker.js';
 
 /***
  * ルートModel
@@ -77,6 +78,7 @@ export class Routemap {
 
     constructor() {
         Elevation;
+        AnimatedMarker;
     }
 
     createMap(mapele) {
@@ -115,7 +117,18 @@ export class Routemap {
             addSlope: true,
         }).addTo(map);
 
-        return { map: map, elevation: elevation };
+
+        return {
+            map: map,
+            elevation: elevation,
+            addAnimatedMarker: (line) => {
+                let latlnglist = line.map(l => { return [l[1], l[0]]; });
+                let animatedMarker = L.animatedMarker(latlnglist, {});
+                map.addLayer(animatedMarker);
+                return animatedMarker;
+//                animatedMarker.start();
+            },
+        };
     }
 }
 

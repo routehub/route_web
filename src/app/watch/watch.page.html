@@ -18,4 +18,6 @@
 <ion-content>
   <div class="mainmap" #map></div>
   <ion-icon class="watch-location" name="md-locate" size="large" (click)="toggleLocation()" #watchlocation></ion-icon>
+  <ion-icon class="watch-play" [name]="isPlaying ? 'md-pause' : 'md-play-circle'" (click)="togglePlay()" size="large"></ion-icon>
+
 </ion-content>
