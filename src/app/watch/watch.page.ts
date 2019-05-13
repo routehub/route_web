@@ -31,6 +31,7 @@ export class WatchPage implements OnInit {
   watch_location_subscribe: any;
   watch: any;
   currenPossitionMarker: any;
+  isWatchLocation = false;
   elevation: any;
   route_geojson = {
     "type": "FeatureCollection",
@@ -61,7 +62,7 @@ export class WatchPage implements OnInit {
   private animatedMarker: any;
   isPlaying: boolean;
 
-  private route_data = {
+  route_data = {
     id: '',
     title: '',
     author: '',
@@ -265,14 +266,12 @@ export class WatchPage implements OnInit {
   }
 
 
-  toggleLocation() {
-    let watch_button_dom = document.getElementsByClassName('watch-location')[0];
-
+  toggleLocation(event) {
+    event.stopPropagation();
     // 無効化
     if (this.watch_location_subscribe && this.watch_location_subscribe.isStopped !== true) {
-      console.log('watch stop gps');
-      watch_button_dom.classList.remove('_active');
       this.watch_location_subscribe.unsubscribe();
+      this.isWatchLocation = false;
       if (this.currenPossitionMarker) {
         this.map.removeLayer(this.currenPossitionMarker);
         this.currenPossitionMarker = null;
@@ -281,8 +280,7 @@ export class WatchPage implements OnInit {
     }
 
     // 有効化
-    console.log('watch start gps');
-    watch_button_dom.classList.add('_active');
+    this.isWatchLocation = true;
     this.watch_location_subscribe = this.watch.subscribe((pos) => {
       this.watch.subscribe((pos) => {
         if (this.watch_location_subscribe.isStopped === true) {
@@ -301,7 +299,8 @@ export class WatchPage implements OnInit {
     });
   }
 
-  togglePlay () {
+  togglePlay(event) {
+    event.stopPropagation();
     if (this.isPlaying) {
       this.animatedMarker.stop();
       this.isPlaying = false;
@@ -309,6 +308,30 @@ export class WatchPage implements OnInit {
       this.animatedMarker.start();
       this.isPlaying = true;
     }
+  }
+
+  private playSpeedIndex = 0;
+  fastPlay(event) {
+    event.stopPropagation();
+    if (!this.isPlaying) {
+      // 動いていないときには再生をする
+      this.animatedMarker.start();
+      this.isPlaying = true;
+      return;
+    }
+    let intervalTable = [
+      500,
+      250,
+      100,
+      30,
+    ];
+    if (intervalTable.length - 1 === this.playSpeedIndex) {
+      this.playSpeedIndex = 0;
+    } else {
+      this.playSpeedIndex++;
+    }
+    this.animatedMarker.setInterval(intervalTable[this.playSpeedIndex]);
+
   }
 
 
@@ -323,20 +346,23 @@ export class WatchPage implements OnInit {
       });
   }
 
+  back() {
+    this.navCtrl.back();
+  }
+  moveAuthorList() {
+    this.navCtrl.navigateForward('/list?mode=author&query=' + this.route_data.author);
+  }
 
-  async presentRouteInfoPage() {
+  async presentRouteInfoPage(event) {
+    event.stopPropagation();
     const modal = await this.modalCtrl.create({
       component: RouteinfoPage,
       componentProps: { route: this.route_data }
     });
     return await modal.present();
   }
-
-  public back() {
-    this.navCtrl.back();
-  }
-
-  async presentRouteExportPage() {
+  async presentRouteExportPage(event) {
+    event.stopPropagation();
     const modal = await this.modalCtrl.create({
       component: ExportPage,
       componentProps: { route: this.route_data }

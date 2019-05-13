@@ -1,10 +1,9 @@
 L.AnimatedMarker = L.Marker.extend({
     options: {
-        // 100mを1秒で動くように調整する、ので1kmを10秒、時速360km
         // meters
         distance: 100,
         // ms
-        interval: 1000,
+        interval: 500,
         // animate on add?
         autoStart: false,
         // callback onend
@@ -49,7 +48,7 @@ L.AnimatedMarker = L.Marker.extend({
 
     onAdd: function (map) {
         L.Marker.prototype.onAdd.call(this, map);
-
+        this.map = map;
         // Start animating when added to the map
         if (this.options.autoStart) {
             this.start();
@@ -66,6 +65,7 @@ L.AnimatedMarker = L.Marker.extend({
             speed = this._latlngs[this._i - 1].distanceTo(this._latlngs[this._i]) / this.options.distance * this.options.interval;
         }
 
+
         // Only if CSS3 transitions are supported
         if (L.DomUtil.TRANSITION) {
             if (this._icon) { this._icon.style[L.DomUtil.TRANSITION] = ('all ' + speed + 'ms linear'); }
@@ -74,6 +74,7 @@ L.AnimatedMarker = L.Marker.extend({
 
         // Move to the next vertex
         this.setLatLng(this._latlngs[this._i]);
+        this.map.panTo(this._latlngs[this._i]);
         this._i++;
 
         // Queue up the animation to the next next vertex
@@ -98,10 +99,14 @@ L.AnimatedMarker = L.Marker.extend({
         }
     },
 
+    setInterval: function (interval) {
+        this.options.interval = interval || 500;
+    },
+
     setLine: function (latlngs) {
         this._latlngs = this._chunk(latlngs);
-        this.options.distance = 10;
-        this.options.interval = 30;
+        //        this.options.distance = 10;
+        //        this.options.interval = 30;
         this._i = 0;
     }
 

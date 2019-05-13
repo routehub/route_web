@@ -1,23 +1,48 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-icon color="primary" class="watch-backbutton" name="arrow-back" (click)="back()"></ion-icon>
+      <ion-icon color="primary" class="watch-backbutton" name="arrow-back" size="large" (click)="back()"></ion-icon>
     </ion-buttons>
 
     <ion-title>{{title}}</ion-title>
 
     <ion-buttons slot="end">
+      <ion-label color="primary" style="text-decoration: underline;" (click)="moveAuthorList()">{{route_data.author}}
+      </ion-label>
       <ion-icon color="primary" class="route-info" name="{{favoriteIcon}}" (click)="toggleFavorite()"></ion-icon>
-      <ion-icon color="primary" class="route-info" name="information-circle-outline" (click)="presentRouteInfoPage()">
-      </ion-icon>
-      <ion-icon color="primary" class="route-info" name="download" (click)="presentRouteExportPage()"></ion-icon>
     </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="mainmap" #map></div>
-  <ion-icon class="watch-location" name="md-locate" size="large" (click)="toggleLocation()" #watchlocation></ion-icon>
-  <ion-icon class="watch-play" [name]="isPlaying ? 'md-pause' : 'md-play-circle'" (click)="togglePlay()" size="large"></ion-icon>
 
+
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="apps"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="start">
+      <ion-fab-button (click)="fastPlay($event)">
+        <ion-icon color="primary" name="fastforward"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="togglePlay($event)">
+        <ion-icon color="primary" [name]="isPlaying ? 'md-pause' : 'md-play'"> </ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+
+    <ion-fab-list side="bottom">
+      <ion-fab-button (click)="presentRouteInfoPage($event)">
+        <ion-icon color="primary" class="route-info" name="information"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="presentRouteExportPage($event)">
+        <ion-icon color="primary" class="route-info" name="download"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="toggleLocation($event)">
+        <ion-icon [color]="isWatchLocation ? 'primary' : ''" name="md-locate"> </ion-icon>
+      </ion-fab-button>
+
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>
