@@ -309,6 +309,8 @@ export class WatchPage implements OnInit {
       this.isPlaying = true;
     }
   }
+
+  private playSpeedIndex = 0;
   fastPlay(event) {
     event.stopPropagation();
     if (!this.isPlaying) {
@@ -317,8 +319,18 @@ export class WatchPage implements OnInit {
       this.isPlaying = true;
       return;
     }
-
-    this.animatedMarker.setDistance(10000);
+    let intervalTable = [
+      500,
+      250,
+      100,
+      30,
+    ];
+    if (intervalTable.length - 1 === this.playSpeedIndex) {
+      this.playSpeedIndex = 0;
+    } else {
+      this.playSpeedIndex++;
+    }
+    this.animatedMarker.setInterval(intervalTable[this.playSpeedIndex]);
 
   }
 
