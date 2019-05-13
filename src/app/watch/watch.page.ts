@@ -62,7 +62,7 @@ export class WatchPage implements OnInit {
   private animatedMarker: any;
   isPlaying: boolean;
 
-  private route_data = {
+  route_data = {
     id: '',
     title: '',
     author: '',
@@ -334,8 +334,11 @@ export class WatchPage implements OnInit {
       });
   }
 
-  public back() {
+  back() {
     this.navCtrl.back();
+  }
+  moveAuthorList() {
+    this.navCtrl.navigateForward('/list?mode=author&query=' + this.route_data.author);
   }
 
   async presentRouteInfoPage(event) {
