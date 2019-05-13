@@ -31,6 +31,7 @@ export class WatchPage implements OnInit {
   watch_location_subscribe: any;
   watch: any;
   currenPossitionMarker: any;
+  isWatchLocation = false;
   elevation: any;
   route_geojson = {
     "type": "FeatureCollection",
@@ -265,14 +266,12 @@ export class WatchPage implements OnInit {
   }
 
 
-  toggleLocation() {
-    let watch_button_dom = document.getElementsByClassName('watch-location')[0];
-
+  toggleLocation(event) {
+    event.stopPropagation();
     // 無効化
     if (this.watch_location_subscribe && this.watch_location_subscribe.isStopped !== true) {
-      console.log('watch stop gps');
-      watch_button_dom.classList.remove('_active');
       this.watch_location_subscribe.unsubscribe();
+      this.isWatchLocation = false;
       if (this.currenPossitionMarker) {
         this.map.removeLayer(this.currenPossitionMarker);
         this.currenPossitionMarker = null;
@@ -281,8 +280,7 @@ export class WatchPage implements OnInit {
     }
 
     // 有効化
-    console.log('watch start gps');
-    watch_button_dom.classList.add('_active');
+    this.isWatchLocation = true;
     this.watch_location_subscribe = this.watch.subscribe((pos) => {
       this.watch.subscribe((pos) => {
         if (this.watch_location_subscribe.isStopped === true) {
@@ -301,7 +299,8 @@ export class WatchPage implements OnInit {
     });
   }
 
-  togglePlay () {
+  togglePlay(event) {
+    event.stopPropagation();
     if (this.isPlaying) {
       this.animatedMarker.stop();
       this.isPlaying = false;
