@@ -334,20 +334,20 @@ export class WatchPage implements OnInit {
       });
   }
 
+  public back() {
+    this.navCtrl.back();
+  }
 
-  async presentRouteInfoPage() {
+  async presentRouteInfoPage(event) {
+    event.stopPropagation();
     const modal = await this.modalCtrl.create({
       component: RouteinfoPage,
       componentProps: { route: this.route_data }
     });
     return await modal.present();
   }
-
-  public back() {
-    this.navCtrl.back();
-  }
-
-  async presentRouteExportPage() {
+  async presentRouteExportPage(event) {
+    event.stopPropagation();
     const modal = await this.modalCtrl.create({
       component: ExportPage,
       componentProps: { route: this.route_data }
