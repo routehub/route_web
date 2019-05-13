@@ -98,6 +98,10 @@ L.AnimatedMarker = L.Marker.extend({
         }
     },
 
+    setDistance: function (distance) {
+        this.distance = distance;
+    },
+
     setLine: function (latlngs) {
         this._latlngs = this._chunk(latlngs);
         this.options.distance = 10;

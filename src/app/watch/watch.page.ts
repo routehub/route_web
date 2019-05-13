@@ -309,6 +309,18 @@ export class WatchPage implements OnInit {
       this.isPlaying = true;
     }
   }
+  fastPlay(event) {
+    event.stopPropagation();
+    if (!this.isPlaying) {
+      // 動いていないときには再生をする
+      this.animatedMarker.start();
+      this.isPlaying = true;
+      return;
+    }
+
+    this.animatedMarker.setDistance(10000);
+
+  }
 
 
   get(id): Promise<any[]> {
