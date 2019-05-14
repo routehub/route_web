@@ -12,4 +12,10 @@ export class LayerselectPage implements OnInit {
   ngOnInit() {
   }
 
+  changeLayer(index:number) {
+    console.dir(index);
+    var layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
+    layerControlElement.getElementsByTagName('input')[index].click();
+  }
+
 }
