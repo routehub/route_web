@@ -3,6 +3,8 @@
     <ion-title>地図レイヤー選択</ion-title>
   </ion-toolbar>
 </ion-header>
+
+<ion-content>
   <ion-list>
     <ion-item (click)="changeLayer(1)">
       <ion-label>OpenStreetMap</ion-label>
@@ -14,6 +16,6 @@
       <ion-label>国土地理院地図</ion-label>
     </ion-item>
   </ion-list>
-<ion-content>
+    <ion-button color="light" expand="block" (click)="closeModal()">閉じる</ion-button>
 
 </ion-content>
