@@ -4,13 +4,13 @@
   </ion-toolbar>
 </ion-header>
   <ion-list>
-    <ion-item>
+    <ion-item (click)="changeLayer(1)">
       <ion-label>OpenStreetMap</ion-label>
     </ion-item>
-    <ion-item>
+    <ion-item  (click)="changeLayer(0)">
       <ion-label>ヤフー地図</ion-label>
     </ion-item>
-    <ion-item>
+    <ion-item  (click)="changeLayer(2)">
       <ion-label>国土地理院地図</ion-label>
     </ion-item>
   </ion-list>

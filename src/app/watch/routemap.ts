@@ -65,15 +65,31 @@ export class Routemap {
     });
 
     private getYahooLayer() {
-        let layer = new L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512');
-        // FIXME: 実行時にもとクラスの定義を書き換えちゃってる
-        layer.__proto__.getTileUrl = function (coord) {
+        let layer = new L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512',{
+            attribution: '<a href="https://map.yahoo.co.jp/maps?hlat=35.66572&amp;lat=35.66572&amp;hlon=139.731&amp;lon=139.731&amp;z=18&amp;datum=wgs&amp;mode=map&amp;.f=jsapilogo" target="_blank" id="yolp-logo-link" class= "yolp-logo" style="z-index: 10; position: absolute; margin: 0px; padding: 0px; right: 3px; bottom: 3px;" > <img src="https://s.yimg.jp/images/maps/logo/yj_logo.png" alt = "" border="0" > </a>',
+            maxZoom: 19
+        });
+        layer.getTileUrl = function (coord) {
             let z = coord.z + 1;
             let x = coord.x;
             let y = Math.pow(2, coord.z - 1) - coord.y - 1;
             return 'https://map.c.yimg.jp/m?x=' + x + '&y=' + y + '&z=' + z + '&r=1&style=base:standard&size=512';
         }
         return layer;
+    }
+
+    private getOSMLayer() {
+        let layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 19
+        });
+        return layer
+    }
+
+    private getGSILayer () {
+        return L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+        });
     }
 
     constructor() {
@@ -84,7 +100,15 @@ export class Routemap {
     createMap(mapele) {
         let center: any = [35.681, 139.767];
         let map = L.map(mapele, { center: center, zoom: 9, zoomControl: false });
-        this.getYahooLayer().addTo(map);
+
+        let baselayers = {
+            "Yahoo": this.getYahooLayer(),
+            "OSM": this.getOSMLayer(),
+            "GSI" : this.getGSILayer(),
+        };
+        let overlays = {};
+        L.control.layers(baselayers, overlays).addTo(map);
+        baselayers["Yahoo"].addTo(map);
 
         //スケールコントロールを追加（オプションはフィート単位を非表示）
         // TODO画面の設計を考えてじゃまにならないように配置したい
@@ -126,7 +150,7 @@ export class Routemap {
                 let animatedMarker = L.animatedMarker(latlnglist, {});
                 map.addLayer(animatedMarker);
                 return animatedMarker;
-//                animatedMarker.start();
+                //                animatedMarker.start();
             },
         };
     }
