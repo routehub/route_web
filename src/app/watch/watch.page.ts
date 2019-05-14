@@ -10,6 +10,8 @@ import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
+import { LayerselectPage } from '../layerselect/layerselect.page';
+
 import { Platform } from '@ionic/angular';
 import { Routemap } from './routemap';
 import { Storage } from '@ionic/storage';
@@ -365,6 +367,14 @@ export class WatchPage implements OnInit {
     event.stopPropagation();
     const modal = await this.modalCtrl.create({
       component: ExportPage,
+      componentProps: { route: this.route_data }
+    });
+    return await modal.present();
+  }
+  async presentLayerSelect(event) {
+    event.stopPropagation();
+    const modal = await this.modalCtrl.create({
+      component: LayerselectPage,
       componentProps: { route: this.route_data }
     });
     return await modal.present();

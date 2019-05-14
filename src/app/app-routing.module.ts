@@ -23,7 +23,8 @@ const routes: Routes = [
   { path: 'routeinfo', loadChildren: './routeinfo/routeinfo.module#RouteinfoPageModule' },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
   { path: 'export', loadChildren: './export/export.module#ExportPageModule' },
-  { path: 'my', loadChildren: './my/my.module#MyPageModule' }
+  { path: 'my', loadChildren: './my/my.module#MyPageModule' },
+  { path: 'layerselect', loadChildren: './layerselect/layerselect.module#LayerselectPageModule' }
 ];
 
 @NgModule({

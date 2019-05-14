@@ -1,3 +1,4 @@
+import { LayerselectPageModule } from './layerselect/layerselect.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -27,6 +28,7 @@ import { IonicStorageModule } from '@ionic/storage';
     AppRoutingModule,
     RouteinfoPageModule,
     ExportPageModule,
+    LayerselectPageModule,
     LazyLoadImageModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

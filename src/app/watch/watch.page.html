@@ -21,7 +21,7 @@
 
   <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button>
-      <ion-icon name="apps"></ion-icon>
+      <ion-icon name="md-apps"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="start">
       <ion-fab-button (click)="fastPlay($event)">
@@ -39,6 +39,11 @@
       <ion-fab-button (click)="presentRouteExportPage($event)">
         <ion-icon color="primary" class="route-info" name="download"></ion-icon>
       </ion-fab-button>
+
+      <ion-fab-button (click)="presentLayerSelect($event)">
+        <ion-icon color="primary" name="md-albums"></ion-icon>
+      </ion-fab-button>
+
       <ion-fab-button (click)="toggleLocation($event)">
         <ion-icon [color]="isWatchLocation ? 'primary' : ''" name="md-locate"> </ion-icon>
       </ion-fab-button>
