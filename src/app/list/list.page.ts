@@ -20,7 +20,7 @@ export class ListPage implements OnInit {
    * 検索用パラメーター
    */
   private page = 1;
-  private per_page = 4; // デフォルトはモバイル向けの件数
+  private per_page = 6; 
   public query = ''; // viewとも共通
   private query_type = 'keyword';
   private sort_type = 'created_at';
@@ -51,15 +51,6 @@ export class ListPage implements OnInit {
   }
 
   ngOnInit() {
-    if (window.innerWidth > 600) {
-      this.per_page = 10;
-    }
-    if (window.innerWidth > 800) {
-      this.per_page = 12;
-    }
-    if (window.innerWidth > 1200) {
-      this.per_page = 16;
-    }
   }
 
   ionViewWillEnter() {
@@ -167,6 +158,13 @@ export class ListPage implements OnInit {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
 
+  authorSelected(item) {
+    this.wordChanged();
+    this.query = item.author;
+    this.query_type = 'author';
+    this.search();
+  }
+
   private create_searchquery() {
     return this.search_url
       + '?q=' + this.q(this.query)
@@ -233,7 +231,7 @@ export class ListPage implements OnInit {
       return p[1] + ',' + p[0];
     }).join(',');
     return this.staticmap_url + '?appid=' + this.thumbappid
-      + '&autoscale=on&scalebar=off&width=450&height=300&l=' + '0,0,255,105,4,' // rgb, a, weight
+      + '&autoscale=on&scalebar=off&width=600&height=300&l=' + '0,0,255,105,4,' // rgb, a, weight
       + line;
   }
 }
