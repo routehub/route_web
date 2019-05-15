@@ -44,6 +44,10 @@
         <ion-icon color="primary" name="md-albums"></ion-icon>
       </ion-fab-button>
 
+      <ion-fab-button (click)="toggleSlopeLayer($event)">
+        <ion-icon color="primary" name="trending-up"></ion-icon>
+      </ion-fab-button>
+
       <ion-fab-button (click)="toggleLocation($event)">
         <ion-icon [color]="isWatchLocation ? 'primary' : ''" name="md-locate"> </ion-icon>
       </ion-fab-button>

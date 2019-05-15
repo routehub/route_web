@@ -2,6 +2,7 @@ import { Events } from '@ionic/angular';
 import * as L from 'leaflet';
 import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
 import * as AnimatedMarker from './animatedMarker.js';
+import * as Hotline from 'leaflet-hotline';
 
 /***
  * ルートModel
@@ -65,8 +66,9 @@ export class Routemap {
     });
 
     private getYahooLayer() {
-        let layer = new L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512',{
-            attribution: '<a href="https://map.yahoo.co.jp/maps?hlat=35.66572&amp;lat=35.66572&amp;hlon=139.731&amp;lon=139.731&amp;z=18&amp;datum=wgs&amp;mode=map&amp;.f=jsapilogo" target="_blank" id="yolp-logo-link" class= "yolp-logo" style="z-index: 10; position: absolute; margin: 0px; padding: 0px; right: 3px; bottom: 3px;" > <img src="https://s.yimg.jp/images/maps/logo/yj_logo.png" alt = "" border="0" > </a>',
+        let attrString = '<a href="https://map.yahoo.co.jp/maps?hlat=35.66572&amp;lat=35.66572&amp;hlon=139.731&amp;lon=139.731&amp;z=18&amp;datum=wgs&amp;mode=map&amp;.f=jsapilogo" target="_blank" id="yolp-logo-link" class= "yolp-logo" style="z-index: 10; position: absolute; margin: 0px; padding: 0px; right: 3px; bottom: 3px;" > <img src="https://s.yimg.jp/images/maps/logo/yj_logo.png" alt = "" border="0" > </a>';
+        let layer = new L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512', {
+            attribution: attrString,
             maxZoom: 19
         });
         layer.getTileUrl = function (coord) {
@@ -86,14 +88,15 @@ export class Routemap {
         return layer
     }
 
-    private getGSILayer () {
+    private getGSILayer() {
         return L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
-          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
         });
     }
 
     constructor() {
         Elevation;
+        Hotline;
         AnimatedMarker;
     }
 
@@ -104,7 +107,7 @@ export class Routemap {
         let baselayers = {
             "Yahoo": this.getYahooLayer(),
             "OSM": this.getOSMLayer(),
-            "GSI" : this.getGSILayer(),
+            "GSI": this.getGSILayer(),
         };
         let overlays = {};
         L.control.layers(baselayers, overlays).addTo(map);
@@ -141,17 +144,54 @@ export class Routemap {
             addSlope: true,
         }).addTo(map);
 
-
         return {
             map: map,
             elevation: elevation,
             addAnimatedMarker: (line) => {
                 let latlnglist = line.map(l => { return [l[1], l[0]]; });
-                let animatedMarker = L.animatedMarker(latlnglist, {});
+                let animatedMarker = L.animatedMarker(latlnglist, { icon: this.gpsIcon });
                 map.addLayer(animatedMarker);
                 return animatedMarker;
-                //                animatedMarker.start();
             },
+            addElevationHotlineLayer: (line) => {
+                let max_elev = Math.max(...line.map(l => l[2]));
+                let latlngelevlist = line.map(l => { return [l[1], l[0], l[2] / max_elev]; });
+                return L.hotline(latlngelevlist, {
+                    outlineWidth: 1,
+                    outlineColor: 'blue',
+                }).addTo(map);
+            },
+            addSlopeHotlineLayer: (line) => {
+                let prevPoint;
+                let prevElevation;
+                let latlngelevlist = line.map(l => {
+                    let slope = 0;
+                    if (prevPoint) {
+                        let point = L.latLng(l[1], [0]);
+                        let distDiff = point.distanceTo(prevPoint);
+                        let elevDiff = l[2] - prevElevation;
+                        slope = Math.ceil(Math.abs(elevDiff / distDiff * 100 * 100)) / 100;
+                        if (slope > 20) {
+                            slope = 20;
+                        } else if (!slope) {
+                            slope = 1;
+                        }
+
+                        prevPoint = point;
+                    } else {
+                        prevPoint = L.latLng(l[1], [0]);
+                    }
+                    prevElevation = l[2];
+                    return [l[1], l[0], slope];
+                });
+
+                return L.hotline(latlngelevlist, {
+                    outlineWidth: 1,
+                    outlineColor: 'blue',
+                    min: 0,
+                    max: 20,
+                }).addTo(map);
+            }
         };
     }
 }

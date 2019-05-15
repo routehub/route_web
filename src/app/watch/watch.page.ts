@@ -57,12 +57,16 @@ export class WatchPage implements OnInit {
       "line-opacity": 0.7,
     }
   };
+  private line: any;
 
   favoriteIcon = 'heart-empty';
   isFavorite = false;
 
   private animatedMarker: any;
   isPlaying: boolean;
+
+  private hotlineLayer: any;
+  private isSlopeMode = false;
 
   route_data = {
     id: '',
@@ -76,6 +80,7 @@ export class WatchPage implements OnInit {
   };
 
   routemap: Routemap;
+  _routemap: any;
 
   constructor(
     private http: HttpClient,
@@ -98,6 +103,11 @@ export class WatchPage implements OnInit {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
     }
+
+    if (this.hotlineLayer) {
+      this.map.removeLayer(this.hotlineLayer);
+      this.hotlineLayer = null;
+    }
   }
 
   ngOnInit() {
@@ -116,7 +126,7 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    let routemap = this.routemap.createMap(this.map_elem.nativeElement);
+    let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
 
@@ -189,6 +199,8 @@ export class WatchPage implements OnInit {
 
       // 再生モジュール追加
       that.animatedMarker = routemap.addAnimatedMarker(pos);
+
+      that.line = pos;
     });
 
     /**
@@ -267,6 +279,20 @@ export class WatchPage implements OnInit {
     });
   }
 
+  toggleSlopeLayer(event) {
+    event.stopPropagation();
+    if (!this.hotlineLayer && !this.isSlopeMode) {
+      this.hotlineLayer = this._routemap.addElevationHotlineLayer(this.line);
+    } else if (this.hotlineLayer && !this.isSlopeMode) {
+      this.map.removeLayer(this.hotlineLayer);
+      this.hotlineLayer = this._routemap.addSlopeHotlineLayer(this.line);
+      this.isSlopeMode = true;
+    } else {
+      this.map.removeLayer(this.hotlineLayer);
+      this.hotlineLayer = false;
+      this.isSlopeMode = false;
+    }
+  }
 
   toggleLocation(event) {
     event.stopPropagation();
