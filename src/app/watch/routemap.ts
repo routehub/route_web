@@ -130,6 +130,7 @@ export class Routemap {
                 bottom: 0,
                 left: 0,
             },
+            yAxisMin: 0,
             useHeightIndicator: true,
             isInnerLabel: true,
             tooltips: true,
