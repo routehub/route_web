@@ -12,8 +12,8 @@
 
         <ion-buttons start style="min-width:400px; width:50%;margin:auto;margin-top:40px;">
 
-          <ion-searchbar (change)="search()" autocorrect="off" autocomplete="on" searchIcon="search" placeholder="サイクリング" animated
-            [(ngModel)]="query">
+          <ion-searchbar (change)="search()" autocorrect="off" autocomplete="on" searchIcon="search"
+            placeholder="サイクリング" animated [(ngModel)]="query">
           </ion-searchbar>
           <ion-button layout="end" (click)="search()">
             <ion-icon slot="icon-only" name="search"></ion-icon>
@@ -23,7 +23,7 @@
       </ion-col>
 
       <ion-col class="titleimage titleimage-mobile" [ngStyle]="titleimageheight" *ngIf="platform.is('mobile')">
-        <h1><img src="./assets/logo-white.png" alt="routelabo"></h1>
+        <h1><img src="./assets/logo-white.png" alt="routehub"></h1>
         <h2>UPGRADE<br>ルートラボ</h2>
         <p>
           ルートラボに足りない機能・作りたいやつを<br>サクサク追加していくアプリです<br>
@@ -58,7 +58,7 @@
     <ion-row style="max-width:900px;margin:auto;">
       <ion-col *ngIf="platform.is('desktop')">
         <iframe height='100%' width='100%' frameborder='0' allowtransparency='true' scrolling='no'
-          src='https://dev.routelabo.com/embed/a09d69610acfcf763f662406162fc3bf' lazyload='on'></iframe>
+          src='https://dev.routehub.app/embed/a09d69610acfcf763f662406162fc3bf' lazyload='on'></iframe>
       </ion-col>
       <ion-col>
 
@@ -172,6 +172,6 @@
 
 
   <footer *ngIf="platform.is('desktop')">
-    routelabo.com © 2019 / プライバシーポリシー / 利用規約 / お問い合わせ
+    routehub.app © 2019 / プライバシーポリシー / 利用規約 / お問い合わせ
   </footer>
 </ion-content>

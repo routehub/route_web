@@ -11,7 +11,7 @@ import ejs from 'ejs';
 export class ExportPage implements OnInit {
 
   route: any;
-  hostname = 'dev.routelabo.com';
+  hostname = 'dev.routehub.app';
 
   constructor(
     private modalController: ModalController,
