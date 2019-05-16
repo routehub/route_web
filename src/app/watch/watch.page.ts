@@ -3,7 +3,7 @@ import { LoginPage } from './../login/login.page';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 import turfbbox from '@turf/bbox';
@@ -68,6 +68,8 @@ export class WatchPage implements OnInit {
   private hotlineLayer: any;
   private isSlopeMode = false;
 
+  private editMarkers: Array<any> = [];
+
   route_data = {
     id: '',
     title: '',
@@ -90,6 +92,7 @@ export class WatchPage implements OnInit {
     public navCtrl: NavController,
     public platform: Platform,
     private storage: Storage,
+    public toastController: ToastController
   ) {
     this.routemap = new Routemap();
   }
@@ -171,7 +174,10 @@ export class WatchPage implements OnInit {
         if (route.kind[i] === '1') {
           let j = i / 2;
           if (pos[j]) {
-            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
+            //            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
+            that.editMarkers.push(
+              L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon })
+            );
           } else {
             //            console.log(j, pos.length);
           }
@@ -283,9 +289,11 @@ export class WatchPage implements OnInit {
     event.stopPropagation();
     if (!this.hotlineLayer && !this.isSlopeMode) {
       this.hotlineLayer = this._routemap.addElevationHotlineLayer(this.line);
+      this.presentToast('標高グラデーションモードに変更');
     } else if (this.hotlineLayer && !this.isSlopeMode) {
       this.map.removeLayer(this.hotlineLayer);
       this.hotlineLayer = this._routemap.addSlopeHotlineLayer(this.line);
+      this.presentToast('斜度グラデーションモードに変更');
       this.isSlopeMode = true;
     } else {
       this.map.removeLayer(this.hotlineLayer);
@@ -298,6 +306,8 @@ export class WatchPage implements OnInit {
     event.stopPropagation();
     // 無効化
     if (this.watch_location_subscribe && this.watch_location_subscribe.isStopped !== true) {
+      this.presentToast('GPS off');
+
       this.watch_location_subscribe.unsubscribe();
       this.isWatchLocation = false;
       if (this.currenPossitionMarker) {
@@ -308,6 +318,7 @@ export class WatchPage implements OnInit {
     }
 
     // 有効化
+    this.presentToast('GPS on');
     this.isWatchLocation = true;
     this.watch_location_subscribe = this.watch.subscribe((pos) => {
       this.watch.subscribe((pos) => {
@@ -338,6 +349,23 @@ export class WatchPage implements OnInit {
     }
   }
 
+  alretEditable(event) {
+    event.stopPropagation();
+
+    this.presentToast('編集モード・フォーク機能は鋭意開発中です＞＜ \nもうしばらくお待ち下さい')
+
+    this.editMarkers.forEach(m => {
+      m.addTo(this.map);
+    });
+
+    let removeIcon = () => {
+      this.editMarkers.forEach(m => {
+        this.map.removeLayer(m);
+      });
+    }
+    setTimeout(removeIcon, 5000);
+  }
+
   private playSpeedIndex = 0;
   fastPlay(event) {
     event.stopPropagation();
@@ -348,17 +376,19 @@ export class WatchPage implements OnInit {
       return;
     }
     let intervalTable = [
-      500,
-      250,
-      100,
-      30,
+      [500, '約30km/h'],
+      [250, '約80km/h'],
+      [100, '約120km/h'],
+      [30, '約500km/h'],
     ];
     if (intervalTable.length - 1 === this.playSpeedIndex) {
       this.playSpeedIndex = 0;
     } else {
       this.playSpeedIndex++;
     }
-    this.animatedMarker.setInterval(intervalTable[this.playSpeedIndex]);
+    let speed = intervalTable[this.playSpeedIndex];
+    this.presentToast('現在' + speed[1] + 'で走行中');
+    this.animatedMarker.setInterval(speed[0]);
 
   }
 
@@ -405,4 +435,14 @@ export class WatchPage implements OnInit {
     });
     return await modal.present();
   }
+
+  async presentToast(message) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      color: "primary",
+    });
+    toast.present();
+  }
+
 }
