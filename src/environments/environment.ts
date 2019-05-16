@@ -15,7 +15,7 @@ export const environment = {
   },
 
   api: {
-    'host': 'https://dev-api.routehub.com/route/1.0.0',
+    'host': 'https://dev-api.routelabo.com/route/1.0.0',
     'search_path': '/search',
     'my_path': '/my',
     'like_path': '/like',
