@@ -29,6 +29,7 @@
     "@ionic/storage": "^2.2.0",
     "@turf/bbox": "^6.0.1",
     "angularfire2": "^5.1.2",
+    "classlist.js": "^1.1.20150312",
     "cordova-plugin-geolocation": "4.0.1",
     "core-js": "^2.5.4",
     "ejs": "^2.6.1",
