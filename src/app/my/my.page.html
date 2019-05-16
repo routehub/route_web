@@ -50,38 +50,32 @@
 
 
     <ion-grid>
-      <ion-row>
-        <ion-col size="24" sizeXs="12" sizeMd="6" sizeXl="4" size *ngFor="let item of items">
+      <ion-row class="wrapper-helper">
+        <ion-col size="24" sizeXs="24" sizeMd="12" sizeXl="12" size *ngFor="let item of items">
+
           <ion-card class="one-image">
-            <ion-card-header (click)="pageSelected(item)">
-              <img class="list-thumb" lazyLoad='{{item.thumburl}}' offset="50" />
+            <ion-card-header>
+              <ion-card-title (click)="pageSelected(item)">{{item.title}}</ion-card-title>
+              <p>
+                <ion-label class="create_at">{{item.created_at}}</ion-label>
+                <ion-label class="card-author" lines="none" (click)="authorSelected(item)" color="primary"
+                  style="text-decoration:underline">by {{item.author}}</ion-label>
+              </p>
+              <img class="list-thumb" lazyLoad='{{item.thumburl}}' (click)="pageSelected(item)" offset="50" />
             </ion-card-header>
 
             <ion-card-content>
-              <p class="create_at">{{item.created_at}}</p>
-              <ion-card-title (click)="pageSelected(item)">{{item.title}}</ion-card-title>
-              <ion-card-subtitle class="list-body">{{item.body}}</ion-card-subtitle>
               <ul class="route-info">
                 <li>総距離<br />XXX.Xkm</li>
                 <li>最大標高差<br />XXXXm</li>
                 <li>獲得標高<br />XXXm</li>
-                <!-- <li>GPSだったらアイコンだしたい</li> -->
+                <li>走行時間<br />XhXXm</li>
               </ul>
               <ul class="startgoal-info">
                 <li><span>スタート</span>愛知県名古屋市名東区藤が丘</li>
                 <li><span>ゴール</span>豊田市井上町5丁目</li>
               </ul>
             </ion-card-content>
-
-            <hr class="card-author-border" />
-
-            <ion-item lines="none" class="card-author">
-              <ion-avatar slot="start">
-                <ion-img src="https://pbs.twimg.com/profile_images/1116003788433711104/QgeszHNu_400x400.jpg"></ion-img>
-              </ion-avatar>
-              <ion-label lines="none">{{item.author}}</ion-label>
-            </ion-item>
-
           </ion-card>
 
         </ion-col>

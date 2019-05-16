@@ -20,7 +20,7 @@ export class ListPage implements OnInit {
    * 検索用パラメーター
    */
   private page = 1;
-  private per_page = 6; 
+  private per_page = 6;
   public query = ''; // viewとも共通
   private query_type = 'keyword';
   private sort_type = 'created_at';
