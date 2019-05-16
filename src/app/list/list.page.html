@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar style="max-width:900px;margin:auto;">
+  <ion-toolbar class="wrapper-helper">
     <ion-buttons start>
 
       <ion-searchbar autocomplete="on" searchIcon="search" placeholder="サイクリング" animated [(ngModel)]="query"
@@ -15,17 +15,18 @@
 
 <ion-content>
   <ion-grid>
-    <ion-row style="max-width:900px;margin:auto;">
+    <ion-row class="wrapper-helper">
       <ion-col size="24" sizeXs="24" sizeMd="12" sizeXl="12" size *ngFor="let item of items">
 
         <ion-card class="one-image">
           <ion-card-header>
             <ion-card-title (click)="pageSelected(item)">{{item.title}}</ion-card-title>
             <p>
-            <ion-label class="create_at">{{item.created_at}}</ion-label>
-            <ion-label class="card-author" lines="none" (click)="authorSelected(item)" color="primary" style="text-decoration:underline">by {{item.author}}</ion-label>
+              <ion-label class="create_at">{{item.created_at}}</ion-label>
+              <ion-label class="card-author" lines="none" (click)="authorSelected(item)" color="primary"
+                style="text-decoration:underline">by {{item.author}}</ion-label>
             </p>
-            <img class="list-thumb" lazyLoad='{{item.thumburl}}' (click)="pageSelected(item)" offset="50" />            
+            <img class="list-thumb" lazyLoad='{{item.thumburl}}' (click)="pageSelected(item)" offset="50" />
           </ion-card-header>
 
           <ion-card-content>

@@ -1,13 +1,13 @@
 <ion-content>
 
-  <p class="migrate-discription" style="max-width:900px; margin:auto; margin-top:20px;margin-bottom:20px;">
+  <p class="migrate-discription" class="wrapper-helper" style="margin-top:20px;margin-bottom:20px;">
     本サービスにデータを取り込むことにより、<br>
     <!--    キューシートの表示やオフラインでの利用ができます。<br>-->
     URLが削除されているルート以外は取り込むことができます。
   </p>
 
 
-  <ion-item class="migrate-url-form" style="max-width:900px; margin:auto;">
+  <ion-item class="migrate-url-form" class="wrapper-helper">
     <ion-label position="stacked">取り込みたいルートラボのURLを入力</ion-label>
     <ion-input type="url" placeholder="https://latlonglab.yahoo.co.jp/route/watch?id=xxxxxxx" [(ngModel)]="routeurl">
     </ion-input>
@@ -17,14 +17,14 @@
   </ion-item>
 
 
-  <ion-item class="migrate-page-form" style="max-width:900px; margin:auto;">
+  <ion-item class="migrate-page-form" class="wrapper-helper">
     <ion-label position="stacked">マイページを貼り付けですべて取り込み</ion-label>
     <ion-item>
       <ion-textarea cols="120" rows="20" id="importarea" #importarea (paste)="onPaste($event)"></ion-textarea>
     </ion-item>
   </ion-item>
 
-  <ion-list style="max-width:900px; margin:auto;">
+  <ion-list class="wrapper-helper">
     <ion-item *ngFor="let item of items">
       <!--<ion-spinner name="crescent" slot="start"></ion-spinner>-->
       <ion-icon name="checkmark-circle" [color]="item.color"></ion-icon>
