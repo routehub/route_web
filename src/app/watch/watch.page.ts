@@ -345,7 +345,7 @@ export class WatchPage implements OnInit {
 
   alretEditable(event) {
     event.stopPropagation();
-    window.alert('編集モード・フォーク機能は鋭意開発中です＞＜ <br>もうしばらくお待ち下さい');
+    window.alert('編集モード・フォーク機能は鋭意開発中です＞＜ \nもうしばらくお待ち下さい');
 
     this.editMarkers.forEach(m => {
       m.addTo(this.map);
