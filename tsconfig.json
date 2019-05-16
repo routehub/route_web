@@ -18,5 +18,8 @@
       "es2018",
       "dom"
     ]
-  }
+  },
+  //  "include": [
+  //    "node_modules/gpx-builder/*"
+  //  ]
 }
