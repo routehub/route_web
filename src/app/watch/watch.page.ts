@@ -376,10 +376,10 @@ export class WatchPage implements OnInit {
       return;
     }
     let intervalTable = [
-      [500, '約8km/h'],
-      [250, '約30km/h'],
-      [100, '約80km/h'],
-      [30, '約300km/h'],
+      [500, '約30km/h'],
+      [250, '約80km/h'],
+      [100, '約120km/h'],
+      [30, '約500km/h'],
     ];
     if (intervalTable.length - 1 === this.playSpeedIndex) {
       this.playSpeedIndex = 0;
@@ -439,7 +439,8 @@ export class WatchPage implements OnInit {
   async presentToast(message) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 2000
+      duration: 2000,
+      color: "primary",
     });
     toast.present();
   }
