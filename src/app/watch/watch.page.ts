@@ -68,6 +68,8 @@ export class WatchPage implements OnInit {
   private hotlineLayer: any;
   private isSlopeMode = false;
 
+  private editMarkers: Array<any> = [];
+
   route_data = {
     id: '',
     title: '',
@@ -171,7 +173,10 @@ export class WatchPage implements OnInit {
         if (route.kind[i] === '1') {
           let j = i / 2;
           if (pos[j]) {
-            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
+            //            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
+            that.editMarkers.push(
+              L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon })
+            );
           } else {
             //            console.log(j, pos.length);
           }
@@ -336,6 +341,22 @@ export class WatchPage implements OnInit {
       this.animatedMarker.start();
       this.isPlaying = true;
     }
+  }
+
+  alretEditable(event) {
+    event.stopPropagation();
+    window.alert('編集モード・フォーク機能は鋭意開発中です＞＜ <br>もうしばらくお待ち下さい');
+
+    this.editMarkers.forEach(m => {
+      m.addTo(this.map);
+    });
+
+    let removeIcon = () => {
+      this.editMarkers.forEach(m => {
+        this.map.removeLayer(m);
+      });
+    }
+    setTimeout(removeIcon, 5000);
   }
 
   private playSpeedIndex = 0;
