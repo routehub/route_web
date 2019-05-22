@@ -13,7 +13,6 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RouteinfoPageModule } from './routeinfo/routeinfo.module';
 import { ExportPageModule } from './export/export.module';
-import { SearchBarComponentModule } from './search-bar/search-bar.component.module';
 
 import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
@@ -29,7 +28,6 @@ import { IonicStorageModule } from '@ionic/storage';
     AppRoutingModule,
     RouteinfoPageModule,
     ExportPageModule,
-    SearchBarComponentModule,
     LayerselectPageModule,
     LazyLoadImageModule,
     AngularFireModule.initializeApp(environment.firebase),

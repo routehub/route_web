@@ -39,10 +39,10 @@
     "leaflet": "^1.5.1",
     "leaflet-hotline": "^0.4.0",
     "leaflet.elevation": "github:ctyo/Leaflet.Elevation#innerlabel_tooltips",
+    "material-components-web": "^2.2.0",
     "ng-lazyload-image": "^5.1.2",
     "rxjs": "~6.3.3",
-    "zone.js": "~0.8.29",
-    "material-components-web": "^1.0.1"
+    "zone.js": "~0.8.29"
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.12.3",
