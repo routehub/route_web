@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 
 const routes: Routes = [
   {
@@ -19,18 +19,37 @@ const routes: Routes = [
     path: 'watch/:id',
     loadChildren: './watch/watch.module#WatchPageModule'
   },
-  { path: 'migration', loadChildren: './migration/migration.module#MigrationPageModule' },
-  { path: 'routeinfo', loadChildren: './routeinfo/routeinfo.module#RouteinfoPageModule' },
-  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
-  { path: 'export', loadChildren: './export/export.module#ExportPageModule' },
-  { path: 'my', loadChildren: './my/my.module#MyPageModule' },
-  { path: 'layerselect', loadChildren: './layerselect/layerselect.module#LayerselectPageModule' }
+  {
+    path: 'migration',
+    loadChildren: './migration/migration.module#MigrationPageModule'
+  },
+  {
+    path: 'routeinfo',
+    loadChildren: './routeinfo/routeinfo.module#RouteinfoPageModule'
+  },
+  {
+    path: 'login',
+    loadChildren: './login/login.module#LoginPageModule'
+  },
+  {
+    path: 'export',
+    loadChildren: './export/export.module#ExportPageModule'
+  },
+  {
+    path: 'my',
+    loadChildren: './my/my.module#MyPageModule'
+  },
+  {
+    path: 'layerselect',
+    loadChildren: './layerselect/layerselect.module#LayerselectPageModule'
+  }
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}
