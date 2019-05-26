@@ -1,7 +1,44 @@
-.card-content {
-  padding: 16px;
-}
-.search-bar-card {
+.search-card {
   height: 108px;
-  width: 640px;
+  max-width: 640px;
+
+  position: relative;
 }
+
+.search-card__search-box {
+  height: 48px;
+}
+
+.search-card__search-box__form {
+  margin-top: 16px;
+  margin-left: 18px;
+  margin-bottom: 16px;
+}
+
+.search-card__search-box__form__input {
+  height: 50px;
+  padding: 0 0;
+  position: absolute;
+  top: 0;
+  outline: 0;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+  border: none;
+}
+
+#search-icon {
+  top: 0;
+  font-size: 16pt;
+  margin-right: 16px;
+  background:none;
+  color: #757575;
+}
+
+#Line {
+  margin: 0;
+  top: 0;
+  width: 100%;
+  border-top: 1px solid #e0e0e0;
+}
+
