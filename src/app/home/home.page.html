@@ -1,178 +1,180 @@
 <ion-header>
 </ion-header>
 <ion-content>
-  <ion-grid style="padding:0">
-    <ion-row>
-      <ion-col class="titleimage" *ngIf="platform.is('desktop')">
-        <h2>UPGRADE ルートラボ</h2>
-        <p>
-          ルートラボに足りない機能・作りたいやつを<br>サクサク追加していくアプリです<br>
-          <span style="color:rgba(255, 255, 255, 0.295)">(おこられない感じで勝手に)</span>
-        </p>
+    <ion-grid style="padding:0">
+        <ion-row>
+            <ion-col class="titleimage" *ngIf="platform.is('desktop')">
+                <h2>UPGRADE ルートラボ</h2>
+                <p>
+                    ルートラボに足りない機能・作りたいやつを<br>サクサク追加していくアプリです<br>
+                    <span style="color:rgba(255, 255, 255, 0.295)">(おこられない感じで勝手に)</span>
+                </p>
 
-        <ion-buttons start style="min-width:400px; width:50%;margin:auto;margin-top:40px;">
+                <!--<ion-buttons start style="min-width:400px; width:50%;margin:auto;margin-top:40px;">
 
-          <ion-searchbar (change)="search()" autocorrect="off" autocomplete="on" searchIcon="search"
-            placeholder="サイクリング" animated [(ngModel)]="query">
-          </ion-searchbar>
-          <ion-button layout="end" (click)="search()">
-            <ion-icon slot="icon-only" name="search"></ion-icon>
-          </ion-button>
+                  <ion-searchbar (change)="search()" autocorrect="off" autocomplete="on" searchIcon="search"
+                    placeholder="サイクリング" animated [(ngModel)]="query">
+                  </ion-searchbar>
+                  <ion-button layout="end" (click)="search()">
+                    <ion-icon slot="icon-only" name="search"></ion-icon>
+                  </ion-button>
 
-        </ion-buttons>
-      </ion-col>
+                </ion-buttons>-->
 
+                <app-search-bar style="width:100px; max-width:640px; min-width:100px; margin-top:40px;"></app-search-bar>
 
-      <ion-col class="titleimage titleimage-mobile" [ngStyle]="titleimageheight" *ngIf="platform.is('mobile')">
-        <h1><img src="./assets/logo-white.png" alt="routehub"></h1>
-        <h2>UPGRADE<br>ルートラボ</h2>
-        <p>
-          ルートラボに足りない機能・作りたいやつを<br>サクサク追加していくアプリです<br>
-          <span style="color:rgba(255, 255, 255, 0.295)">(おこられない感じで勝手に)</span>
-        </p>
-
-        <ion-buttons start style="margin-top:100px;">
-
-          <ion-searchbar searchIcon="none" autocomplete="on" searchIcon="search" placeholder="サイクリング" animated
-            [(ngModel)]="query" mode="md">
-          </ion-searchbar>
-          <ion-button layout="end" (click)="search()">
-            <ion-icon slot="icon-only" name="search"></ion-icon>
-          </ion-button>
-
-        </ion-buttons>
-
-      </ion-col>
+            </ion-col>
 
 
-      <ion-avatar class="login-button-mobile" *ngIf="platform.is('mobile')" routerLink="/my"
-        style="width:40px;height:40px;" #logoutButton>
-        <img src="{{ photoURL }}">
-      </ion-avatar>
+            <ion-col class="titleimage titleimage-mobile" [ngStyle]="titleimageheight" *ngIf="platform.is('mobile')">
+                <h1><img src="./assets/logo-white.png" alt="routehub"></h1>
+                <h2>UPGRADE<br>ルートラボ</h2>
+                <p>
+                    ルートラボに足りない機能・作りたいやつを<br>サクサク追加していくアプリです<br>
+                    <span style="color:rgba(255, 255, 255, 0.295)">(おこられない感じで勝手に)</span>
+                </p>
 
-      <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile')" expand="block"
-        (click)="toLoginPage()" layout="icon-end" #loginButton> ログイン・登録
-      </ion-button>
+                <ion-buttons start style="margin-top:100px;">
 
-    </ion-row>
+                    <ion-searchbar searchIcon="none" autocomplete="on" searchIcon="search" placeholder="サイクリング" animated
+                                   [(ngModel)]="query" mode="md">
+                    </ion-searchbar>
+                    <ion-button layout="end" (click)="search()">
+                        <ion-icon slot="icon-only" name="search"></ion-icon>
+                    </ion-button>
 
-    <ion-row style="max-width:900px;margin:auto;">
-      <ion-col *ngIf="platform.is('desktop')">
-        <iframe height='100%' width='100%' frameborder='0' allowtransparency='true' scrolling='no'
-          src='https://dev.routehub.app/embed/a09d69610acfcf763f662406162fc3bf' lazyload='on'></iframe>
-      </ion-col>
-      <ion-col>
+                </ion-buttons>
 
-        <ion-list class="{{list_style_class}}">
-          <ion-item>
-            <ion-label>アップグレード完了/予定</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="true"></ion-checkbox>
-            <ion-label>標高や距離で詳細に検索できる機能</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="true"></ion-checkbox>
-            <ion-label>GPXエクスポートにコメントを含める</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="true"></ion-checkbox>
-            <ion-label>標高を拡大して細かいアップダウンが<br>見られるようにする</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="false"></ion-checkbox>
-            <ion-label>編集ポイントを引き継いだルートコピー機能</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="false"></ion-checkbox>
-            <ion-label>スマホでルート作成</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="false"></ion-checkbox>
-            <ion-label>ルート以外の近くのお店やいい景色も<br>ルートに追加可能にする</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="false"></ion-checkbox>
-            <ion-label>アプリ提供と簡単なナビ機能</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="false"></ion-checkbox>
-            <ion-label>使いやすいAPIの提供</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="false"></ion-checkbox>
-            <ion-label>時刻表/キューシート機能</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox slot="start" checked="false"></ion-checkbox>
-            <ion-label>ソースコードを公開して<br>みんなで改善できるようにする</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>随時追加します（<a target="_blank"
-                href="https://docs.google.com/forms/d/e/1FAIpQLSfJvjsA_bOCGHkHMTTze11Jwy-_AF1RbV88YKpQNK85jxtUwA/viewform">要望があればこちらにどうぞ</a>）
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-col>
-    </ion-row>
-
-    <ion-row class="wrapper-helper">
-      <ion-col>
-        <p>
-          ルートラボは便利で最高<br>
-          海外にもridewithやstravaとか、めっちゃいいトレーニングログを残すサイトとかルート作成サイトあるよね。<br>
-          ルートラボはルート共有サイトで、それらのアプリとは違う使い方にも使えて唯一無二の感じはするよね。<br>
-          <br>
-          ルートラボは去年は頑張って更新してたみたいだけど、2周遅れ感あるよね。<br>
-          <br>
-          僕らは自転車乗りで街歩きとか地図が好きなエンジニア集団だよ。<br>
-          もっといいルート検索とか、スマホでの快適な共有とか、地方に旅行に行ったときに最高の道をさがすことができるサービスになれると思ったんだ。
-          なんで、Yahoo! JAPANホスティングじゃないルートラボをつくったよ。<br>
-          <br>
-          沢山の機能を改善したいからデータを移行して使ってもらうスタイルになっていて<br>
-          ちょっと使いにくいかもしれないけど、今後もっと楽に使えるように改善するよ。<br>
-          <br>
-          <br>
-          まず作った機能と、これから作っていく機能は、上にリストとして上げたよ。<br>
-          みんなが欲しい機能があるかわからないけど、つかってみた感想とか、要望を教えてほしいな。（丁寧で怖くない言葉で！）<br>
-          <br>
-          <br>
-          よろしくね!
-        </p>
-      </ion-col>
-    </ion-row>
-
-    <ion-row style="max-width:500px;margin:auto; margin-bottom: 50px;">
-      <ion-list style="width:100%">
-        <ion-item>
-          <ion-label>お知らせ</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>βリリースの準備中です。 2019/5/5</ion-label>
-        </ion-item>
-      </ion-list>
-
-    </ion-row>
-
-    <ion-row class="wrapper-helper">
-      <ion-col>
-        使い方ガイド<br>
-        <img src="http://placehold.jp/24/cc9999/993333/150x100.png">
-      </ion-col>
-      <ion-col>
-        ブログリンク<br>
-        <img src="http://placehold.jp/24/cc9999/993333/150x100.png">
-      </ion-col>
-      <ion-col>
-        公式Twitter<br>
-        <img src="http://placehold.jp/24/cc9999/993333/150x100.png">
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+            </ion-col>
 
 
+            <ion-avatar class="login-button-mobile" *ngIf="platform.is('mobile')" routerLink="/my"
+                        style="width:40px;height:40px;" #logoutButton>
+                <img src="{{ photoURL }}">
+            </ion-avatar>
 
-  <footer *ngIf="platform.is('desktop')">
-    routehub.app © 2019 / プライバシーポリシー / 利用規約 / お問い合わせ
-  </footer>
+            <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile')" expand="block"
+                        (click)="toLoginPage()" layout="icon-end" #loginButton> ログイン・登録
+            </ion-button>
+
+        </ion-row>
+
+        <ion-row style="max-width:900px;margin:auto;">
+            <ion-col *ngIf="platform.is('desktop')">
+                <iframe height='100%' width='100%' frameborder='0' allowtransparency='true' scrolling='no'
+                        src='https://dev.routehub.app/embed/a09d69610acfcf763f662406162fc3bf' lazyload='on'></iframe>
+            </ion-col>
+            <ion-col>
+
+                <ion-list class="{{list_style_class}}">
+                    <ion-item>
+                        <ion-label>アップグレード完了/予定</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="true"></ion-checkbox>
+                        <ion-label>標高や距離で詳細に検索できる機能</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="true"></ion-checkbox>
+                        <ion-label>GPXエクスポートにコメントを含める</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="true"></ion-checkbox>
+                        <ion-label>標高を拡大して細かいアップダウンが<br>見られるようにする</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="false"></ion-checkbox>
+                        <ion-label>編集ポイントを引き継いだルートコピー機能</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="false"></ion-checkbox>
+                        <ion-label>スマホでルート作成</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="false"></ion-checkbox>
+                        <ion-label>ルート以外の近くのお店やいい景色も<br>ルートに追加可能にする</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="false"></ion-checkbox>
+                        <ion-label>アプリ提供と簡単なナビ機能</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="false"></ion-checkbox>
+                        <ion-label>使いやすいAPIの提供</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="false"></ion-checkbox>
+                        <ion-label>時刻表/キューシート機能</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-checkbox slot="start" checked="false"></ion-checkbox>
+                        <ion-label>ソースコードを公開して<br>みんなで改善できるようにする</ion-label>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>随時追加します（<a target="_blank"
+                                              href="https://docs.google.com/forms/d/e/1FAIpQLSfJvjsA_bOCGHkHMTTze11Jwy-_AF1RbV88YKpQNK85jxtUwA/viewform">要望があればこちらにどうぞ</a>）
+                        </ion-label>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+
+        <ion-row class="wrapper-helper">
+            <ion-col>
+                <p>
+                    ルートラボは便利で最高<br>
+                    海外にもridewithやstravaとか、めっちゃいいトレーニングログを残すサイトとかルート作成サイトあるよね。<br>
+                    ルートラボはルート共有サイトで、それらのアプリとは違う使い方にも使えて唯一無二の感じはするよね。<br>
+                    <br>
+                    ルートラボは去年は頑張って更新してたみたいだけど、2周遅れ感あるよね。<br>
+                    <br>
+                    僕らは自転車乗りで街歩きとか地図が好きなエンジニア集団だよ。<br>
+                    もっといいルート検索とか、スマホでの快適な共有とか、地方に旅行に行ったときに最高の道をさがすことができるサービスになれると思ったんだ。
+                    なんで、Yahoo! JAPANホスティングじゃないルートラボをつくったよ。<br>
+                    <br>
+                    沢山の機能を改善したいからデータを移行して使ってもらうスタイルになっていて<br>
+                    ちょっと使いにくいかもしれないけど、今後もっと楽に使えるように改善するよ。<br>
+                    <br>
+                    <br>
+                    まず作った機能と、これから作っていく機能は、上にリストとして上げたよ。<br>
+                    みんなが欲しい機能があるかわからないけど、つかってみた感想とか、要望を教えてほしいな。（丁寧で怖くない言葉で！）<br>
+                    <br>
+                    <br>
+                    よろしくね!
+                </p>
+            </ion-col>
+        </ion-row>
+
+        <ion-row style="max-width:500px;margin:auto; margin-bottom: 50px;">
+            <ion-list style="width:100%">
+                <ion-item>
+                    <ion-label>お知らせ</ion-label>
+                </ion-item>
+                <ion-item>
+                    <ion-label>βリリースの準備中です。 2019/5/5</ion-label>
+                </ion-item>
+            </ion-list>
+
+        </ion-row>
+
+        <ion-row class="wrapper-helper">
+            <ion-col>
+                使い方ガイド<br>
+                <img src="http://placehold.jp/24/cc9999/993333/150x100.png">
+            </ion-col>
+            <ion-col>
+                ブログリンク<br>
+                <img src="http://placehold.jp/24/cc9999/993333/150x100.png">
+            </ion-col>
+            <ion-col>
+                公式Twitter<br>
+                <img src="http://placehold.jp/24/cc9999/993333/150x100.png">
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+
+    <footer *ngIf="platform.is('desktop')">
+        routehub.app © 2019 / プライバシーポリシー / 利用規約 / お問い合わせ
+    </footer>
 </ion-content>

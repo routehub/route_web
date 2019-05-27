@@ -5,22 +5,28 @@ import {IonicModule} from '@ionic/angular';
 import {RouterModule} from '@angular/router';
 
 import {HomePage} from './home.page';
-import {SearchBarComponentModule} from '../search-bar/search-bar.component.module';
+import {SearchBarComponent} from '../search-bar/search-bar.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        IonicModule,
-        SearchBarComponentModule,
-        RouterModule.forChild([
-            {
-                path: '',
-                component: HomePage
-            }
-        ])
-    ],
-    declarations: [HomePage]
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    RouterModule.forChild([
+      {
+        path: '',
+        component: HomePage
+      }
+    ])
+  ],
+  declarations: [
+    HomePage,
+    SearchBarComponent
+  ],
+  entryComponents: [
+    SearchBarComponent
+  ]
+
 })
 export class HomePageModule {
 }
