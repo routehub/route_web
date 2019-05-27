@@ -39,6 +39,14 @@ export class ListPage implements OnInit {
     author: string;
     thumburl: string;
     created_at: string;
+    total_dist: number;
+    total_elevation: number;
+    max_elevation: number;
+    max_slope: number;
+    avg_slope: number;
+    start_point: string;
+    goal_point: string;
+
   }> = [];
 
 
@@ -206,7 +214,14 @@ export class ListPage implements OnInit {
             body: this.getBodyHead(r.body),
             author: r.author === '' ? '名も無きルート引き' : r.author,
             thumburl: this.getThumbUrl(r.summary),
-            created_at: r.created_at,
+            created_at: r.created_at.slice(0, -14).replace(/-/g, '/'),
+            total_dist: r.total_dist,
+            total_elevation: r.total_elevation,
+            max_elevation: r.max_elevation,
+            max_slope: r.max_slope,
+            avg_slope: r.avg_slope,
+            start_point: r.start_point,
+            goal_point: r.goal_point,
           });
 
           this.infiniteScroll.complete();
