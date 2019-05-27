@@ -1,19 +1,29 @@
 <div class="mdc-card search-card">
 
     <div class="search-card__search-box mdc-card__primary-action">
-        <form class="search-card__search-box__form" >
+        <form class="search-card__search-box__form">
             <i class="material-icons search-icon" id="search-icon" title="search" aria-hidden="true">search</i>
-            <input class="search-card__search-box__form__input" type="text" placeholder="ルートを検索する" />
+            <input class="search-card__search-box__form__input" type="text" placeholder="ルートを検索する"/>
 
         </form>
 
     </div>
 
-    <hr id="Line">
+    <hr class="line">
 
-    <div class="search-card__tag-box">
+    <div class="search-card__detail">
+        <div class="search-card__detail__element">
+            <mdc-slider discrete markers class="mdc-slider--custom" [min]="0" [max]="100" [step]="5" [value]="20"
+                        (input)="onInput($event)" (change)="onChange($event)"></mdc-slider>
+        </div>
     </div>
 
+
+    <hr class="line">
+
+    <div class="search-card__tag-box">
+        タグとか
+    </div>
 
 
 </div>

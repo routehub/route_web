@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { SearchBarComponent } from './search-bar.component';
 
+import {MdcSliderModule} from '@angular-mdc/web';
+
 const routes: Routes = [
     {
         path: '',
@@ -19,7 +21,8 @@ const routes: Routes = [
         CommonModule,
         FormsModule,
         IonicModule,
-        RouterModule.forChild(routes)
+        RouterModule.forChild(routes),
+        MdcSliderModule
     ],
     exports: [
         SearchBarComponent

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MdcSliderChange } from '@angular-mdc/web';
+
 
 @Component({
   selector: 'app-search-bar',
@@ -11,4 +13,11 @@ export class SearchBarComponent implements OnInit {
 
   ngOnInit() {}
 
+  onInput(event: MdcSliderChange): void {
+    console.log(event.value);
+  }
+
+  onChange(event: MdcSliderChange): void {
+    console.log(event.value);
+  }
 }

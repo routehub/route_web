@@ -1,5 +1,11 @@
+// TODO : variables.scss を参照するように変更する
+@import "~@angular-mdc/theme/material";
+
+$mdc-theme-primary: #ec1644;
+$mdc-theme-secondary: #ffffff;
+
 .search-card {
-  height: 108px;
+  height: 336px;
   max-width: 640px;
 
   position: relative;
@@ -31,14 +37,26 @@
   top: 0;
   font-size: 16pt;
   margin-right: 16px;
-  background:none;
+  background: none;
   color: #757575;
 }
 
-#Line {
+.line {
   margin: 0;
   top: 0;
   width: 100%;
   border-top: 1px solid #e0e0e0;
 }
 
+.search-card__detail {
+  height: 204px;
+  width: 100%;
+}
+
+.search-card__detail__element {
+  padding: 24px 24px 32px;
+}
+
+.mdc-slider--custom {
+  @include mdc-slider-color-accessible($mdc-theme-primary);
+}
