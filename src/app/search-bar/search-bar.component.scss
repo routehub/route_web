@@ -9,34 +9,31 @@ $mdc-theme-secondary: #ffffff;
   max-width: 640px;
 
   position: relative;
+  text-align: left;
 }
 
-.search-card__search-box {
-  height: 48px;
-}
+//.search-card__search-box {
+//  height: 48px;
+//}
 
 .search-card__search-box__form {
-  margin-top: 16px;
-  margin-left: 18px;
-  margin-bottom: 16px;
+  width: 100%;
+  height: 48px;
+  padding-left: 18px;
+
 }
 
 .search-card__search-box__form__input {
-  height: 50px;
-  padding: 0 0;
-  position: absolute;
-  top: 0;
+  height: 48px;
   outline: 0;
   font-size: 16px;
   font-weight: bold;
-  width: 100%;
   border: none;
+  padding-left: 18px;
 }
 
 #search-icon {
-  top: 0;
-  font-size: 16pt;
-  margin-right: 16px;
+  font-size: 18pt;
   background: none;
   color: #757575;
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MdcSliderChange } from '@angular-mdc/web';
 
-
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',

@@ -6,6 +6,7 @@ import {RouterModule} from '@angular/router';
 
 import {HomePage} from './home.page';
 import {SearchBarComponent} from '../search-bar/search-bar.component';
+import {MdcSliderModule} from '@angular-mdc/web';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {SearchBarComponent} from '../search-bar/search-bar.component';
         path: '',
         component: HomePage
       }
-    ])
+    ]),
+    MdcSliderModule
   ],
   declarations: [
     HomePage,
