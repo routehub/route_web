@@ -64,16 +64,17 @@
               <img class="list-thumb" lazyLoad='{{item.thumburl}}' (click)="pageSelected(item)" offset="50" />
             </ion-card-header>
 
+
             <ion-card-content>
               <ul class="route-info">
-                <li>総距離<br />XXX.Xkm</li>
-                <li>最大標高差<br />XXXXm</li>
-                <li>獲得標高<br />XXXm</li>
-                <li>走行時間<br />XhXXm</li>
+                <li>総距離<br />{{item.total_dist}}km</li>
+                <li>最大標高<br />{{item.max_elevation}}m</li>
+                <li>獲得標高<br />{{item.total_elevation}}m</li>
+                <!--<li>走行時間<br />XhXXm</li>-->
               </ul>
               <ul class="startgoal-info">
-                <li><span>スタート</span>愛知県名古屋市名東区藤が丘</li>
-                <li><span>ゴール</span>豊田市井上町5丁目</li>
+                <li><span>スタート</span>{{item.start_point}}</li>
+                <li><span>ゴール</span>{{item.goal_point}}</li>
               </ul>
             </ion-card-content>
           </ion-card>
