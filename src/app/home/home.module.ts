@@ -6,21 +6,22 @@ import {RouterModule} from '@angular/router';
 
 import {HomePage} from './home.page';
 import {SearchBarComponent} from '../search-bar/search-bar.component';
-import {MdcSliderModule} from '@angular-mdc/web';
+import {MdcCheckboxModule, MdcSliderModule} from '@angular-mdc/web';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: HomePage
-      }
-    ]),
-    MdcSliderModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        RouterModule.forChild([
+            {
+                path: '',
+                component: HomePage
+            }
+        ]),
+        MdcSliderModule,
+        MdcCheckboxModule
+    ],
   declarations: [
     HomePage,
     SearchBarComponent
