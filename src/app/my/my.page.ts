@@ -17,7 +17,7 @@ export class MyPage implements OnInit {
   uid;
   photoURL;
   displayName;
-  body = "最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない最近ロードのってない"
+  body = "";
   idToken;
 
   items: Array<{
@@ -45,10 +45,10 @@ export class MyPage implements OnInit {
 
   ngOnInit() {
     // ログイン確認
-    var that = this;
+    let that = this;
     // TODO : なんかココらへん処理をまとめたほうが良さそう, JSONで格納したほうがよさそう
     this.storage.get('user.uid').then((uid) => {
-      if (ɵPLATFORM_WORKER_UI_ID == null || uid == '') {
+      if (ɵPLATFORM_WORKER_UI_ID == null || uid === '') {
         this.navCtrl.navigateForward('/login');
       }
       that.uid = uid;
