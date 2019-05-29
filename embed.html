@@ -3,7 +3,7 @@
   xmlns='http://www.w3.org/TR/html5'>
 
 <head>
-  <title>ルートラボ</title>
+  <title>ルートハブ</title>
   <meta charset="utf-8">
   <meta content='noindex' name='robots'>
   <meta content='yes' name='apple-mobile-web-app-capable'>
@@ -14,7 +14,7 @@
 {
   "@context": "http://schema.org",
   "@type": "Organization",
-  "name": "ルートラボ",
+  "name": "ルートハブ",
   "url": "https://routehub.app/",
   "logo": ","
   "sameAs": [
@@ -100,12 +100,12 @@
       <h1><a target="_blank" href="https://dev.routehub.app/"><img src="https://dev.routehub.app/assets/logo-white.png"
             alt="routehub"></a></h1>
       <ul>
-        <li id="title"><a target="_blank" href=""></a></li>
-        <li id="created_at"></li>
+        <li id="title" style="margin-right:20px"><a target="_blank" href=""></a></li>
+        <li id="author">by <a></a></li>
+        <!--<li id="created_at"></li>-->
       </ul>
 
       <ul>
-        <li id="author"></li>
         <li id="dist"></li>
         <li id="elevation"></li>
       </ul>
@@ -236,10 +236,10 @@
   function setRouteMap(d) {
     $('#title>a').text(d.results.title || '');
     $('#title>a').attr('href', 'https://dev.routehub.app/watch/' + d.results.id);
-    $('#author').text(d.results.author || '');
+    $('#author>a').text(d.results.author || '');
     $('#created_at').text(d.results.created_at || '');
-    $('#dist').text(d.results.dist || '0.0km');
-    $('#elevation').text(d.results.elevation || '0.0m');
+    $('#dist').text(d.results.total_dist + 'km' || '0.0km');
+    $('#elevation').text(d.results.total_elevation + 'm' || '0.0m');
 
     // 線を引く
     var pos = d.results.pos.split(',').map(p => { return p.split(' ') });
