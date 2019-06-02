@@ -21,4 +21,11 @@ export class RouteinfoPage implements OnInit {
   async closeModal() {
     await this.modalController.dismiss();
   }
+
+  goLLL() {
+    let link = document.createElement('a');
+    link.href = "https://latlonglab.yahoo.co.jp/route/watch?id=" + this.route.id;
+    link.target = "_blank";
+    link.click();
+  }
 }

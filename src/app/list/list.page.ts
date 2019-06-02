@@ -36,6 +36,7 @@ export class ListPage implements OnInit {
     id: string,
     title: string;
     body: string;
+    creator_name: string;
     author: string;
     thumburl: string;
     created_at: string;
@@ -46,7 +47,6 @@ export class ListPage implements OnInit {
     avg_slope: number;
     start_point: string;
     goal_point: string;
-
   }> = [];
 
 
@@ -212,7 +212,8 @@ export class ListPage implements OnInit {
             id: r.id,
             title: r.title,
             body: this.getBodyHead(r.body),
-            author: r.author === '' ? '名も無きルート引き' : r.author,
+            author: r.author || "",
+            creator_name: r.author || "",
             thumburl: this.getThumbUrl(r.summary),
             created_at: r.created_at.slice(0, -14).replace(/-/g, '/'),
             total_dist: r.total_dist,

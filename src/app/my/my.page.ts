@@ -1,11 +1,12 @@
+import { RouteHubUser } from './../model/routehubuser';
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { NavController, Events } from '@ionic/angular';
-import { ɵPLATFORM_WORKER_UI_ID } from '@angular/common';
+import { Platform, NavController, Events } from '@ionic/angular';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import { Route } from '../watch/routemap';
 
 @Component({
   selector: 'app-my',
@@ -14,11 +15,9 @@ import 'firebase/auth';
 })
 export class MyPage implements OnInit {
 
-  uid;
-  photoURL;
-  displayName;
-  body = "";
-  idToken;
+  user: RouteHubUser;
+  display_name: string;
+  isMyRoute: Boolean;
 
   items: Array<{
     id: string,
@@ -41,40 +40,53 @@ export class MyPage implements OnInit {
     private storage: Storage,
     private http: HttpClient,
     public events: Events,
+    public platform: Platform,
   ) { }
 
   ngOnInit() {
-    // ログイン確認
+    // ログイン
     let that = this;
-    // TODO : なんかココらへん処理をまとめたほうが良さそう, JSONで格納したほうがよさそう
-    this.storage.get('user.uid').then((uid) => {
-      if (ɵPLATFORM_WORKER_UI_ID == null || uid === '') {
-        this.navCtrl.navigateForward('/login');
+    this.storage.get('user').then((json) => {
+      if (!json || json == "") {
+        return;
       }
-      that.uid = uid;
-    }).catch(e => {
-      this.navCtrl.navigateForward('/login');
+      that.user = JSON.parse(json);
+      that.display_name = that.user.nickname + "";
     });
-    this.storage.get('user.displayName').then((displayName) => {
-      this.displayName = displayName;
-    });
-    this.storage.get('user.photoURL').then((photoURL) => {
-      that.photoURL = photoURL;
-    });
+  }
 
+  delete(item) {
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i].id === item.id) {
+        // UIから削除
+        this.items.splice(i, 1);
+        // DBから削除
+        const httpOptions = {
+          headers: new HttpHeaders(
+            'Content-Type:application/x-www-form-urlencoded'
+          )
+        };
+        const url = environment.api.host + environment.api.route_delete_path;
+        this.http.post(url,
+          'firebase_id_token=' + this.user.token + '&' + 'id=' + item.id,
+          httpOptions).toPromise();
+      }
+    }
   }
 
   showMyRoute() {
+    this.isMyRoute = true;
     this.items = [];
     const url = environment.api.host + environment.api.my_path;
 
-    this.get(url);
+    this.getMyLikeRoute(url);
   }
 
   showLikeRoute() {
+    this.isMyRoute = false;
     this.items = [];
     const url = environment.api.host + environment.api.like_path;
-    this.get(url);
+    this.getMyLikeRoute(url);
   }
 
   ionViewWillEnter() {
@@ -84,23 +96,39 @@ export class MyPage implements OnInit {
   pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
-  async get(url) {
-    if (!this.idToken) {
-      this.idToken = await firebase.auth().currentUser.getIdToken(true);
-      if (!this.idToken || this.idToken === '') {
-        this.navCtrl.navigateForward('/login');
+
+  displayNameChanged() {
+    const httpOptions = {
+      headers: new HttpHeaders(
+        'Content-Type:application/x-www-form-urlencoded'
+      )
+    };
+    const url = environment.api.host + environment.api.user_path;
+    this.http.post(url,
+      'firebase_id_token=' + this.user.token + '&' + 'display_name=' + this.display_name,
+      httpOptions).toPromise();
+  }
+
+  async getMyLikeRoute(url) {
+    if (!this.user) {
+      if (firebase.auth().currentUser) {
+        let idtoken = await firebase.auth().currentUser.getIdToken(true);
+        if (!idtoken || idtoken === '') {
+          this.navCtrl.navigateForward('/login');
+        }
+      } else {
+        // 多分0.2msぐらい待てばいいはずだけど、面倒なのでreturn
+        return;
       }
     }
 
-    // あきらめ
-    url += '?firebase_id_token=' + this.idToken;
-
+    url += '?firebase_id_token=' + this.user.token
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': ' application/x-www-form-urlencoded',
       })
     };
-    httpOptions.headers.set('fireabase_auth_token', this.idToken);
+    httpOptions.headers.set('fireabase_auth_token', this.user.token + ""); // String is not string
 
     return this.http.get(url, httpOptions).toPromise()
       .then((res: any) => {

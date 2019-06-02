@@ -3,7 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
-
+import { RouteHubUser } from './../model/routehubuser';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-migration',
@@ -13,15 +14,28 @@ import 'firebase/auth';
 export class MigrationPage implements OnInit {
   @ViewChild('importarea') importarea: ElementRef;
 
+  user: RouteHubUser;
   public routeurl: string;
   public items: Array<{ id: string, title: string; author: string; icon: string; color: string; }> = [];
   private migrate_url = 'https://dev-api.routelabo.com/route/1.0.0/migrate';
   //private migrate_url = 'http://localhost:8080/route/1.0.0/migrate';
   private parse_shorturl_url = 'https://dev-api.routelabo.com/route/1.0.0/expand_shorturl';
 
-  constructor(private http: HttpClient, public navCtrl: NavController) { }
+  constructor(
+    private http: HttpClient,
+    public navCtrl: NavController,
+    private storage: Storage,
+  ) { }
 
   ngOnInit() {
+    // ログイン
+    let that = this;
+    this.storage.get('user').then((json) => {
+      if (!json || json == "") {
+        return;
+      }
+      that.user = JSON.parse(json);
+    });
   }
 
   ionViewWillEnter() {
@@ -95,10 +109,8 @@ export class MigrationPage implements OnInit {
       }
 
       try {
-        const idToken = await firebase.auth().currentUser.getIdToken(true);
-
         // オブジェクトだとBE側のBodyのkeyに全部入りしてたのでとりあえずJSONで
-        const paramString = 'id=' + item.id + '&' + 'firebase_id_token=' + idToken;
+        const paramString = 'id=' + item.id + '&' + 'firebase_id_token=' + this.user.token
         const httpOptions = {
           headers: new HttpHeaders(
             'Content-Type:application/x-www-form-urlencoded'

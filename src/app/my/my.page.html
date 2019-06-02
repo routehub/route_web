@@ -8,18 +8,34 @@
   </ion-img>
 -->
   <ion-grid>
-    <ion-row align-items-center>
-      <ion-col size-md>
+    <ion-row align-items-center *ngIf="user">
+      <ion-col size=3 *ngIf="platform.is('mobile')">
         <ion-avatar class="ion-avatar">
-          <img src="{{photoURL}}">
+          <img src="{{user.photo_url}}">
+        </ion-avatar>
+      </ion-col>
+
+      <ion-col size-md *ngIf="platform.is('desktop')">
+        <ion-avatar class="ion-avatar">
+          <img src="{{user.photo_url}}">
         </ion-avatar>
       </ion-col>
       <ion-col size-lg>
         <ion-row>
-          <ion-label>{{displayName}}</ion-label>
+          <ion-col>
+            <ion-label style="font-size:50%;color:gray">認証元 : {{user.provider}}</ion-label><br />
+            <ion-label style="font-size:50%;color:gray">認証元ID :{{user.firebase_display_name}}</ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-button color="light" (click)="logout()">ログアウト</ion-button>
+          </ion-col>
         </ion-row>
         <ion-row>
-          <span (click)="logout()">ログアウト</span>
+          <ion-item>
+            <ion-label position="stacked">ニックネーム</ion-label>
+            <ion-input size="40" maxlength="40" placeholder="RouteHub上で表示される名前を設定できます" [(ngModel)]="display_name"
+              (ionChange)="displayNameChanged()" debounce="500"></ion-input>
+          </ion-item>
         </ion-row>
         <!--
         <ion-row>
@@ -56,11 +72,24 @@
           <ion-card class="one-image">
             <ion-card-header>
               <ion-card-title (click)="pageSelected(item)">{{item.title}}</ion-card-title>
-              <p>
-                <ion-label class="create_at">{{item.created_at}}</ion-label>
-                <ion-label class="card-author" lines="none" (click)="authorSelected(item)" color="primary"
-                  style="text-decoration:underline">by {{item.author}}</ion-label>
-              </p>
+              <ion-row>
+                <ion-col size="6">
+                  <ion-label class="create_at">{{item.created_at}}</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label class="card-author" lines="none" (click)="authorSelected(item)" color="primary">created by
+                    <span style="text-decoration:underline">{{item.creator_name}}</span>
+                  </ion-label>
+                  <ion-label class="card-author" lines="none" (click)="authorSelected(item)" color="primary">forked by
+                    <span style="text-decoration:underline">{{item.author}}</span>
+                  </ion-label>
+                </ion-col>
+                <ion-chip *ngIf="isMyRoute" (click)="delete(item)">
+                  <ion-icon name="trash"></ion-icon>
+                  <ion-label>削除</ion-label>
+                </ion-chip>
+              </ion-row>
+
               <img class="list-thumb" lazyLoad='{{item.thumburl}}' (click)="pageSelected(item)" offset="50" />
             </ion-card-header>
 

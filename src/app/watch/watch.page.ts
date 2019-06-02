@@ -16,6 +16,7 @@ import { Platform } from '@ionic/angular';
 import { Routemap } from './routemap';
 import { Storage } from '@ionic/storage';
 import { environment } from '../../environments/environment';
+import { RouteHubUser } from './../model/routehubuser';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 
@@ -28,6 +29,7 @@ import 'firebase/auth';
 export class WatchPage implements OnInit {
   @ViewChild('map') map_elem: ElementRef;
 
+  user: RouteHubUser;
   map: any;
   title: any;
   watch_location_subscribe: any;
@@ -115,8 +117,16 @@ export class WatchPage implements OnInit {
 
   ngOnInit() {
     window.dispatchEvent(new Event('resize'));
-
     this.watch = this.geolocation.watchPosition();
+
+    // ログイン
+    let that = this;
+    this.storage.get('user').then((json) => {
+      if (!json || json == "") {
+        return;
+      }
+      that.user = JSON.parse(json);
+    });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -213,76 +223,71 @@ export class WatchPage implements OnInit {
      * いいねの取得
      */
     // ログインしているか確認
-    this.storage.get('user.uid').then((uid) => {
-      if (!uid || uid === "") {
+
+    if (!this.user) {
+      return;
+    }
+    // ログインしていたらデータを取得
+    let is_favorite = this.getFavoriteStatus(this.route_data.id).then((ret: any) => {
+      if (!ret.results || ret.results.length === 0) {
         return;
       }
-      // ログインしていたらデータを取得
-      let is_favorite = this.getFavoriteStatus(this.route_data.id).then((ret: any) => {
-        if (!ret.results || ret.results.length === 0) {
-          return;
-        }
-        this.isFavorite = true;
-        this.favoriteIcon = 'heart';
-      });
+      this.isFavorite = true;
+      this.favoriteIcon = 'heart';
     });
+
   }
 
   async getFavoriteStatus(id): Promise<any[]> {
-    let firebase_id_token = await firebase.auth().currentUser.getIdToken(true);
-    let geturl = 'https://dev-api.routelabo.com/route/1.0.0/like';
-    return this.http.get(geturl + '?id=' + id + '&firebase_id_token=' + firebase_id_token).toPromise()
+    let url = 'https://dev-api.routelabo.com/route/1.0.0/like?id=' + id + '&firebase_id_token=' + this.user.token;
+    return this.http.get(url).toPromise()
       .then((res: any) => {
         return res;
       });
   }
 
   toggleFavorite() {
-    this.storage.get('user.uid').then(async (uid) => {
-      if (!uid || uid === "") {
-        window.alert('ログイン・ユーザー登録をしてください');
-        return;
-      }
-      console.dir(uid);
-      let firebase_id_token = await firebase.auth().currentUser.getIdToken(true);
-      console.dir(firebase_id_token);
-      if (!this.isFavorite) {
-        // いいね登録する
-        this.isFavorite = true;
-        this.favoriteIcon = 'heart';
-        // post
-        const httpOptions = {
-          headers: new HttpHeaders(
-            'Content-Type:application/x-www-form-urlencoded'
-          )
-        };
-        let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
-        this.http.post(url,
-          'id=' + this.route_data.id + '&' + 'firebase_id_token=' + firebase_id_token,
-          httpOptions).toPromise();
-        /*{
-        id: this.route_data.id,
-        firebase_id_token: firebase_id_token
-      }*/
+    if (!this.user) {
+      window.alert('ログイン・ユーザー登録をしてください');
+    }
 
-      } else {
-        // いいね削除する
-        this.isFavorite = false;
-        this.favoriteIcon = 'heart-empty';
-        // delete
-        let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
-        let httpOptions = {
-          headers: new HttpHeaders(
-            'Content-Type:application/x-www-form-urlencoded'
-          ),
-          params: new HttpParams()
-            .set('id', this.route_data.id)
-            .set('firebase_id_token', String(firebase_id_token)),
-        };
-        this.http.delete(url).toPromise();
+    if (!this.isFavorite) {
+      // いいね登録する
+      this.isFavorite = true;
+      this.favoriteIcon = 'heart';
+      // post
+      const httpOptions = {
+        headers: new HttpHeaders(
+          'Content-Type:application/x-www-form-urlencoded'
+        )
+      };
+      let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
+      this.http.post(url,
+        'id=' + this.route_data.id + '&' + 'firebase_id_token=' + this.user.token,
+        httpOptions).toPromise();
+      /*{
+      id: this.route_data.id,
+      firebase_id_token: firebase_id_token
+    }*/
 
-      }
-    });
+    } else {
+      // いいね削除する
+      this.isFavorite = false;
+      this.favoriteIcon = 'heart-empty';
+      // delete
+      let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
+      let httpOptions = {
+        headers: new HttpHeaders(
+          'Content-Type:application/x-www-form-urlencoded'
+        ),
+        params: new HttpParams()
+          .set('id', this.route_data.id)
+          .set('firebase_id_token', this.user.token + ""),
+      };
+      this.http.delete(url).toPromise();
+
+    }
+
   }
 
   toggleSlopeLayer(event) {
