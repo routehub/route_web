@@ -9,7 +9,13 @@
 -->
   <ion-grid>
     <ion-row align-items-center *ngIf="user">
-      <ion-col size-md>
+      <ion-col size=3 *ngIf="platform.is('mobile')">
+        <ion-avatar class="ion-avatar">
+          <img src="{{user.photo_url}}">
+        </ion-avatar>
+      </ion-col>
+
+      <ion-col size-md *ngIf="platform.is('desktop')">
         <ion-avatar class="ion-avatar">
           <img src="{{user.photo_url}}">
         </ion-avatar>

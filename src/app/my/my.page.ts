@@ -1,8 +1,7 @@
 import { RouteHubUser } from './../model/routehubuser';
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { NavController, Events } from '@ionic/angular';
-import { ɵPLATFORM_WORKER_UI_ID } from '@angular/common';
+import { Platform, NavController, Events } from '@ionic/angular';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
@@ -39,6 +38,7 @@ export class MyPage implements OnInit {
     private storage: Storage,
     private http: HttpClient,
     public events: Events,
+    public platform: Platform,
   ) { }
 
   ngOnInit() {
