@@ -36,6 +36,7 @@ export class ListPage implements OnInit {
     id: string,
     title: string;
     body: string;
+    creator_name: string;
     author: string;
     thumburl: string;
     created_at: string;
@@ -46,7 +47,6 @@ export class ListPage implements OnInit {
     avg_slope: number;
     start_point: string;
     goal_point: string;
-
   }> = [];
 
 
