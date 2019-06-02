@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform, Events } from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -7,6 +8,7 @@ import { User } from 'firebase';
 import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { RouteHubUser } from './model/routehubuser';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -48,6 +50,7 @@ export class AppComponent implements OnInit {
     private navCtrl: NavController,
     public events: Events,
     private storage: Storage,
+    private http: HttpClient,
   ) {
     this.initializeApp();
     this.initializeAuth();
@@ -83,15 +86,22 @@ export class AppComponent implements OnInit {
     this.user = this.auth.auth.currentUser;
 
     this.auth.authState.subscribe(async (user) => {
+      let token = await user.getIdToken();
+      const url = environment.api.host + environment.api.user_path;
+      let nickname = await this.http.get(url + '?firebase_id_token=' + token).toPromise()
+        .then((res: any) => {
+          return res[0].display_name;
+        });
+
       if (user) {
         this.user = user;
         let rhuser = new RouteHubUser(
           user.uid,
-          "",
+          nickname + "",
           user.displayName,
           user.photoURL,
           user.providerData[0].providerId,
-          await user.getIdToken(),
+          token,
         );
 
         this.storage.set('user', JSON.stringify(rhuser));

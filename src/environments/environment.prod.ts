@@ -15,6 +15,7 @@ export const environment = {
     'search_path': '/search',
     'my_path': '/my',
     'like_path': '/like',
+    'user_path': '/user',
     'staticmap_url': 'https://map.yahooapis.jp/map/V1/static',
     'thumbappid': "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-",
 

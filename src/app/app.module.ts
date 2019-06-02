@@ -18,11 +18,13 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicStorageModule } from '@ionic/storage';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
+    HttpClientModule,
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,

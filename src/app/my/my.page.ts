@@ -16,6 +16,7 @@ import { Route } from '../watch/routemap';
 export class MyPage implements OnInit {
 
   user: RouteHubUser;
+  display_name: string;
 
   items: Array<{
     id: string,
@@ -49,6 +50,7 @@ export class MyPage implements OnInit {
         return;
       }
       that.user = JSON.parse(json);
+      that.display_name = that.user.nickname + "";
     });
   }
 
@@ -72,6 +74,19 @@ export class MyPage implements OnInit {
   pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
+
+  displayNameChanged() {
+    const httpOptions = {
+      headers: new HttpHeaders(
+        'Content-Type:application/x-www-form-urlencoded'
+      )
+    };
+    const url = environment.api.host + environment.api.user_path;
+    this.http.post(url,
+      'firebase_id_token=' + this.user.token + '&' + 'display_name=' + this.display_name,
+      httpOptions).toPromise();
+  }
+
   async getMyLikeRoute(url) {
     if (!this.user) {
       if (firebase.auth().currentUser) {
