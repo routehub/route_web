@@ -84,7 +84,7 @@
                     <span style="text-decoration:underline">{{item.author}}</span>
                   </ion-label>
                 </ion-col>
-                <ion-chip>
+                <ion-chip *ngIf="isMyRoute" (click)="delete(item)">
                   <ion-icon name="trash"></ion-icon>
                   <ion-label>削除</ion-label>
                 </ion-chip>

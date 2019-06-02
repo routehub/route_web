@@ -17,6 +17,7 @@ export class MyPage implements OnInit {
 
   user: RouteHubUser;
   display_name: string;
+  isMyRoute: Boolean;
 
   items: Array<{
     id: string,
@@ -54,7 +55,27 @@ export class MyPage implements OnInit {
     });
   }
 
+  delete(item) {
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i].id === item.id) {
+        // UIから削除
+        this.items.splice(i, 1);
+        // DBから削除
+        const httpOptions = {
+          headers: new HttpHeaders(
+            'Content-Type:application/x-www-form-urlencoded'
+          )
+        };
+        const url = environment.api.host + environment.api.route_delete_path;
+        this.http.post(url,
+          'firebase_id_token=' + this.user.token + '&' + 'id=' + item.id,
+          httpOptions).toPromise();
+      }
+    }
+  }
+
   showMyRoute() {
+    this.isMyRoute = true;
     this.items = [];
     const url = environment.api.host + environment.api.my_path;
 
@@ -62,6 +83,7 @@ export class MyPage implements OnInit {
   }
 
   showLikeRoute() {
+    this.isMyRoute = false;
     this.items = [];
     const url = environment.api.host + environment.api.like_path;
     this.getMyLikeRoute(url);
