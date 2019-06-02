@@ -83,7 +83,12 @@
                     <span style="text-decoration:underline">{{item.author}}</span>
                   </ion-label>
                 </ion-col>
+                <ion-chip>
+                  <ion-icon name="trash"></ion-icon>
+                  <ion-label>削除</ion-label>
+                </ion-chip>
               </ion-row>
+
               <img class="list-thumb" lazyLoad='{{item.thumburl}}' (click)="pageSelected(item)" offset="50" />
             </ion-card-header>
 
