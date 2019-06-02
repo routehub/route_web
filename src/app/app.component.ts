@@ -6,6 +6,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { User } from 'firebase';
 import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { RouteHubUser } from './model/routehubuser';
 
 @Component({
   selector: 'app-root',
@@ -81,25 +82,24 @@ export class AppComponent implements OnInit {
     // 現在のログイン状態を確認
     this.user = this.auth.auth.currentUser;
 
-    this.auth.authState.subscribe((user) => {
+    this.auth.authState.subscribe(async (user) => {
       if (user) {
-        console.log('login done');
         this.user = user;
-        this.storage.set('user.uid', user.uid);
-        this.storage.set('user.displayName', user.displayName);
+        let rhuser = new RouteHubUser(
+          user.uid,
+          "",
+          user.displayName,
+          user.photoURL,
+          user.providerData[0].providerId,
+          await user.getIdToken(),
+        );
+
+        this.storage.set('user', JSON.stringify(rhuser));
         // TODO : 画像が設定されていない場合はデフォ画像を入れたい
-        this.storage.set('user.photoURL', user.photoURL);
-
         // TODO : ログインのexpireをstorageに入れるべきでは?
-
       } else {
-        console.log('logout done');
         this.user = null;
-
-        this.storage.remove('user.uid');
-        this.storage.remove('user.displayName');
-        this.storage.remove('user.photoURL');
-        // No user is signed in.
+        this.storage.remove('user');
       }
     });
   }

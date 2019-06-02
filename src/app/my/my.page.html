@@ -8,15 +8,18 @@
   </ion-img>
 -->
   <ion-grid>
-    <ion-row align-items-center>
+    <ion-row align-items-center *ngIf="user">
       <ion-col size-md>
         <ion-avatar class="ion-avatar">
-          <img src="{{photoURL}}">
+          <img src="{{user.photo_url}}">
         </ion-avatar>
       </ion-col>
       <ion-col size-lg>
         <ion-row>
-          <ion-label>{{displayName}}</ion-label>
+          <ion-label>{{user.provider}}</ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-label>{{user.firebase_display_name}}</ion-label>
         </ion-row>
         <ion-row>
           <span (click)="logout()">ログアウト</span>
