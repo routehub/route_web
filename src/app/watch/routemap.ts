@@ -105,13 +105,13 @@ export class Routemap {
         let map = L.map(mapele, { center: center, zoom: 9, zoomControl: false });
 
         let baselayers = {
-            "Yahoo": this.getYahooLayer(),
             "OSM": this.getOSMLayer(),
+            "Yahoo": this.getYahooLayer(),
             "GSI": this.getGSILayer(),
         };
         let overlays = {};
         L.control.layers(baselayers, overlays).addTo(map);
-        baselayers["Yahoo"].addTo(map);
+        baselayers["OSM"].addTo(map);
 
         //スケールコントロールを追加（オプションはフィート単位を非表示）
         // TODO画面の設計を考えてじゃまにならないように配置したい
