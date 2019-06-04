@@ -194,9 +194,9 @@ export class ListPage implements OnInit {
           this.infiniteScroll.disabled = true;
         }
         for (let i = 0; i < res.results.length; i++) {
-          let _r = new RouteModel('', '', '', '', '', '', '', 0, 0, 0, 0, 0, '', '');
-          _r.setData(res.results[i]);
-          this.items.push(_r);
+          let r = new RouteModel();
+          r.setData(res.results[i]);
+          this.items.push(r);
 
           this.infiniteScroll.complete();
         }

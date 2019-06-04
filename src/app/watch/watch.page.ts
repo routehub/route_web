@@ -1,5 +1,3 @@
-import { async } from '@angular/core/testing';
-import { LoginPage } from './../login/login.page';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
@@ -11,12 +9,12 @@ import * as turf from '@turf/helpers';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { LayerselectPage } from '../layerselect/layerselect.page';
-
 import { Platform } from '@ionic/angular';
 import { Routemap } from './routemap';
 import { Storage } from '@ionic/storage';
 import { environment } from '../../environments/environment';
 import { RouteHubUser } from './../model/routehubuser';
+import { RouteModel } from '../model/routemodel';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 
@@ -30,8 +28,11 @@ export class WatchPage implements OnInit {
   @ViewChild('map') map_elem: ElementRef;
 
   user: RouteHubUser;
+  route_data: RouteModel;
+  title = "";
+  author = "";
+
   map: any;
-  title: any;
   watch_location_subscribe: any;
   watch: any;
   currenPossitionMarker: any;
@@ -72,16 +73,7 @@ export class WatchPage implements OnInit {
 
   private editMarkers: Array<any> = [];
 
-  route_data = {
-    id: '',
-    title: '',
-    author: '',
-    body: '',
-    create_at: '',
-    pos: [],
-    ele: [],
-    time: [],
-  };
+
 
   routemap: Routemap;
   _routemap: any;
@@ -144,27 +136,25 @@ export class WatchPage implements OnInit {
     this.elevation = routemap.elevation;
 
     const id = this.route.snapshot.paramMap.get('id');
-    this.route_data.id = id;
+    //    this.route_data.id = id;
 
     var that = this;
     this.get(id).then(function (route: any) {
+
+
+      console.dir(route);
+      that.route_data = new RouteModel();
+      that.route_data.setFullData(route);
+
       // タイトル変更
-      that.title = route.title;
-      that.route_data.title = that.title;
-      that.route_data.author = route.author;
-      that.route_data.body = route.body;
+      that.title = that.route_data.title;
+      that.author = that.route_data.author;
 
-      // 線を引く
-      let pos = route.pos.split(',').map(p => { return p.split(' ') });
-      that.route_data.pos = pos;
-
-      // 標高も足しておく
-      let level = route.level.split(',');
-      that.route_data.ele = level;
-      for (var i = 0; i < level.length; i++) {
-        pos[i].push(level[i] * 1);
+      // 標高グラフ用のデータ作成
+      let pos = that.route_data.pos;
+      for (var i = 0; i < that.route_data.level.length; i++) {
+        pos[i].push(that.route_data.level[i] * 1);
       }
-
       that.route_geojson.features[0].geometry.coordinates = pos;
       L.geoJson(that.route_geojson, {
         "color": "#0000ff",
