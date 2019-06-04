@@ -106,8 +106,8 @@
       </ul>
 
       <ul>
-        <li id="dist"></li>
-        <li id="elevation"></li>
+        <li id="dist" style="margin-left:10px">距離<span></span></li>
+        <li id="elevation">獲得標高<span></span></li>
       </ul>
     </header>
     <div class="map" id="map">
@@ -238,8 +238,8 @@
     $('#title>a').attr('href', 'https://dev.routehub.app/watch/' + d.results.id);
     $('#author>a').text(d.results.author || '');
     $('#created_at').text(d.results.created_at || '');
-    $('#dist').text(d.results.total_dist + 'km' || '0.0km');
-    $('#elevation').text(d.results.total_elevation + 'm' || '0.0m');
+    $('#dist>span').text(d.results.total_dist + 'km' || '0.0km');
+    $('#elevation>span').text(d.results.total_elevation + 'm' || '0.0m');
 
     // 線を引く
     var pos = d.results.pos.split(',').map(p => { return p.split(' ') });
