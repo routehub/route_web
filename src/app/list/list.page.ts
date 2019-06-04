@@ -1,9 +1,11 @@
+import { Route } from './../watch/routemap';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IonInfiniteScroll, NavController, PopoverController } from '@ionic/angular';
 import { SearchSettingComponent } from '../search-setting/search-setting.component';
 import { Location } from '@angular/common';
 import { environment } from '../../environments/environment';
+import { RouteModel } from '../model/routemodel';
 
 @Component({
   selector: 'app-list',
@@ -14,8 +16,7 @@ export class ListPage implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   private search_url = environment.api.host + environment.api.search_path;
-  private staticmap_url = 'https://map.yahooapis.jp/map/V1/static';
-  private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
+
 
   /**
    * 検索用パラメーター
@@ -33,22 +34,7 @@ export class ListPage implements OnInit {
   /**
    * ルート情報モジュール
    */
-  items: Array<{
-    id: string,
-    title: string;
-    body: string;
-    creator_name: string;
-    author: string;
-    thumburl: string;
-    created_at: string;
-    total_dist: number;
-    total_elevation: number;
-    max_elevation: number;
-    max_slope: number;
-    avg_slope: number;
-    start_point: string;
-    goal_point: string;
-  }> = [];
+  items: Array<RouteModel> = [];
 
 
   constructor(
@@ -208,23 +194,9 @@ export class ListPage implements OnInit {
           this.infiniteScroll.disabled = true;
         }
         for (let i = 0; i < res.results.length; i++) {
-          let r = res.results[i];
-          this.items.push({
-            id: r.id,
-            title: r.title,
-            body: this.getBodyHead(r.body),
-            author: r.author || "",
-            creator_name: r.author || "",
-            thumburl: this.getThumbUrl(r.summary),
-            created_at: r.created_at.slice(0, -14).replace(/-/g, '/'),
-            total_dist: r.total_dist,
-            total_elevation: r.total_elevation,
-            max_elevation: r.max_elevation,
-            max_slope: r.max_slope,
-            avg_slope: r.avg_slope,
-            start_point: r.start_point,
-            goal_point: r.goal_point,
-          });
+          let _r = new RouteModel('', '', '', '', '', '', '', 0, 0, 0, 0, 0, '', '');
+          _r.setData(res.results[i]);
+          this.items.push(_r);
 
           this.infiniteScroll.complete();
         }
@@ -232,23 +204,5 @@ export class ListPage implements OnInit {
         const response: any = res;
         return response;
       });
-  }
-
-  private getBodyHead(body) {
-    let limit = 70;
-    if (body.length < limit) {
-      return body;
-    }
-    return body.substr(0, limit) + '...';
-  }
-
-  private getThumbUrl(summary) {
-    let line = summary.slice(11, -1).split(',').map(pos => {
-      let p = pos.split(' ');
-      return p[1] + ',' + p[0];
-    }).join(',');
-    return this.staticmap_url + '?appid=' + this.thumbappid
-      + '&autoscale=on&scalebar=off&width=600&height=300&l=' + '0,0,255,105,4,' // rgb, a, weight
-      + line;
   }
 }
