@@ -239,7 +239,7 @@ export class WatchPage implements OnInit {
   }
 
   async getFavoriteStatus(id): Promise<any[]> {
-    let url = 'https://dev-api.routelabo.com/route/1.0.0/like?id=' + id + '&firebase_id_token=' + this.user.token;
+    let url = environment.api.host + environment.api.like_path + '?id=' + id + '&firebase_id_token=' + this.user.token;
     return this.http.get(url).toPromise()
       .then((res: any) => {
         return res;
@@ -261,7 +261,7 @@ export class WatchPage implements OnInit {
           'Content-Type:application/x-www-form-urlencoded'
         )
       };
-      let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
+      let url = environment.api.host + environment.api.like_path;
       this.http.post(url,
         'id=' + this.route_data.id + '&' + 'firebase_id_token=' + this.user.token,
         httpOptions).toPromise();
@@ -275,7 +275,7 @@ export class WatchPage implements OnInit {
       this.isFavorite = false;
       this.favoriteIcon = 'heart-empty';
       // delete
-      let url = 'https://dev-api.routelabo.com/route/1.0.0/like';
+      let url = environment.api.host + environment.api.like_path;
       let httpOptions = {
         headers: new HttpHeaders(
           'Content-Type:application/x-www-form-urlencoded'
@@ -399,7 +399,7 @@ export class WatchPage implements OnInit {
 
 
   get(id): Promise<any[]> {
-    let geturl = 'https://dev-api.routelabo.com/route/1.0.0/route';
+    let geturl = environment.api.host + environment.api.route_path;
     return this.http.get(geturl + '?id=' + id).toPromise()
       .then((res: any) => {
         if (!res.results) {

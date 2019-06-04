@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IonInfiniteScroll, NavController, PopoverController } from '@ionic/angular';
 import { SearchSettingComponent } from '../search-setting/search-setting.component';
 import { Location } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-list',
@@ -12,7 +13,7 @@ import { Location } from '@angular/common';
 export class ListPage implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
-  private search_url = 'https://dev-api.routelabo.com/route/1.0.0/search';
+  private search_url = environment.api.host + environment.api.search_path;
   private staticmap_url = 'https://map.yahooapis.jp/map/V1/static';
   private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
 

@@ -5,6 +5,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import { RouteHubUser } from './../model/routehubuser';
 import { Storage } from '@ionic/storage';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-migration',
@@ -17,9 +18,8 @@ export class MigrationPage implements OnInit {
   user: RouteHubUser;
   public routeurl: string;
   public items: Array<{ id: string, title: string; author: string; icon: string; color: string; }> = [];
-  private migrate_url = 'https://dev-api.routelabo.com/route/1.0.0/migrate';
-  //private migrate_url = 'http://localhost:8080/route/1.0.0/migrate';
-  private parse_shorturl_url = 'https://dev-api.routelabo.com/route/1.0.0/expand_shorturl';
+  private migrate_url = environment.api.host + environment.api.migrate_path;
+  private parse_shorturl_url = environment.api.host + environment.api.expand_url_path;
 
   constructor(
     private http: HttpClient,
