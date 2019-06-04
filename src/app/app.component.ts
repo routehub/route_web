@@ -86,14 +86,17 @@ export class AppComponent implements OnInit {
     this.user = this.auth.auth.currentUser;
 
     this.auth.authState.subscribe(async (user) => {
-      let token = await user.getIdToken();
-      const url = environment.api.host + environment.api.user_path;
-      let nickname = await this.http.get(url + '?firebase_id_token=' + token).toPromise()
-        .then((res: any) => {
-          return res[0].display_name;
-        });
-
       if (user) {
+        let token = await user.getIdToken();
+        const url = environment.api.host + environment.api.user_path;
+        let nickname = await this.http.get(url + '?firebase_id_token=' + token).toPromise()
+          .then((res: any) => {
+            if (!res || !res[0] || res[0].display_name) {
+              return "";
+            }
+            return res[0].display_name;
+          });
+
         this.user = user;
         let rhuser = new RouteHubUser(
           user.uid,
