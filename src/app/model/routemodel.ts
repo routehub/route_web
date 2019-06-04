@@ -24,7 +24,6 @@ export class RouteModel {
     constructor() { }
 
     public setFullData(r) {
-        console.dir(r);
         this.id = r.id;
         this.title = r.title;
         this.body = r.body;

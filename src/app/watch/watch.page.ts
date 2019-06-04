@@ -140,9 +140,6 @@ export class WatchPage implements OnInit {
 
     var that = this;
     this.get(id).then(function (route: any) {
-
-
-      console.dir(route);
       that.route_data = new RouteModel();
       that.route_data.setFullData(route);
 
