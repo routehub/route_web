@@ -81,7 +81,20 @@ export class Routemap {
     }
 
     private getOSMLayer() {
-        let layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        let url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        let url2 = 'https://www.toolserver.org/tiles/hikebike/{z}/{x}/{y}.png';
+        let url3 = 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png';
+        let url4 = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
+        let layer = L.tileLayer(url3, {
+            attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 19
+        });
+        return layer
+    }
+
+    private getOSMCycleLayer() {
+        let url = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=8ff577dddcc24dbd945e80ef152bf1e5';
+        let layer = L.tileLayer(url, {
             attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
             maxZoom: 19
         });
@@ -106,6 +119,7 @@ export class Routemap {
 
         let baselayers = {
             "OSM": this.getOSMLayer(),
+            "OSM Cycle": this.getOSMCycleLayer(),
             "Yahoo": this.getYahooLayer(),
             "GSI": this.getGSILayer(),
         };
