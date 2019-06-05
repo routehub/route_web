@@ -163,6 +163,7 @@ export class WatchPage implements OnInit {
       let start = L.marker([pos[0][1], pos[0][0]], { icon: that.routemap.startIcon }).addTo(that.map);
       let goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: that.routemap.goalIcon }).addTo(that.map);
 
+      let kind_list = [];
       for (let i = 0; i < route.kind.length; i++) {
         if (i === 0 || i === route.kind.length - 1) {
           // start, goalは除外
@@ -172,20 +173,27 @@ export class WatchPage implements OnInit {
           let j = i / 2;
           if (pos[j]) {
             //            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
+            let kind_latlng = [pos[j][1], pos[j][0]];
             that.editMarkers.push(
-              L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon })
+              L.marker(kind_latlng, { icon: that.routemap.editIcon })
             );
+            kind_list.push(kind_latlng);
           } else {
             //            console.log(j, pos.length);
           }
         }
       }
-      // TODO データがバグってるので後で直す
+
       let note = JSON.parse(route.note);
       if (note && note.length > 0) {
         for (let i = 0; i < note.length; i++) {
-          let j = note[i].pos;
-          let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.commentIcon }).addTo(that.map);
+          let noted_editablepos = note[i].pos * 1 - 1; // 配列的なアレで1つ減算
+          if (!kind_list[noted_editablepos]) {
+            continue;
+          }
+          let editmarker = L.marker(kind_list[noted_editablepos], { icon: that.routemap.commentIcon }).addTo(that.map);
+          var comment = note[i].img ? note[i].img.replace("\n", "<br>") : ''; // APIのJSONにいれるやりかた間違えてるね
+          editmarker.bindPopup(comment);
         }
       }
 
@@ -210,8 +218,7 @@ export class WatchPage implements OnInit {
      * いいねの取得
      */
     // ログインしているか確認
-
-    if (!this.user) {
+    if (!this.user && !this.route_data) {
       return;
     }
     // ログインしていたらデータを取得
