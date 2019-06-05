@@ -4,7 +4,7 @@ export class RouteModel {
     public id: string;
     public title: string = "";
     public body: string;
-    public creator_name: string;
+    public display_name: string;
     public author: string = "";
     public tag: [];
     public thumburl: string;
@@ -30,7 +30,7 @@ export class RouteModel {
         this.body = r.body;
         this.author = r.author || "";
         this.tag = r.tag ? r.tag.split(' ') : [];
-        this.creator_name = r.author || "";
+        this.display_name = r.display_name || "";
         //this.thumburl = this.getThumbUrl(r.summary);
         this.created_at = r.created_at.slice(0, -14).replace(/-/g, '/');
         this.total_dist = r.total_dist;
@@ -53,7 +53,7 @@ export class RouteModel {
         this.body = this.getBodyHead(r.body);
         this.author = r.author || "";
         this.tag = r.tag ? r.tag.split(' ') : [];
-        this.creator_name = r.author || "";
+        this.display_name = r.display_name || "";
         this.thumburl = this.getThumbUrl(r.summary);
         this.created_at = r.created_at.slice(0, -14).replace(/-/g, '/');
         this.total_dist = r.total_dist;

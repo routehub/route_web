@@ -38,8 +38,16 @@ export class MyPage implements OnInit {
         return;
       }
       that.user = JSON.parse(json);
-      that.display_name = that.user.nickname + "";
+      const url = environment.api.host + environment.api.user_path;
+      var ret = this.http.get(url + '?firebase_id_token=' + this.user.token).toPromise().then((res: any) => {
+        if (!res || !res[0] || !res[0].display_name) {
+          return;
+        }
+        that.display_name = res[0].display_name;
+      });
     });
+
+
   }
 
   delete(item) {
@@ -77,7 +85,6 @@ export class MyPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // TODO : 遷移きちんと確認した暗号つくる
     this.showMyRoute();
     window.document.title = 'マイページ RouteHub'
   }

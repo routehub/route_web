@@ -10,12 +10,15 @@
       <ion-label>作成者 <a href="list/?author={{route.author}}">{{route.author}}</a></ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>作成日 {{route.created_at}} </ion-label>
+      <ion-label>Forkした人 "{{route.display_name}}"さん</ion-label>
     </ion-item>
     <ion-item>
+      <ion-label>ルートの作成日 {{route.created_at}} </ion-label>
+    </ion-item>
+    <ion-item *ngIf="route.tag">
       <ion-label>タグ {{route.tag}}</ion-label>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="route.body">
       <ion-label>{{route.body}}</ion-label>
     </ion-item>
 
