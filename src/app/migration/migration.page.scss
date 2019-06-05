@@ -11,7 +11,8 @@
 .migrate-page-form ion-textarea {
     width: 100%;
     padding: 0 !important;
-    /* TODO : gif動画を撮ってコピペの様を貼る */
-    --background : url("https://lh3.googleusercontent.com/hE5y1WQDklzRLz1cpVaZoYyJk1p6Q7c6b3E-BTNrbYzvs1wQi1iCqFFs0QrrVNJDJ0slRZzaDw4=w327-h287-no") no-repeat;
 }
-
+ion-textarea {
+    --background :  url("../../assets/copypaste.png")  center center no-repeat;
+    background-size: contain
+}
