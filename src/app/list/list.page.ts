@@ -48,6 +48,15 @@ export class ListPage implements OnInit {
   ngOnInit() {
   }
 
+  changeTitle() {
+    if (this.query !== '') {
+      window.document.title = '"' + this.query + '"で検索 RouteHub'
+
+    } else {
+      window.document.title = '検索 RouteHub'
+    }
+  }
+
   ionViewWillEnter() {
     // URLのパラメーター処理
     let param = new URLSearchParams((new URL(window.location.href)).search);
@@ -57,13 +66,6 @@ export class ListPage implements OnInit {
     this.order_type = param.get('order_type');
     this.dist_opt = param.get('dist_opt');
     this.elev_opt = param.get('elev_opt');
-
-    if (this.query !== '') {
-      window.document.title = '"' + this.query + '"で検索 RouteHub'
-
-    } else {
-      window.document.title = '検索 RouteHub'
-    }
 
     this.search();
   }
@@ -91,6 +93,8 @@ export class ListPage implements OnInit {
     }
     //console.log(param);
     this.location.replaceState("/list", param);
+
+    this.changeTitle();
   }
 
   /***
