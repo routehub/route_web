@@ -232,6 +232,10 @@
         setRouteMap(data);
       });
   });
+
+  setTimeout(function () {
+    $('.loading').hide();
+  }, 500);
   map.setView([36.575, 135.984], 5);
 
   function setRouteMap(d) {
