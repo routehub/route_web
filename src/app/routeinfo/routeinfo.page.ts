@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
+import { RouteModel } from '../model/routemodel';
 
 @Component({
   selector: 'app-routeinfo',
@@ -8,7 +9,7 @@ import { ModalController, NavParams } from '@ionic/angular';
 })
 export class RouteinfoPage implements OnInit {
 
-  route: any;
+  route: RouteModel;
 
   constructor(
     private modalController: ModalController,

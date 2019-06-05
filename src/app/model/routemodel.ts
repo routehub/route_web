@@ -6,6 +6,7 @@ export class RouteModel {
     public body: string;
     public creator_name: string;
     public author: string = "";
+    public tag: [];
     public thumburl: string;
     public created_at: string;
     public total_dist: number;
@@ -28,6 +29,7 @@ export class RouteModel {
         this.title = r.title;
         this.body = r.body;
         this.author = r.author || "";
+        this.tag = r.tag ? r.tag.split(' ') : [];
         this.creator_name = r.author || "";
         //this.thumburl = this.getThumbUrl(r.summary);
         this.created_at = r.created_at.slice(0, -14).replace(/-/g, '/');
@@ -50,6 +52,7 @@ export class RouteModel {
         this.title = r.title;
         this.body = this.getBodyHead(r.body);
         this.author = r.author || "";
+        this.tag = r.tag ? r.tag.split(' ') : [];
         this.creator_name = r.author || "";
         this.thumburl = this.getThumbUrl(r.summary);
         this.created_at = r.created_at.slice(0, -14).replace(/-/g, '/');
