@@ -339,11 +339,10 @@ export class WatchPage implements OnInit {
 
         if (!this.currenPossitionMarker) {
           this.currenPossitionMarker = new L.marker(latlng, { icon: this.routemap.gpsIcon }).addTo(this.map);
+          this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true }); //初回のみ移動
         } else {
           this.currenPossitionMarker.setLatLng(latlng);
         }
-
-        this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true });
       });
     });
   }

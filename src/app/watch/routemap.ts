@@ -137,7 +137,7 @@ export class Routemap {
             theme: 'steelblue-theme',
             // TODO : ウィンドウサイズ変更イベントに対応する
             width: window.innerWidth - 10,
-            height: 150,
+            height: 120,
             margins: {
                 top: 0,
                 right: 5,
