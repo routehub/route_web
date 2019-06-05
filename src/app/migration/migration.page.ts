@@ -104,7 +104,8 @@ export class MigrationPage implements OnInit {
   }
 
   async checkque() {
-    this.items.map(async item => {
+    for (let i = 0; i < this.items.length; i++) {
+      let item = this.items[i];
       if (item.color !== '') {
         return;
       }
@@ -120,8 +121,8 @@ export class MigrationPage implements OnInit {
 
         const res: any = await this.http.post(this.migrate_url, paramString, httpOptions).toPromise();
 
-        if (res.error) {
-          item.title = 'すでに登録済みです';
+        if (res.error || !res.title) {
+          item.title = '取り込みエラー';
           item.color = 'danger';
           return;
         }
@@ -132,7 +133,7 @@ export class MigrationPage implements OnInit {
         console.dir(fallback);
         item.color = 'danger';
       }
-    });
+    }
   }
 
   async parseShorUrl(url) {

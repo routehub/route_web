@@ -32,6 +32,7 @@ export class WatchPage implements OnInit {
   title = "";
   author = "";
 
+  id: string;
   map: any;
   watch_location_subscribe: any;
   watch: any;
@@ -137,11 +138,11 @@ export class WatchPage implements OnInit {
     this.map = routemap.map;
     this.elevation = routemap.elevation;
 
-    const id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id');
     //    this.route_data.id = id;
 
     var that = this;
-    this.get(id).then(function (route: any) {
+    this.get(this.id).then(function (route: any) {
       that.route_data = new RouteModel();
       that.route_data.setFullData(route);
 
@@ -221,11 +222,11 @@ export class WatchPage implements OnInit {
      * いいねの取得
      */
     // ログインしているか確認
-    if (!this.user && !this.route_data) {
+    if (!this.user && !this.id) {
       return;
     }
-    // ログインしていたらデータを取得
-    let is_favorite = this.getFavoriteStatus(this.route_data.id).then((ret: any) => {
+    // ログインしていたらデータを取得    
+    let is_favorite = this.getFavoriteStatus(this.id).then((ret: any) => {
       if (!ret.results || ret.results.length === 0) {
         return;
       }
@@ -236,6 +237,14 @@ export class WatchPage implements OnInit {
   }
 
   async getFavoriteStatus(id): Promise<any[]> {
+    // TODO : ダサい実装よくない. eventとかのほうがまだいい
+    if (!this.user || !this.user.token) {
+      const sleep = (msec) => new Promise(resolve => setTimeout(resolve, msec));
+      await sleep(1200);
+      if (!this.user) {
+        return;
+      }
+    }
     let url = environment.api.host + environment.api.like_path + '?id=' + id + '&firebase_id_token=' + this.user.token;
     return this.http.get(url).toPromise()
       .then((res: any) => {
