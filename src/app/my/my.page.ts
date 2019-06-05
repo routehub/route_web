@@ -92,6 +92,7 @@ export class MyPage implements OnInit {
   ionViewWillEnter() {
     // TODO : 遷移きちんと確認した暗号つくる
     this.showMyRoute();
+    window.document.title = 'マイページ RouteHub'
   }
   pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);

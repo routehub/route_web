@@ -12,6 +12,11 @@ export class LoginPage implements OnInit {
   ngOnInit() {
     this.login();
   }
+
+  ionViewDidEnter() {
+    window.document.title = 'ログイン RouteHub';
+  }
+
   // ログイン処理
   async login() {
     const ui = new firebaseui.auth.AuthUI(firebase.auth());

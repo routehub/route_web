@@ -39,6 +39,7 @@ export class MigrationPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    window.document.title = 'ルートを取り込み RouteHub'
   }
 
   async onPaste(event) {

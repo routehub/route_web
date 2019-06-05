@@ -58,6 +58,13 @@ export class ListPage implements OnInit {
     this.dist_opt = param.get('dist_opt');
     this.elev_opt = param.get('elev_opt');
 
+    if (this.query !== '') {
+      window.document.title = '"' + this.query + '"で検索 RouteHub'
+
+    } else {
+      window.document.title = '検索 RouteHub'
+    }
+
     this.search();
   }
 
