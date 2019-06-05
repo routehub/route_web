@@ -30,10 +30,10 @@ export class SearchSettingComponent implements OnInit {
   queryType;
 
   sortTypes = [
-    { id: 'dist/desc', kana: '距離順(降順)' },
-    { id: 'dist/asc', kana: '距離順(昇順) ' },
-    { id: 'elevation/desc', kana: '獲得標高順(降順)' },
-    { id: 'elevation/asc', kana: '獲得標高順(昇順)' },
+    { id: 'total_dist/desc', kana: '距離順(降順)' },
+    { id: 'total_dist/asc', kana: '距離順(昇順) ' },
+    { id: 'total_elevation/desc', kana: '獲得標高順(降順)' },
+    { id: 'total_elevation/asc', kana: '獲得標高順(昇順)' },
     { id: 'created_at/desc', kana: '作成日(降順)' },
     { id: 'created_at/asc', kana: '作成日(昇順)' },
   ];
@@ -41,12 +41,12 @@ export class SearchSettingComponent implements OnInit {
 
 
   kmrange = {
-    upper: 150, // デフォルト値です
-    lower: 400,
+    upper: 400, // デフォルト値です
+    lower: 150,
   };
   elevrange = {
-    upper: 1000,
-    lower: 6000,
+    upper: 6000,
+    lower: 200,
   };
   isDistDisabled = "true";
   distIsChecked = false;
@@ -85,8 +85,8 @@ export class SearchSettingComponent implements OnInit {
     if (this.navParams.get('dist_opt')) {
       let dist_opt = this.navParams.get('dist_opt').split(':');
       this.kmrange = {
-        upper: dist_opt[0],
-        lower: dist_opt[1],
+        upper: dist_opt[1],
+        lower: dist_opt[0],
       };
       this.isDistDisabled = "false";
       this.distIsChecked = true;
@@ -94,8 +94,8 @@ export class SearchSettingComponent implements OnInit {
     if (this.navParams.get('elev_opt')) {
       let elev_opt = this.navParams.get('elev_opt').split(':');
       this.kmrange = {
-        upper: elev_opt[0],
-        lower: elev_opt[1],
+        upper: elev_opt[1],
+        lower: elev_opt[0],
       };
       this.isElevDisabled = "false";
       this.elevationIsChecked = true;
