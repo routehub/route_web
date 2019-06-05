@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import { Route } from '../watch/routemap';
+import { RouteModel } from '../model/routemodel';
 
 @Component({
   selector: 'app-my',
@@ -19,21 +20,7 @@ export class MyPage implements OnInit {
   display_name: string;
   isMyRoute: Boolean;
 
-  items: Array<{
-    id: string,
-    title: string;
-    body: string;
-    author: string;
-    thumburl: string;
-    created_at: string;
-    total_dist: number;
-    total_elevation: number;
-    max_elevation: number;
-    max_slope: number;
-    avg_slope: number;
-    start_point: string;
-    goal_point: string;
-  }> = [];
+  items: Array<RouteModel> = [];
 
   constructor(
     private navCtrl: NavController,
@@ -137,22 +124,9 @@ export class MyPage implements OnInit {
           return;
         }
         for (let i = 0; i < res.results.length; i++) {
-          let r = res.results[i];
-          this.items.push({
-            id: r.id,
-            title: r.title,
-            body: this.getBodyHead(r.body),
-            author: r.author === '' ? '名も無きルート引き' : r.author,
-            thumburl: this.getThumbUrl(r.summary),
-            created_at: r.created_at.slice(0, -14).replace(/-/g, '/'),
-            total_dist: r.total_dist,
-            total_elevation: r.total_elevation,
-            max_elevation: r.max_elevation,
-            max_slope: r.max_slope,
-            avg_slope: r.avg_slope,
-            start_point: r.start_point,
-            goal_point: r.goal_point,
-          });
+          let r = new RouteModel();
+          r.setData(res.results[i]);
+          this.items.push(r);
         }
 
         const response: any = res;
