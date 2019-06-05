@@ -281,17 +281,16 @@ export class WatchPage implements OnInit {
       this.isFavorite = false;
       this.favoriteIcon = 'heart-empty';
       // delete
-      let url = environment.api.host + environment.api.like_path;
-      let httpOptions = {
+      let url = environment.api.host + environment.api.like_delete_path;
+      // DBから削除
+      const httpOptions = {
         headers: new HttpHeaders(
           'Content-Type:application/x-www-form-urlencoded'
-        ),
-        params: new HttpParams()
-          .set('id', this.route_data.id)
-          .set('firebase_id_token', this.user.token + ""),
+        )
       };
-      this.http.delete(url).toPromise();
-
+      this.http.post(url,
+        'firebase_id_token=' + this.user.token + '&' + 'id=' + this.route_data.id,
+        httpOptions).toPromise();
     }
 
   }

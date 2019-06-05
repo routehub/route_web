@@ -17,6 +17,7 @@ export const environment = {
     'route_delete_path': '/route_delete',
     'my_path': '/my',
     'like_path': '/like',
+    'like_delete_path': '/like_delete',
     'user_path': '/user',
     'migrate_path': '/migrate',
     'expand_url_path': '/expand_shorturl',
