@@ -2,9 +2,9 @@ export const environment = {
   production: true,
   // warn: devと同じ
   firebase: {
-    apiKey: 'AIzaSyB0msydnFuVba0qJGT5geWMNqiYjzvN35M',
-    authDomain: 'route-lab-63f4a.firebaseapp.com',
-    databaseURL: 'https://route-lab-63f4a.firebaseio.com',
+    apiKey: 'AIzaSyCpxOB8YkNcMsFoZR4DLZXZ5A2MizcfHbQ',
+    authDomain: 'rroutehub-942ea.firebaseapp.com',
+    databaseURL: 'https://routehub-942ea.firebaseio.com',
     projectId: 'route-lab-63f4a',
     storageBucket: 'routehub-942ea.firebaseapp.com',
     messagingSenderId: '753711559587'
