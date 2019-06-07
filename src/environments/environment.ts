@@ -10,6 +10,8 @@ export const environment = {
     messagingSenderId: '1000468098052'
   },
 
+  hostname: 'dev.routehub.app',
+
   api: {
     'host': 'https://dev-api.routelabo.com/route/1.0.0',
     'search_path': '/search',

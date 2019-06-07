@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "cp ./node_modules/leaflet.elevation/dist/leaflet.elevation-0.0.4.min.js ./src/assets/ && ng serve",
-    "build": "cp ./node_modules/leaflet.elevation/dist/leaflet.elevation-0.0.4.min.js ./src/assets/ && ng build",
+    "build": "cp ./node_modules/leaflet.elevation/dist/leaflet.elevation-0.0.4.min.js ./src/assets/ && ng build && cp ./_redirects ./www/ && cp ./embed.html ./www/",
     "release": "cp ./node_modules/leaflet.elevation/dist/leaflet.elevation-0.0.4.min.js ./src/assets/ && ng build --prod && cp ./_redirects ./www/ && cp ./embed.html ./www/",
     "test": "ng test",
     "lint": "ng lint",

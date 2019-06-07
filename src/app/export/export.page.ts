@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { buildGPX, GarminBuilder } from 'gpx-builder';
 import ejs from 'ejs';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-export',
@@ -11,7 +12,7 @@ import ejs from 'ejs';
 export class ExportPage implements OnInit {
 
   route: any;
-  hostname = 'dev.routehub.app';
+  hostname = environment.hostname;
 
   constructor(
     private modalController: ModalController,
