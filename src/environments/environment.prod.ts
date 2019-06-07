@@ -6,9 +6,10 @@ export const environment = {
     authDomain: 'route-lab-63f4a.firebaseapp.com',
     databaseURL: 'https://route-lab-63f4a.firebaseio.com',
     projectId: 'route-lab-63f4a',
-    storageBucket: 'route-lab-63f4a.appspot.com',
-    messagingSenderId: '1000468098052'
+    storageBucket: 'routehub-942ea.firebaseapp.com',
+    messagingSenderId: '753711559587'
   },
+
 
   hostname: 'routehub.app',
 
