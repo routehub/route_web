@@ -1,9 +1,39 @@
 <ion-app>
+
+  <ion-toolbar slot="top" *ngIf="platform.is('desktop')">
+
+    <ion-buttons slot="secondary">
+
+      <ion-button layout="icon-start" (click)="p.route()" *ngFor="let p of appPages">
+        <ion-label>{{p.title}}</ion-label>
+        <ion-icon [name]="p.icon"></ion-icon>
+      </ion-button>
+
+      <ion-button layout="icon-end">
+        <ion-avatar *ngIf="user" routerLink="/my" style="width:40px;height:40px;background-color:white;">
+          <img src="{{ user.photoURL }}">
+        </ion-avatar>
+        <ion-button *ngIf="!user" class="login-button" expand="block" fill="outline" (click)="toLoginPage()"> ログイン・登録
+        </ion-button>
+      </ion-button>
+
+    </ion-buttons>
+
+    <ion-title style="width:240px; height: 40px ">
+      <ion-tab-button layout="icon-start" routerLink="/home">
+        <img style="width: 174px;" src="./assets/logo.png" alt="routehub">
+      </ion-tab-button>
+    </ion-title>
+
+  </ion-toolbar>
+
+  <!--  &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+
   <ion-tabs>
-    <ion-tab-bar slot="top" color="none" translucent="true" *ngIf="platform.is('desktop')">
+    <ion-tab-bar slot="top" color="primary" translucent="true" *ngIf="platform.is('desktop')">
 
       <ion-tab-button layout="icon-start" routerLink="/home">
-        <ion-title style="width:240px; height: 40px "><img style="width: 174px;" src="./assets/logo.png" alt="routehub">
+        <ion-title style="width:200px"><img style="height: 40px;" src="./assets/logo-white.png" alt="routehub">
         </ion-title>
       </ion-tab-button>
 
