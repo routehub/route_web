@@ -15,7 +15,7 @@ export class LoginPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    window.document.title = 'ログイン RouteHub';
+    window.document.title = 'ログイン RouteHub(β)';
   }
 
   // ログイン処理

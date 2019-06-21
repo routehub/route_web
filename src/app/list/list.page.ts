@@ -53,7 +53,7 @@ export class ListPage implements OnInit {
       window.document.title = '"' + this.query + '"で検索 RouteHub'
 
     } else {
-      window.document.title = '検索 RouteHub'
+      window.document.title = '検索 RouteHub(β)'
     }
   }
 

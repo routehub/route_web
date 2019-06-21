@@ -86,7 +86,7 @@ export class MyPage implements OnInit {
 
   ionViewWillEnter() {
     this.showMyRoute();
-    window.document.title = 'マイページ RouteHub'
+    window.document.title = 'マイページ RouteHub(β)'
   }
   pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);

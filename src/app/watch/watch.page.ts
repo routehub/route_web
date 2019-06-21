@@ -111,7 +111,7 @@ export class WatchPage implements OnInit {
   ngOnInit() {
     window.dispatchEvent(new Event('resize'));
     this.watch = this.geolocation.watchPosition();
-    window.document.title = 'ルートを見る RouteHub';
+    window.document.title = 'ルートを見る RouteHub(β)';
 
 
     // ログイン
@@ -148,7 +148,7 @@ export class WatchPage implements OnInit {
 
       // タイトル変更
       that.title = that.route_data.title;
-      window.document.title = that.route_data.title + ' RouteHub';
+      window.document.title = that.route_data.title + ' RouteHub(β)';
       that.author = that.route_data.author;
 
       // 標高グラフ用のデータ作成

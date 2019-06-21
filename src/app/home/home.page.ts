@@ -35,7 +35,7 @@ export class HomePage {
   }
 
   ionViewDidEnter() {
-    window.document.title = 'RouteHub';
+    window.document.title = 'RouteHub(β)';
 
     if (!this.platform.is('mobile')) {
       return;
