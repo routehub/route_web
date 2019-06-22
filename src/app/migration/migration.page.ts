@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NavController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import { RouteHubUser } from './../model/routehubuser';
@@ -22,6 +22,7 @@ export class MigrationPage implements OnInit {
   private parse_shorturl_url = environment.api.host + environment.api.expand_url_path;
 
   constructor(
+    public platform: Platform,
     private http: HttpClient,
     public navCtrl: NavController,
     private storage: Storage,
