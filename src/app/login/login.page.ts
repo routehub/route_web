@@ -29,7 +29,7 @@ export class LoginPage implements OnInit {
         firebase.auth.TwitterAuthProvider.PROVIDER_ID,
         firebase.auth.EmailAuthProvider.PROVIDER_ID
       ],
-      signInSuccessUrl: 'https://' + environment.hostname + '/my'
+      signInSuccessUrl: 'https://' + environment.hostname + '/migration'
     };
     ui.start('#firebaseui-auth-container', uiCofig);
   }
