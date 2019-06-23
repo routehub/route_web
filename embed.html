@@ -82,7 +82,7 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background: #ff346a url("https://dev.routehub.app/assets/logo-white.png") no-repeat center;
+      background: #ff346a url("https://routehub.app/assets/logo-white.png") no-repeat center;
       background-size: contain;
       z-index: 99999;
       transition: 0.5s ease-out;
@@ -97,7 +97,7 @@
   </div>
   <div class="wrapper">
     <header>
-      <h1><a target="_blank" href="https://dev.routehub.app/"><img src="https://dev.routehub.app/assets/logo-white.png"
+      <h1><a target="_blank" href="https://routehub.app/"><img src="https://routehub.app/assets/logo-white.png"
             alt="routehub"></a></h1>
       <ul>
         <li id="title" style="margin-right:20px"><a target="_blank" href=""></a></li>
@@ -121,9 +121,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"> </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
-<link rel="stylesheet" href="https://dev.routehub.app/assets/leaflet.elevation-0.0.4.css">
+<link rel="stylesheet" href="https://routehub.app/assets/leaflet.elevation-0.0.4.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.min.js"> </script>
-<script src="https://dev.routehub.app/assets/leaflet.elevation-0.0.4.min.js"> </script>
+<script src="https://routehub.app/assets/leaflet.elevation-0.0.4.min.js"> </script>
 
 <style>
   .steelblue-theme.leaflet-control.elevation .background {
@@ -240,7 +240,7 @@
 
   function setRouteMap(d) {
     $('#title>a').text(d.results.title || '');
-    $('#title>a').attr('href', 'https://dev.routehub.app/watch/' + d.results.id);
+    $('#title>a').attr('href', 'https://routehub.app/watch/' + d.results.id);
     $('#author>a').text(d.results.author || '');
     $('#created_at').text(d.results.created_at || '');
     $('#dist>span').text(d.results.total_dist + 'km' || '0.0km');
@@ -315,13 +315,13 @@
     }
 
     var startIcon = new L.icon({
-      iconUrl: 'https://dev.routehub.app/assets/icon/start_icon.png',
+      iconUrl: 'https://routehub.app/assets/icon/start_icon.png',
       iconSize: [50, 27], // size of the icon
       iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
       popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
     });
     var goalIcon = new L.icon({
-      iconUrl: 'https://dev.routehub.app/assets/icon/goal_icon.png',
+      iconUrl: 'https://routehub.app/assets/icon/goal_icon.png',
       iconSize: [50, 27], // size of the icon
       iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
       popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor    
