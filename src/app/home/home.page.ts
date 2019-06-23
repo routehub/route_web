@@ -42,15 +42,17 @@ export class HomePage {
     }
 
     let that = this;
-    this.storage.get('user.photoURL').then((photoURL) => {
-      if (photoURL == null) {
-        throw new Error('not login');
+
+    this.storage.get('user').then((json) => {
+      if (!json || json == "") {
+        return;
       }
-      that.photoURL = photoURL;
+      let user = JSON.parse(json);
+      console.dir(user);
+      that.photoURL = user.photo_url;
       that.logoutButton.el.style.display = 'block';
       that.logoutButton.el.style.color = '#ffffff9c';
-    }).catch(e => {
-      that.loginButton.el.style.display = 'block';
+      that.logoutButton.el.style.background = 'white';
     });
   }
 
