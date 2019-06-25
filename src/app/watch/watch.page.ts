@@ -414,7 +414,7 @@ export class WatchPage implements OnInit {
   }
 
   back() {
-    if (window.history.length > 1) {
+    if (window.history.length >= 1) {
       this.navCtrl.navigateForward('/list');
     } else {
       this.navCtrl.back();
