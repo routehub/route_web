@@ -414,7 +414,11 @@ export class WatchPage implements OnInit {
   }
 
   back() {
-    this.navCtrl.back();
+    if (window.history.length > 1) {
+      this.navCtrl.navigateForward('/list');
+    } else {
+      this.navCtrl.back();
+    }
   }
   moveAuthorList() {
     this.navCtrl.navigateForward('/list?mode=author&query=' + this.route_data.author);
