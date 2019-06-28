@@ -18,6 +18,7 @@ export class RouteinfoPage implements OnInit {
 
   ngOnInit() {
     this.route = this.navParams.get('route');
+    this.route.body = this.route.body.replace(/\n/g, "<br>");
   }
   async closeModal() {
     await this.modalController.dismiss();

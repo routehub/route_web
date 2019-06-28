@@ -19,8 +19,9 @@
       <ion-label>タグ <a style="margin-left:10px;" *ngFor="let t of route.tag"
           href="list/?query={{t}}&mode=tag&">{{t}}</a></ion-label>
     </ion-item>
+
     <ion-item *ngIf="route.body">
-      <ion-label>{{route.body}}</ion-label>
+      <p style="width:100%" [innerHTML]="route.body"></p>
     </ion-item>
 
     <ion-item>
