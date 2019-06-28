@@ -13,6 +13,7 @@ export class ExportPage implements OnInit {
 
   route: any;
   hostname = environment.hostname;
+  noteData = [];
 
   constructor(
     private modalController: ModalController,
@@ -21,6 +22,8 @@ export class ExportPage implements OnInit {
 
   ngOnInit() {
     this.route = this.navParams.get('route');
+    this.noteData = this.navParams.get('noteData');
+
   }
 
   async closeModal() {
@@ -53,6 +56,17 @@ export class ExportPage implements OnInit {
     const gpxData = new GarminBuilder();
     gpxData.setMetadata(meta);
     gpxData.setSegmentPoints(points);
+
+    let wpts = [];
+    for (let j = 0; j < this.noteData.length; j++) {
+      let n = this.noteData[j];
+      wpts.push(
+        new Point(n.pos[0], n.pos[1], { cmt: n.cmt })
+      );
+    }
+    if (wpts.length > 0) {
+      gpxData.setWayPoints(wpts);
+    }
     const gpxString = buildGPX(gpxData.toObject());
 
     var blob = new Blob([gpxString], { "type": "application/gpx+xml" });

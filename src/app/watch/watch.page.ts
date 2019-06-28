@@ -31,6 +31,7 @@ export class WatchPage implements OnInit {
   route_data: RouteModel;
   title = "";
   author = "";
+  noteData = [];
 
   id: string;
   map: any;
@@ -195,8 +196,14 @@ export class WatchPage implements OnInit {
           if (!kind_list[noted_editablepos]) {
             continue;
           }
+          that.noteData.push(
+            {
+              pos: kind_list[noted_editablepos],
+              cmt: note[i].img ? note[i].img.replace("\n", "<br>") : '',
+            }
+          );
           let editmarker = L.marker(kind_list[noted_editablepos], { icon: that.routemap.commentIcon }).addTo(that.map);
-          var comment = note[i].img ? note[i].img.replace("\n", "<br>") : ''; // APIのJSONにいれるやりかた間違えてるね
+          var comment = note[i].img ? note[i].img.replace("\n", "<br>") : ''; // APIのJSONにいれるやりかた間違えてるね          
           editmarker.bindPopup(comment);
         }
       }
@@ -436,7 +443,7 @@ export class WatchPage implements OnInit {
     event.stopPropagation();
     const modal = await this.modalCtrl.create({
       component: ExportPage,
-      componentProps: { route: this.route_data }
+      componentProps: { route: this.route_data, noteData: this.noteData }
     });
     return await modal.present();
   }
