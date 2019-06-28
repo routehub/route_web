@@ -61,7 +61,7 @@ export class ExportPage implements OnInit {
     for (let j = 0; j < this.noteData.length; j++) {
       let n = this.noteData[j];
       wpts.push(
-        new Point(n.pos[0], n.pos[1], { cmt: n.cmt })
+        new Point(n.pos[0], n.pos[1], { name: n.cmd, cmt: n.cmt })
       );
     }
     if (wpts.length > 0) {
