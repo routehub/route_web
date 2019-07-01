@@ -185,11 +185,13 @@ export class Routemap {
                         let point = L.latLng(l[1], [0]);
                         let distDiff = point.distanceTo(prevPoint);
                         let elevDiff = l[2] - prevElevation;
-                        slope = Math.ceil(Math.abs(elevDiff / distDiff * 100 * 100)) / 100;
-                        if (slope > 20) {
+                        slope = Math.ceil(elevDiff / distDiff * 100 * 100) / 100;
+                        if (Math.abs(slope)> 20 &&  slope > 20) {
                             slope = 20;
+                        }else if(Math.abs(slope)> 20 && slope < 20) {
+                            slope = -20;
                         } else if (!slope) {
-                            slope = 1;
+                            slope = 0;
                         }
 
                         prevPoint = point;
@@ -199,12 +201,13 @@ export class Routemap {
                     prevElevation = l[2];
                     return [l[1], l[0], slope];
                 });
-
+console.dir(latlngelevlist);
                 return L.hotline(latlngelevlist, {
                     outlineWidth: 1,
                     outlineColor: 'blue',
-                    min: 0,
+                    min: -20,
                     max: 20,
+                    //palette: {0.0: '#008800', 0.5 : '#ffff00', 1.0 : '#ff0000'}
                 }).addTo(map);
             }
         };
