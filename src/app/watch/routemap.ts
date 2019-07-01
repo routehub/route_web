@@ -201,13 +201,13 @@ export class Routemap {
                     prevElevation = l[2];
                     return [l[1], l[0], slope];
                 });
-console.dir(latlngelevlist);
+
                 return L.hotline(latlngelevlist, {
                     outlineWidth: 1,
                     outlineColor: 'blue',
                     min: -20,
                     max: 20,
-                    //palette: {0.0: '#008800', 0.5 : '#ffff00', 1.0 : '#ff0000'}
+                    palette: {0.0: 'blue', 0.4 : '#6aff70', 1.0 : 'red'}
                 }).addTo(map);
             }
         };
