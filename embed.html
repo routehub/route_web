@@ -227,7 +227,7 @@
 
     var params = (new URL(document.location)).searchParams;
     var id = params.get('id');
-    $.get('https://dev-api.routelabo.com/route/1.0.0/route?id=' + id, {})
+    $.get('https://api.routehub.app/route/1.0.0/route?id=' + id, {})
       .done(function (data) {
         setRouteMap(data);
       });
