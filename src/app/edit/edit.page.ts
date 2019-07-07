@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Routemap } from '../watch/routemap';
+import * as Hammer from 'hammerjs';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-edit',
@@ -12,9 +14,11 @@ export class EditPage implements OnInit {
   routemap: Routemap;
   elevation: any;
   editMode: boolean = false;
+  hammer: any;
 
   constructor() {
     this.routemap = new Routemap();
+
   }
 
   ngOnInit() {
@@ -29,19 +33,41 @@ export class EditPage implements OnInit {
     var layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
     layerControlElement.getElementsByTagName('input')[2].click();
 
+    this.hammer = new Hammer(this.map_elem.nativeElement);
   }
 
   toggleCreateMode(event) {
+    var that = this;
     event.stopPropagation();
     this.editMode = this.editMode ? false : true;
+
+    var editMarkers = [];
+
     if (this.editMode) {
       this.map.dragging.disable();
+
+      var counter = 51;
+      this.hammer.on('pan', function (ev) {
+        if (counter < 50) {
+          ++counter;
+          return;
+        }
+        counter = 0;
+        let _point = L.point(ev.center.x, ev.center.y);
+        let latlng = that.map.layerPointToLatLng(_point);
+        console.log(latlng);
+        let marker = L.marker(latlng, { icon: that.routemap.editIcon });
+        editMarkers.push(marker);
+        marker.addTo(that.map);
+
+
+      });
+
 
 
     } else {
       this.map.dragging.enable();
-
-
+      this.hammer.off('pan');
     }
 
   }
