@@ -17,6 +17,10 @@ export class EditPage implements OnInit {
   editMode: boolean = false;
   hammer: any;
   editMarkers = [];
+  private hotlineLayer: any;
+  private isSlopeMode = false;
+  private line: any;
+  private _routemap: any;
 
   route_geojson = {
     "type": "FeatureCollection",
@@ -52,7 +56,7 @@ export class EditPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    let routemap = this.routemap.createMap(this.map_elem.nativeElement);
+    let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
     console.dir(this.elevation);
@@ -81,7 +85,7 @@ export class EditPage implements OnInit {
         }
         counter = 0;
         let _point = L.point(ev.center.x, ev.center.y);
-        let latlng = that.map.layerPointToLatLng(_point);
+        let latlng = that.map.containerPointToLatLng(_point);
 
         let marker = L.marker(latlng, { icon: that.routemap.editIcon });
         that.editMarkers.push(marker);
@@ -104,7 +108,7 @@ export class EditPage implements OnInit {
           });
 
           if (i === that.editMarkers.length - 1) {
-            that.route_geojson.features[0].geometry.coordinates = route;
+            that.route_geojson.features[0].geometry.coordinates = that.line = route;
             //            let elevation = route.filter(e => {return e[2]});
             L.geoJson(that.route_geojson, {
               "color": "#0000ff",
@@ -112,6 +116,7 @@ export class EditPage implements OnInit {
               "opacity": 0.7,
               onEachFeature: that.elevation.addData.bind(that.elevation)
             }).addTo(that.map);
+
           }
         });
 
@@ -144,4 +149,23 @@ export class EditPage implements OnInit {
       });
   }
 
+
+
+
+  toggleSlopeLayer(event) {
+    event.stopPropagation();
+    if (!this.hotlineLayer && !this.isSlopeMode) {
+      this.hotlineLayer = this._routemap.addElevationHotlineLayer(this.line);
+      //      this.presentToast('標高グラデーションモードに変更');
+    } else if (this.hotlineLayer && !this.isSlopeMode) {
+      this.map.removeLayer(this.hotlineLayer);
+      this.hotlineLayer = this._routemap.addSlopeHotlineLayer(this.line);
+      //      this.presentToast('斜度グラデーションモードに変更');
+      this.isSlopeMode = true;
+    } else {
+      this.map.removeLayer(this.hotlineLayer);
+      this.hotlineLayer = false;
+      this.isSlopeMode = false;
+    }
+  }
 }
