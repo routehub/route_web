@@ -1,0 +1,17 @@
+<ion-fab vertical="top" horizontal="end" slot="fixed">
+  <ion-fab-button>
+    <ion-icon name="md-apps"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="bottom">
+    <ion-fab-button (click)="toggleCreateMode($event)">
+      <ion-icon [color]="editMode ? 'primary' : ''" name="md-create"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button>
+      <ion-icon [color]="isWatchLocation ? 'primary' : ''" name="md-locate"> </ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+</ion-fab>
+
+<ion-content>
+  <div class="mainmap" #map></div>
+</ion-content>
