@@ -60,9 +60,9 @@ export class MyPage implements OnInit {
         'Content-Type:application/x-www-form-urlencoded'
       )};
     const url = environment.api.host + environment.api.route_change_private_path;
-    let private_param = item.is_private ? 1 : 0;
+    let private_param = item.is_private ? "true" : "false";
     this.http.post(url,
-      'firebase_id_token=' + this.user.token + '&id=' + item.id + '&private=' + private_param,
+      'firebase_id_token=' + this.user.token + '&id=' + item.id + '&is_private=' + private_param,
       httpOptions).toPromise();
   }
 
