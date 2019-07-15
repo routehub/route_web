@@ -62,10 +62,13 @@ export class EditPage implements OnInit {
     let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
-    console.dir(this.elevation);
+
     // デバッグ時にテンションを上げるためY!地図にする
-    let layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
-    layerControlElement.getElementsByTagName('input')[2].click();
+    //let layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
+    //layerControlElement.getElementsByTagName('input')[2].click();
+
+    // 見やすくするために最初からメニューを開いておく
+    document.getElementById('menuButton').click();
 
     this.hammer = new Hammer(this.map_elem.nativeElement);
   }
@@ -78,54 +81,7 @@ export class EditPage implements OnInit {
     this.editMode = this.editMode ? false : true;
 
     if (this.editMode) {
-      // this.map.dragging.disable();
-      this.map.dragging.enable();
-
-      // var counter = 51;
-      // this.hammer.on('pan', function (ev) {
-      //   if (counter < 50) {
-      //     ++counter;
-      //     return;
-      //   }
-      //   counter = 0;
-      //   let _point = L.point(ev.center.x, ev.center.y);
-      //   let latlng = that.map.containerPointToLatLng(_point);
-
-      //   let marker = L.marker(latlng, { icon: that.routemap.editIcon });
-      //   that.editMarkers.push(marker);
-      //   marker.addTo(that.map);
-      // });
-
-      // var route = [];
-      // this.hammer.on('panend', function (ev) {
-      //   that.editMarkers.forEach(async function (marker, i) {
-      //     if (i === 0) {
-      //       return;
-      //     }
-
-      //     let start = that.editMarkers[i - 1]._latlng.lat + ',' + that.editMarkers[i - 1]._latlng.lng;
-      //     let goal = marker._latlng.lat + ',' + marker._latlng.lng;
-
-      //     await that.routing(start, goal).then(_route => {
-      //       route = route.concat(_route);
-      //       console.log(route.length);
-      //     });
-
-      //     if (i === that.editMarkers.length - 1) {
-      //       that.route_geojson.features[0].geometry.coordinates = that.line = route;
-      //       //            let elevation = route.filter(e => {return e[2]});
-      //       L.geoJson(that.route_geojson, {
-      //         "color": "#0000ff",
-      //         "width": 6,
-      //         "opacity": 0.7,
-      //         onEachFeature: that.elevation.addData.bind(that.elevation)
-      //       }).addTo(that.map);
-
-      //     }
-      //   });
-
-
-      // });
+      // TODO : SP用の動作をまた実装する(hammer panが便利)
 
       that.hammer.on('tap', function(ev)
       {
@@ -169,9 +125,7 @@ export class EditPage implements OnInit {
 
 
     } else {
-      this.map.dragging.enable();
-      this.hammer.off('pan');
-      this.hammer.off('panend');
+      this.hammer.off('tap');
     }
 
   }
