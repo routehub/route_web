@@ -90,6 +90,10 @@
                   <ion-icon name="trash"></ion-icon>
                   <ion-label>削除</ion-label>
                 </ion-chip>
+              <ion-chip *ngIf="isMyRoute" (click)="delete(item)">
+                <ion-icon [name]="item.is_private ? 'md-eye' : 'md-eye-off'"></ion-icon>
+                <ion-label>{{item.private_ja}}</ion-label>
+              </ion-chip>
               </ion-row>
 
               <img class="list-thumb" lazyLoad='{{item.thumburl}}' (click)="pageSelected(item)" offset="50" />
