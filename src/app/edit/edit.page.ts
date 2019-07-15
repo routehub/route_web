@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { ToastController, Platform } from '@ionic/angular';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Routemap } from '../watch/routemap';
 import * as Hammer from 'hammerjs';
@@ -50,7 +50,8 @@ export class EditPage implements OnInit {
 
   constructor(
     private http: HttpClient,
-    public toastController: ToastController
+    public toastController: ToastController,
+    public platform: Platform,
   ) {
     this.routemap = new Routemap();
     this.line = [];
@@ -89,6 +90,10 @@ export class EditPage implements OnInit {
       that.hammer.on('tap', function(ev)
       {
         let header_height = 64;
+        if (that.platform.is('mobile')) {
+          header_height = 10;
+        }
+
         let _point = L.point(ev.center.x, ev.center.y - header_height);
         let latlng = that.map.containerPointToLatLng(_point);
 
@@ -243,6 +248,10 @@ export class EditPage implements OnInit {
 
     that.remove_geojson();
 
+    if (that.line.length <= 0) {
+      return;
+    }
+
     that.route_geojson.features[0].geometry.coordinates = that.line;
 
     that.elevation.clear();
@@ -253,8 +262,7 @@ export class EditPage implements OnInit {
       this.map.removeLayer(this.hotlineLayer);
       this.hotlineLayer = false;
       this.isSlopeMode = false;
-    }
-
+    }    
     that.geojson = L.geoJson(that.route_geojson, {
       "color": "#0000ff",
       "width": 6,
