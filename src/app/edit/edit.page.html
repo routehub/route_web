@@ -1,0 +1,38 @@
+<ion-fab vertical="top" horizontal="end" slot="fixed" id="menuButton">
+  <ion-fab-button>
+    <ion-icon name="md-apps"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="bottom">
+    <ion-fab-button (click)="toggleCreateMode($event)">
+      <ion-icon [color]="editMode ? 'primary' : ''" name="md-create"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button (click)="toggleSlopeLayer($event)">
+      <ion-icon color="primary" name="trending-up"></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+</ion-fab>
+
+<ion-content>
+  <div class="message" id="message">
+    <h2>ベータ版作成機能</h2>
+    <p>
+      この画面はベータ版作成機能です。<br>
+      関東圏の一部（小田原~千葉, 宇都宮~三浦半島)でルートを引くことができます。<br>
+      作成機能の感覚を見ていただくためのもので、保存はできません。<br>
+    </p>
+    <h3>使い方</h3>
+    <ul>
+      <li>地図をクリックするとポイント追加</li>
+      <li>ポイントをクリックするとポイント削除</li>
+      <li>ポイントをドラッグするとポイント移動</li>
+      <li>ルート上をクリックすると経由点追加</li>
+    </ul>
+    <p>
+      お気づき点があれば<a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSegfE8nWPfd40NEraL5EH_YFfnt1UaGIrWIrrhAvvgYYPapRw/viewform?usp=send_form">お問い合せ</a>までご意見をお願いします。<br>
+      <br>
+      <br>
+      <a href="javascript:void(0);" onclick="document.getElementById('message').style.display = 'none'; return false;">閉じる</a>
+    </p>
+  </div>
+  <div class="mainmap" #map></div>
+</ion-content>
