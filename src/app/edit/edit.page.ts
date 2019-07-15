@@ -246,6 +246,15 @@ export class EditPage implements OnInit {
     that.route_geojson.features[0].geometry.coordinates = that.line;
 
     that.elevation.clear();
+
+    // TODO : ルート系のレイヤーがあれば処理が面倒なので削除しているが、そのうちうまく更新したい
+    if (this.hotlineLayer) {
+      this.presentToast('グラデーションモードを解除');
+      this.map.removeLayer(this.hotlineLayer);
+      this.hotlineLayer = false;
+      this.isSlopeMode = false;
+    }
+
     that.geojson = L.geoJson(that.route_geojson, {
       "color": "#0000ff",
       "width": 6,
