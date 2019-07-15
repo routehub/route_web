@@ -51,25 +51,19 @@ export class MyPage implements OnInit {
   }
 
   toggle_private (item) {
-    for (let i = 0; i < this.items.length; i++) {
-      if (this.items[i].id === item.id) {
-        // UI変更
-        this.items[i].is_private = !this.items[i].is_private;
-        this.items[i].is_private_ja = this.items[i].is_private ? "非公開" : "公開";
+    // UI変更
+    item.is_private = !item.is_private;
+    item.is_private_ja = item.is_private ? "非公開" : "公開";
 
-        const httpOptions = {
-          headers: new HttpHeaders(
-            'Content-Type:application/x-www-form-urlencoded'
-          )
-        };
-        const url = environment.api.host + environment.api.route_change_private_path;
-        let private_param = this.items[i].is_private ? 1 : 0;
-        this.http.post(url,
-          'firebase_id_token=' + this.user.token + '&id=' + item.id + '&private=' + private_param,
-          httpOptions).toPromise();
-          
-      }
-    }
+    const httpOptions = {
+      headers: new HttpHeaders(
+        'Content-Type:application/x-www-form-urlencoded'
+      )};
+    const url = environment.api.host + environment.api.route_change_private_path;
+    let private_param = item.is_private ? 1 : 0;
+    this.http.post(url,
+      'firebase_id_token=' + this.user.token + '&id=' + item.id + '&private=' + private_param,
+      httpOptions).toPromise();
   }
 
   delete(item) {
