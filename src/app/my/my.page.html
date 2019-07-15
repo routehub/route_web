@@ -73,27 +73,27 @@
             <ion-card-header>
               <ion-card-title (click)="pageSelected(item)">{{item.title}}</ion-card-title>
               <ion-row>
-                <ion-col size="6">
+                <ion-col size="10">
                   <ion-label class="create_at">{{item.created_at}}</ion-label>
                 </ion-col>
+                <!--
                 <ion-col>
                   <ion-label class="card-author" lines="none" (click)="authorSelected(item)" color="primary">created by
                     <span style="text-decoration:underline">{{item.author}}</span>
                   </ion-label>
-                  <!--
                   <ion-label class="card-author" lines="none" (click)="authorSelected(item)" color="primary">forked by
                     <span style="text-decoration:underline">{{item.author}}</span>
                   </ion-label>
-                -->
                 </ion-col>
+              -->
+                <ion-chip *ngIf="isMyRoute" (click)="toggle_private(item)" layout="end">
+                  <ion-icon [name]="item.is_private ? 'md-eye-off' : 'md-eye'"></ion-icon>
+                  <ion-label>{{item.is_private_ja}}</ion-label>
+                </ion-chip>
                 <ion-chip *ngIf="isMyRoute" (click)="delete(item)">
                   <ion-icon name="trash"></ion-icon>
                   <ion-label>削除</ion-label>
                 </ion-chip>
-              <ion-chip *ngIf="isMyRoute" (click)="delete(item)">
-                <ion-icon [name]="item.is_private ? 'md-eye' : 'md-eye-off'"></ion-icon>
-                <ion-label>{{item.private_ja}}</ion-label>
-              </ion-chip>
               </ion-row>
 
               <img class="list-thumb" lazyLoad='{{item.thumburl}}' (click)="pageSelected(item)" offset="50" />
