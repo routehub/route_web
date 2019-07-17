@@ -82,6 +82,9 @@ export class EditPage implements OnInit {
       // this.map.dragging.disable();
       this.map.dragging.enable();
 
+      this.hammer.get("pan").set({ enable: false });
+      this.hammer.get("swipe").set({ enable: false });
+
       // var counter = 51;
       // this.hammer.on('pan', function (ev) {
       //   if (counter < 50) {
