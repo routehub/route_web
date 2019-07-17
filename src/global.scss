@@ -38,12 +38,13 @@
 .route-info hr {
   background : #c5c5c5 !important;
 }
-/*
+
 .map-editIcon {
-  animation: chikachika 0.5s;
-  animation-iteration-count: infinite;
+  // animation: chikachika 0.5s;
+  // animation-iteration-count: infinite;
+  cursor: pointer;
 }
-*/
+
 @keyframes chikachika {
   0% {
     opacity:0;
