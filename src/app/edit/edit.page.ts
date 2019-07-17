@@ -23,6 +23,7 @@ export class EditPage implements OnInit {
   private isSlopeMode = false;
   private line: any;
   private _routemap: any;
+  canEdit = true;
 
   route_geojson = {
     "type": "FeatureCollection",
@@ -129,6 +130,12 @@ export class EditPage implements OnInit {
 
       that.hammer.on('tap', function(ev)
       {
+        if ( !that.canEdit )
+        {
+          // 編集不可
+          return;
+        }
+
         let header_height = 64;
         let _point = L.point(ev.center.x, ev.center.y - header_height);
         let latlng = that.map.containerPointToLatLng(_point);
@@ -136,32 +143,67 @@ export class EditPage implements OnInit {
         let overlap_marker = that.find_nearest_marker_from_latlng( latlng, 16.0 );
         if ( overlap_marker != null )
         {
+          // タップ位置にポイントが存在するので何もしない
           return;
         }
 
         let marker = L.marker(latlng, { icon: that.routemap.editIcon, draggable: true });
         let marker_data = new MarkerData( that, marker );
         
+        // ポイントドラッグ
         marker.on('dragend', function(e)
         {
           console.log("dragend");
           marker_data.move_marker( e.target._latlng );
         });
 
-        marker.on('click', function(e)
+        // marker.on('click', function(e)
+        // {
+        //   console.log("click");
+        //   marker_data.remove_marker();
+        // });
+        
+        // marker.on('mouseover', function(e)
+        // {
+        //   console.log("mouseover");
+        // });
+        
+        // marker.on('mouseout', function(e)
+        // {
+        //   console.log("mouseout");
+        // });
+
+        // ポイント削除ポップアップ
+        let content = document.createElement("popup");
+        content.innerHTML = "<a href='javascript:void(0);'>ポイント削除</a>";
+        content.onclick = function(e)
         {
-          console.log("click");
           marker_data.remove_marker();
+        };
+
+        let popup_remove = L.popup().setContent(content);
+
+        marker.bindPopup( popup_remove );
+        marker.on('popupopen', function(e)
+        {
+          that.canEdit = false;
+        });
+
+        marker.on('popupclose', function(e)
+        {
+          that.canEdit = true;
         });
 
         // 経由点追加テスト
         let overlap_route = that.find_nearest_route_point_from_latlng( latlng, 16.0 );
         if ( overlap_route == null )
         {
+          // タップ位置がルート上ではない
           that.push_marker( marker_data );
         }
         else
         {
+          // タップ位置がルート上
           that.insert_marker( marker_data, overlap_route.next_data );
         }
       });
@@ -176,6 +218,7 @@ export class EditPage implements OnInit {
 
   }
 
+  // 指定したlatlngからa_distance以内で最寄りのMarkerDataを返す
   find_nearest_marker_from_latlng( a_latlng, a_distance: number )
   {
     let that = this;
@@ -213,6 +256,7 @@ export class EditPage implements OnInit {
     return res;
   }
 
+  // 指定したlatlngからa_distance以内で最寄りのrouteポイントを含むMarkerDataを返す
   find_nearest_route_point_from_latlng( a_latlng, a_distance: number )
   {
     let that = this;
@@ -268,6 +312,7 @@ export class EditPage implements OnInit {
     return res;
 }
 
+  // geoJsonをmapから削除
   remove_geojson()
   {
     let that = this;
@@ -279,6 +324,7 @@ export class EditPage implements OnInit {
     }
   }
 
+  // geoJson更新
   refresh_geojson()
   {
     let that = this;
@@ -305,6 +351,7 @@ export class EditPage implements OnInit {
     // });
   }
 
+  // routeポイント全更新
   refresh_route()
   {
     let that = this;
@@ -319,6 +366,7 @@ export class EditPage implements OnInit {
     that.refresh_geojson();
   }
 
+  // MarkerDataを最後尾に追加
   push_marker( a_markar_data: MarkerData )
   {
     let that = this;
@@ -344,6 +392,7 @@ export class EditPage implements OnInit {
     }
   }
 
+  // MarkerDataを指定したa_positionの前に挿入
   insert_marker( a_markar_data: MarkerData, a_position: MarkerData )
   {
     let that = this;
@@ -372,6 +421,7 @@ export class EditPage implements OnInit {
     }
   }
 
+  // MarkerData削除
   remove_markar( a_markar_data: MarkerData )
   {
     let that = this;
@@ -390,7 +440,7 @@ export class EditPage implements OnInit {
     }
   }
 
-
+  // ルート検索API呼び出し
   async routing(start, goal)
   {
     // let url = 'http://localhost:8080/route/1.0.0/routing?start=' + start + '&' + 'goal=' + goal;
@@ -411,7 +461,10 @@ export class EditPage implements OnInit {
 
 
 
-  toggleSlopeLayer(event) {
+  toggleSlopeLayer(event)
+  {
+    console.log("toggleSlopeLayer");
+
     event.stopPropagation();
     if (!this.hotlineLayer && !this.isSlopeMode) {
       this.hotlineLayer = this._routemap.addElevationHotlineLayer(this.line);
@@ -446,6 +499,7 @@ class MarkerData
     this.marker = a_marker;
   }
 
+  // 次のポイント設定
   set_next( a_next_data: MarkerData )
   {
     let that = this;
@@ -457,6 +511,7 @@ class MarkerData
     }
   }
 
+  // 前のポイント設定
   set_prev( a_prev_data: MarkerData )
   {
     let that = this;
@@ -468,6 +523,7 @@ class MarkerData
     }
   }
 
+  // 自分と次のポイントまでのルートを検索し、latLngBoundsを更新
   async routing()
   {
     let that = this;
@@ -483,6 +539,7 @@ class MarkerData
 
         if ( _route.length > 0 )
         {
+          // latLngBounds更新
           let latlng_min = L.latLng( _route[0][1], _route[0][0] );
           let latlng_max = L.latLng( _route[0][1], _route[0][0] );
 
@@ -510,6 +567,7 @@ class MarkerData
     }
   }
 
+  // 自分の前後のルート検索
   refresh_marker()
   {
     let that = this;
@@ -530,6 +588,7 @@ class MarkerData
     });
   }
 
+  // MarkerDataを移動し、ルート再検索
   move_marker( a_latlng: L.latLng )
   {
     let that = this;
@@ -539,6 +598,7 @@ class MarkerData
     that.refresh_marker();
   }
 
+  // MarkerDataを削除し、前後を繋げ、ルート再検索
   remove_marker()
   {
     let that = this;
@@ -577,3 +637,4 @@ class MarkerData
     }
   }
 }
+
