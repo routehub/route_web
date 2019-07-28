@@ -23,6 +23,7 @@ export const environment = {
     'user_path': '/user',
     'migrate_path': '/migrate',
     'expand_url_path': '/expand_shorturl',
+    'route_change_private_path' : '/private',
     'staticmap_url': 'https://map.yahooapis.jp/map/V1/static',
     'thumbappid': "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-",
 

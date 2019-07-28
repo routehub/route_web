@@ -16,6 +16,8 @@ export class RouteModel {
     public avg_slope: number;
     public start_point: string;
     public goal_point: string;
+    public is_private: boolean;
+    public is_private_ja: string;
 
     public pos = [];
     public level = [];
@@ -40,6 +42,9 @@ export class RouteModel {
         this.avg_slope = r.avg_slope;
         this.start_point = r.start_point;
         this.goal_point = r.goal_point;
+        this.is_private = r.is_private;
+        this.is_private_ja = r.is_private ? '非公開' : '公開';
+
 
         this.pos = r.pos.split(',').map(p => { return p.split(' ') });
         this.level = r.level.split(',')
@@ -63,6 +68,9 @@ export class RouteModel {
         this.avg_slope = r.avg_slope;
         this.start_point = r.start_point;
         this.goal_point = r.goal_point;
+        this.is_private = r.is_private;
+        this.is_private_ja = r.is_private ? '非公開' : '公開';
+
     }
     private getBodyHead(body) {
         let limit = 70;

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { ToastController, Platform } from '@ionic/angular';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Routemap } from '../watch/routemap';
 import * as Hammer from 'hammerjs';
@@ -49,7 +50,9 @@ export class EditPage implements OnInit {
   };
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    public toastController: ToastController,
+    public platform: Platform,
   ) {
     this.routemap = new Routemap();
     this.line = [];
@@ -63,10 +66,13 @@ export class EditPage implements OnInit {
     let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
-    console.dir(this.elevation);
+
     // デバッグ時にテンションを上げるためY!地図にする
-    let layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
-    layerControlElement.getElementsByTagName('input')[2].click();
+    //let layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
+    //layerControlElement.getElementsByTagName('input')[2].click();
+
+    // 見やすくするために最初からメニューを開いておく
+    document.getElementById('menuButton').click();
 
     this.hammer = new Hammer(this.map_elem.nativeElement);
   }
@@ -79,6 +85,7 @@ export class EditPage implements OnInit {
     this.editMode = this.editMode ? false : true;
 
     if (this.editMode) {
+
       // this.map.dragging.disable();
       this.map.dragging.enable();
 
@@ -124,12 +131,13 @@ export class EditPage implements OnInit {
       //         "opacity": 0.7,
       //         onEachFeature: that.elevation.addData.bind(that.elevation)
       //       }).addTo(that.map);
-
       //     }
       //   });
-
-
       // });
+
+      // TODO : SP用の動作をまた実装する(hammer panが便利)
+      this.presentToast('ルート編集モードに変更');
+
 
       that.hammer.on('tap', function(ev)
       {
@@ -140,6 +148,10 @@ export class EditPage implements OnInit {
         }
 
         let header_height = 64;
+        if (that.platform.is('mobile')) {
+          header_height = 10;
+        }
+
         let _point = L.point(ev.center.x, ev.center.y - header_height);
         let latlng = that.map.containerPointToLatLng(_point);
 
@@ -214,9 +226,8 @@ export class EditPage implements OnInit {
 
 
     } else {
-      this.map.dragging.enable();
-      this.hammer.off('pan');
-      this.hammer.off('panend');
+      this.presentToast('ルート表示モードに変更');
+      this.hammer.off('tap');
     }
 
   }
@@ -334,12 +345,26 @@ export class EditPage implements OnInit {
 
     that.remove_geojson();
 
+    if (that.line.length <= 0) {
+      return;
+    }
+
     that.route_geojson.features[0].geometry.coordinates = that.line;
+
+    that.elevation.clear();
+
+    // TODO : ルート系のレイヤーがあれば処理が面倒なので削除しているが、そのうちうまく更新したい
+    if (this.hotlineLayer) {
+      this.presentToast('グラデーションモードを解除');
+      this.map.removeLayer(this.hotlineLayer);
+      this.hotlineLayer = false;
+      this.isSlopeMode = false;
+    }    
     that.geojson = L.geoJson(that.route_geojson, {
       "color": "#0000ff",
       "width": 6,
       "opacity": 0.7,
-      // onEachFeature: that.elevation.addData.bind(that.elevation)
+      onEachFeature: that.elevation.addData.bind(that.elevation)
     });
 
     that.geojson.addTo(that.map);
@@ -387,7 +412,7 @@ export class EditPage implements OnInit {
 
       start_data.routing().then( () =>
       {
-        that.line = that.line.concat(start_data.route);
+        that.line = that.line.concat(start_data.route);        
         console.log(that.line.length);
 
         that.refresh_geojson();
@@ -471,17 +496,27 @@ export class EditPage implements OnInit {
     event.stopPropagation();
     if (!this.hotlineLayer && !this.isSlopeMode) {
       this.hotlineLayer = this._routemap.addElevationHotlineLayer(this.line);
-      //      this.presentToast('標高グラデーションモードに変更');
+      this.presentToast('標高グラデーションモードに変更');
     } else if (this.hotlineLayer && !this.isSlopeMode) {
       this.map.removeLayer(this.hotlineLayer);
       this.hotlineLayer = this._routemap.addSlopeHotlineLayer(this.line);
-      //      this.presentToast('斜度グラデーションモードに変更');
+      this.presentToast('斜度グラデーションモードに変更');
       this.isSlopeMode = true;
     } else {
       this.map.removeLayer(this.hotlineLayer);
       this.hotlineLayer = false;
       this.isSlopeMode = false;
     }
+  }
+
+  async presentToast(message)
+  {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      color: "primary",
+    });
+    toast.present();
   }
 }
 
