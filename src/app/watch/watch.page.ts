@@ -25,7 +25,7 @@ import 'firebase/auth';
 })
 
 export class WatchPage implements OnInit {
-  @ViewChild('map') map_elem: ElementRef;
+  @ViewChild('map', { static: true }) map_elem: ElementRef;
 
   user: RouteHubUser;
   route_data: RouteModel;
