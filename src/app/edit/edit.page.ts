@@ -26,6 +26,10 @@ export class EditPage implements OnInit {
   private _routemap: any;
   canEdit = true;
 
+  distance = 0.0;
+  height_gain = 0.0;
+  height_max = 0.0;
+
   route_geojson = {
     "type": "FeatureCollection",
     "features": [
@@ -85,59 +89,8 @@ export class EditPage implements OnInit {
     this.editMode = this.editMode ? false : true;
 
     if (this.editMode) {
-
-      // this.map.dragging.disable();
-      this.map.dragging.enable();
-
-      this.hammer.get("pan").set({ enable: false });
-      this.hammer.get("swipe").set({ enable: false });
-
-      // var counter = 51;
-      // this.hammer.on('pan', function (ev) {
-      //   if (counter < 50) {
-      //     ++counter;
-      //     return;
-      //   }
-      //   counter = 0;
-      //   let _point = L.point(ev.center.x, ev.center.y);
-      //   let latlng = that.map.containerPointToLatLng(_point);
-
-      //   let marker = L.marker(latlng, { icon: that.routemap.editIcon });
-      //   that.editMarkers.push(marker);
-      //   marker.addTo(that.map);
-      // });
-
-      // var route = [];
-      // this.hammer.on('panend', function (ev) {
-      //   that.editMarkers.forEach(async function (marker, i) {
-      //     if (i === 0) {
-      //       return;
-      //     }
-
-      //     let start = that.editMarkers[i - 1]._latlng.lat + ',' + that.editMarkers[i - 1]._latlng.lng;
-      //     let goal = marker._latlng.lat + ',' + marker._latlng.lng;
-
-      //     await that.routing(start, goal).then(_route => {
-      //       route = route.concat(_route);
-      //       console.log(route.length);
-      //     });
-
-      //     if (i === that.editMarkers.length - 1) {
-      //       that.route_geojson.features[0].geometry.coordinates = that.line = route;
-      //       //            let elevation = route.filter(e => {return e[2]});
-      //       L.geoJson(that.route_geojson, {
-      //         "color": "#0000ff",
-      //         "width": 6,
-      //         "opacity": 0.7,
-      //         onEachFeature: that.elevation.addData.bind(that.elevation)
-      //       }).addTo(that.map);
-      //     }
-      //   });
-      // });
-
       // TODO : SP用の動作をまた実装する(hammer panが便利)
       this.presentToast('ルート編集モードに変更');
-
 
       that.hammer.on('tap', function(ev)
       {
@@ -385,11 +338,22 @@ export class EditPage implements OnInit {
     let that = this;
 
     that.line = [];
+    that.distance = 0.0;
+    that.height_gain = 0.0;
+    that.height_max = 0.0;
     for ( let i = 0 ; i < that.editMarkers.length - 1 ; ++i )
     {
       // console.log(that.editMarkers[i].route.length);
       that.line = that.line.concat(that.editMarkers[i].route);
+
+      that.distance += that.editMarkers[i].distance;
+      that.height_gain += that.editMarkers[i].height_gain;
+      that.height_max = Math.max( that.height_max, that.editMarkers[i].height_max );
     }
+
+    console.log("route distance: " + that.distance );
+    console.log("route height_max: " + that.height_max );
+    console.log("route height_gain: " + that.height_gain );
 
     that.refresh_geojson();
   }
@@ -412,9 +376,16 @@ export class EditPage implements OnInit {
 
       start_data.routing().then( () =>
       {
-        that.line = that.line.concat(start_data.route);        
-        console.log(that.line.length);
+        that.line = that.line.concat(start_data.route);
+        that.distance += start_data.distance;
+        that.height_gain += start_data.height_gain;
+        that.height_max = Math.max( that.height_max, start_data.height_max );
 
+        console.log(that.line.length);
+        console.log("route distance: " + that.distance );
+        console.log("route height_max: " + that.height_max );
+        console.log("route height_gain: " + that.height_gain );
+    
         that.refresh_geojson();
       });
     }
@@ -531,6 +502,10 @@ class MarkerData
   prev_data: MarkerData;
   route = [];
   bounds: L.latLngBounds;
+  height_gain = 0.0;
+  height_max = 0.0;
+  distance = 0.0;
+
 
   constructor( private edit_page: EditPage, a_marker: L.markar )
   {
@@ -578,23 +553,55 @@ class MarkerData
         if ( _route.length > 0 )
         {
           // latLngBounds更新
-          let latlng_min = L.latLng( _route[0][1], _route[0][0] );
-          let latlng_max = L.latLng( _route[0][1], _route[0][0] );
+          let current_latlng = L.latLng( _route[0][1], _route[0][0] );
+          let last_latlng = current_latlng;
+          let latlng_min = current_latlng;
+          let latlng_max = current_latlng;
+          let current_height = _route[0][2];
+          let last_height = current_height;
+          that.height_max = current_height;
+          that.height_gain = 0.0;
+          that.distance = 0.0;
+
+          let radius = 6378.137;
 
           for ( let i = 1 ; i < _route.length ; ++i )
           {
-            latlng_max.lat = Math.max( latlng_max.lat, _route[i][1] );
-            latlng_max.lng = Math.max( latlng_max.lng, _route[i][0] );
+            current_latlng = L.latLng( _route[i][1], _route[i][0] );
 
-            latlng_min.lat = Math.min( latlng_min.lat, _route[i][1] );
-            latlng_min.lng = Math.min( latlng_min.lng, _route[i][0] );
+            // 矩形更新
+            latlng_max.lat = Math.max( latlng_max.lat, current_latlng.lat );
+            latlng_max.lng = Math.max( latlng_max.lng, current_latlng.lng );
+
+            latlng_min.lat = Math.min( latlng_min.lat, current_latlng.lat );
+            latlng_min.lng = Math.min( latlng_min.lng, current_latlng.lng );
+
+            // 距離更新
+            that.distance += that.edit_page.map.distance( current_latlng, last_latlng ) * 0.001;
+
+            // 獲得標高、最大標高更新
+            current_height = _route[i][2];
+            let height_delta = current_height - last_height;
+
+            that.height_max = Math.max( that.height_max, current_height );
+            that.height_gain += Math.max( height_delta, 0.0 );
+
+            last_latlng = current_latlng;
+            last_height = current_height;
           }
 
           that.bounds = L.latLngBounds( latlng_min, latlng_max );
+
+          console.log("distance: " + that.distance );
+          console.log("height_max: " + that.height_max );
+          console.log("height_gain: " + that.height_gain );
         }
         else
         {
           that.bounds = null;
+          that.height_max = 0.0;
+          that.height_gain = 0.0;
+          that.distance = 0.0;
         }
       });
     }
@@ -602,7 +609,10 @@ class MarkerData
     {
       that.route = [];
       that.bounds = null;
-    }
+      that.height_max = 0.0;
+      that.height_gain = 0.0;
+      that.distance = 0.0;
+}
   }
 
   // 自分の前後のルート検索
