@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ToastController, Platform } from '@ionic/angular';
+import { ToastController, Platform, ModalController } from '@ionic/angular';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Routemap } from '../watch/routemap';
 import * as Hammer from 'hammerjs';
 import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
+import { LayerselectPage } from '../layerselect/layerselect.page';
 
 @Component({
   selector: 'app-edit',
@@ -66,6 +67,7 @@ export class EditPage implements OnInit {
     private http: HttpClient,
     public toastController: ToastController,
     public platform: Platform,
+    public modalCtrl: ModalController,
   ) {
     this.routemap = new Routemap();
     this.line = [];
@@ -448,6 +450,15 @@ export class EditPage implements OnInit {
       this.hotlineLayer = false;
       this.isSlopeMode = false;
     }
+  }
+
+  async presentLayerSelect(event) {
+    event.stopPropagation();
+    const modal = await this.modalCtrl.create({
+      component: LayerselectPage,
+      //      componentProps: { route: this.route_data }
+    });
+    return await modal.present();
   }
 
   async presentToast(message) {
