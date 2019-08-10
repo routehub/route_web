@@ -336,6 +336,7 @@ export class EditPage implements OnInit {
     console.log("route height_gain: " + that.height_gain);
 
     that.refresh_geojson();
+    that.refresh_all_marker_icon();
   }
 
   // MarkerDataを最後尾に追加
@@ -352,7 +353,6 @@ export class EditPage implements OnInit {
 
       start_data.set_next(goal_data);
 
-
       start_data.routing().then(() => {
         that.line = that.line.concat(start_data.route);
         that.distance += start_data.distance;
@@ -364,6 +364,7 @@ export class EditPage implements OnInit {
         that.max_elev_elem.nativeElement.innerText = Math.round(that.height_max * 10) / 10;
 
         that.refresh_geojson();
+        that.refresh_all_marker_icon();
       });
     }
   }
@@ -407,6 +408,18 @@ export class EditPage implements OnInit {
 
       that.editMarkers.splice(n, 1);
       break;
+    }
+  }
+  // editMarkersを精査してiconを設定
+  refresh_all_marker_icon() {
+    for (let i = 0; i < this.editMarkers.length; ++i) {
+      if (i === 0) {
+        this.editMarkers[i].setIcon(this.routemap.startIcon);
+      } else if (i === this.editMarkers.length - 1) {
+        this.editMarkers[i].setIcon(this.routemap.goalIcon);
+      } else {
+        this.editMarkers[i].setIcon(this.routemap.editIcon);
+      }
     }
   }
 
@@ -533,6 +546,10 @@ class MarkerData {
 
   constructor(private edit_page: EditPage, a_marker: L.markar) {
     this.marker = a_marker;
+  }
+
+  setIcon(icon: any) {
+    this.marker.setIcon(icon);
   }
 
   // 次のポイント設定
