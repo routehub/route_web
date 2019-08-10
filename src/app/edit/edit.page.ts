@@ -28,6 +28,9 @@ export class EditPage implements OnInit {
   canEdit = true;
 
   routing_url = environment.api.host + environment.api.routing_path;
+  distance = 0.0;
+  height_gain = 0.0;
+  height_max = 0.0;
 
   route_geojson = {
     "type": "FeatureCollection",
@@ -298,10 +301,22 @@ export class EditPage implements OnInit {
     let that = this;
 
     that.line = [];
+
+    that.distance = 0.0;
+    that.height_gain = 0.0;
+    that.height_max = 0.0;
     for (let i = 0; i < that.editMarkers.length - 1; ++i) {
       // console.log(that.editMarkers[i].route.length);
       that.line = that.line.concat(that.editMarkers[i].route);
+
+      that.distance += that.editMarkers[i].distance;
+      that.height_gain += that.editMarkers[i].height_gain;
+      that.height_max = Math.max(that.height_max, that.editMarkers[i].height_max);
     }
+
+    console.log("route distance: " + that.distance);
+    console.log("route height_max: " + that.height_max);
+    console.log("route height_gain: " + that.height_gain);
 
     that.refresh_geojson();
   }
@@ -320,9 +335,17 @@ export class EditPage implements OnInit {
 
       start_data.set_next(goal_data);
 
+
       start_data.routing().then(() => {
         that.line = that.line.concat(start_data.route);
+        that.distance += start_data.distance;
+        that.height_gain += start_data.height_gain;
+        that.height_max = Math.max(that.height_max, start_data.height_max);
+
         console.log(that.line.length);
+        console.log("route distance: " + that.distance);
+        console.log("route height_max: " + that.height_max);
+        console.log("route height_gain: " + that.height_gain);
 
         that.refresh_geojson();
       });
@@ -427,6 +450,10 @@ class MarkerData {
   prev_data: MarkerData;
   route = [];
   bounds: L.latLngBounds;
+  height_gain = 0.0;
+  height_max = 0.0;
+  distance = 0.0;
+
 
   constructor(private edit_page: EditPage, a_marker: L.markar) {
     this.marker = a_marker;
@@ -464,28 +491,62 @@ class MarkerData {
         that.route = _route;
 
         if (_route.length > 0) {
-          // latLngBounds更新
-          let latlng_min = L.latLng(_route[0][1], _route[0][0]);
-          let latlng_max = L.latLng(_route[0][1], _route[0][0]);
+          let current_latlng = L.latLng(_route[0][1], _route[0][0]);
+          let last_latlng = current_latlng;
+          let latlng_min = current_latlng;
+          let latlng_max = current_latlng;
+          let current_height = _route[0][2];
+          let last_height = current_height;
+          that.height_max = current_height;
+          that.height_gain = 0.0;
+          that.distance = 0.0;
+
+          let radius = 6378.137;
 
           for (let i = 1; i < _route.length; ++i) {
-            latlng_max.lat = Math.max(latlng_max.lat, _route[i][1]);
-            latlng_max.lng = Math.max(latlng_max.lng, _route[i][0]);
+            current_latlng = L.latLng(_route[i][1], _route[i][0]);
 
-            latlng_min.lat = Math.min(latlng_min.lat, _route[i][1]);
-            latlng_min.lng = Math.min(latlng_min.lng, _route[i][0]);
+            // 矩形更新
+            latlng_max.lat = Math.max(latlng_max.lat, current_latlng.lat);
+            latlng_max.lng = Math.max(latlng_max.lng, current_latlng.lng);
+
+            latlng_min.lat = Math.min(latlng_min.lat, current_latlng.lat);
+            latlng_min.lng = Math.min(latlng_min.lng, current_latlng.lng);
+
+            // 距離更新
+            that.distance += that.edit_page.map.distance(current_latlng, last_latlng) * 0.001;
+
+            // 獲得標高、最大標高更新
+            current_height = _route[i][2];
+            let height_delta = current_height - last_height;
+
+            that.height_max = Math.max(that.height_max, current_height);
+            that.height_gain += Math.max(height_delta, 0.0);
+
+            last_latlng = current_latlng;
+            last_height = current_height;
           }
-
+          // latLngBounds更新
           that.bounds = L.latLngBounds(latlng_min, latlng_max);
+
+          console.log("distance: " + that.distance);
+          console.log("height_max: " + that.height_max);
+          console.log("height_gain: " + that.height_gain);
         }
         else {
           that.bounds = null;
+          that.height_max = 0.0;
+          that.height_gain = 0.0;
+          that.distance = 0.0;
         }
       });
     }
     else {
       that.route = [];
       that.bounds = null;
+      that.height_max = 0.0;
+      that.height_gain = 0.0;
+      that.distance = 0.0;
     }
   }
 
