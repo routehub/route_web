@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Routemap } from '../watch/routemap';
 import * as Hammer from 'hammerjs';
 import * as L from 'leaflet';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-edit',
@@ -25,6 +26,8 @@ export class EditPage implements OnInit {
   private line: any;
   private _routemap: any;
   canEdit = true;
+
+  routing_url = environment.api.host + environment.api.routing_path;
 
   route_geojson = {
     "type": "FeatureCollection",
@@ -68,8 +71,8 @@ export class EditPage implements OnInit {
     this.elevation = routemap.elevation;
 
     // デバッグ時にテンションを上げるためY!地図にする
-    //let layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
-    //layerControlElement.getElementsByTagName('input')[2].click();
+    let layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
+    layerControlElement.getElementsByTagName('input')[2].click();
 
     // 見やすくするために最初からメニューを開いておく
     document.getElementById('menuButton').click();
@@ -117,22 +120,6 @@ export class EditPage implements OnInit {
           console.log("dragend");
           marker_data.move_marker(e.target._latlng);
         });
-
-        // marker.on('click', function(e)
-        // {
-        //   console.log("click");
-        //   marker_data.remove_marker();
-        // });
-
-        // marker.on('mouseover', function(e)
-        // {
-        //   console.log("mouseover");
-        // });
-
-        // marker.on('mouseout', function(e)
-        // {
-        //   console.log("mouseout");
-        // });
 
         // ポイント削除ポップアップ
         let content = document.createElement("popup");
@@ -385,9 +372,8 @@ export class EditPage implements OnInit {
   }
 
   // ルート検索API呼び出し
-  async routing(start, goal) {
-    // let url = 'http://localhost:8080/route/1.0.0/routing?start=' + start + '&' + 'goal=' + goal;
-    let url = 'https://routing.routehub.app/route/1.0.0/routing?start=' + start + '&' + 'goal=' + goal;
+  async routing(pointList: string[]) {
+    let url = this.routing_url + '?points=' + pointList.join(' ');
     return await this.http.get(url).toPromise().then((res: any) => {
       let ret = [];
 
@@ -471,10 +457,10 @@ class MarkerData {
     let that = this;
 
     if (that.next_data != null) {
-      let start = that.marker._latlng.lat + ',' + that.marker._latlng.lng;
-      let goal = that.next_data.marker._latlng.lat + ',' + that.next_data.marker._latlng.lng;
+      let start = that.marker._latlng.lng + ',' + that.marker._latlng.lat;
+      let goal = that.next_data.marker._latlng.lng + ',' + that.next_data.marker._latlng.lat;
 
-      await that.edit_page.routing(start, goal).then((_route: any) => {
+      await that.edit_page.routing([start, goal]).then((_route: any) => {
         that.route = _route;
 
         if (_route.length > 0) {
