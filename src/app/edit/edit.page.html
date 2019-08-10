@@ -2,16 +2,51 @@
   <ion-fab-button>
     <ion-icon name="md-apps"></ion-icon>
   </ion-fab-button>
+  <ion-fab-list side="start">
+    <ion-fab-button (click)="fastPlay($event)">
+      <ion-icon color="primary" name="fastforward"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button (click)="togglePlay($event)">
+      <ion-icon color="primary" [name]="isPlaying ? 'md-pause' : 'md-play'"> </ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-button>
+      <ion-icon name="md-trash"></ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-button>
+      <ion-icon color="primary" name="ios-save"></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+
   <ion-fab-list side="bottom">
+
     <ion-fab-button (click)="toggleCreateMode($event)">
       <ion-icon [color]="editMode ? 'primary' : ''" name="md-create"></ion-icon>
     </ion-fab-button>
+
+    <ion-fab-button (click)="presentLayerSelect($event)">
+      <ion-icon color="primary" name="md-albums"></ion-icon>
+    </ion-fab-button>
+
     <ion-fab-button (click)="toggleSlopeLayer($event)">
       <ion-icon color="primary" name="trending-up"></ion-icon>
     </ion-fab-button>
+
+    <ion-fab-button (click)="toggleLocation($event)">
+      <ion-icon [color]="isWatchLocation ? 'primary' : ''" name="md-locate"> </ion-icon>
+    </ion-fab-button>
+
+
   </ion-fab-list>
 </ion-fab>
 
 <ion-content class="mapcontainer">
+  <div class="editbar" #editbar>
+    <div class="title" contenteditable="true">コース名</div>
+    <div class="total_dist">総距離 : <span></span>km</div>
+    <div class="total_elev">獲得標高 : <span></span>m</div>
+    <div class="max_elev">最高標高 : <span></span>m</div>
+  </div>
   <div class="mainmap" #map></div>
 </ion-content>
