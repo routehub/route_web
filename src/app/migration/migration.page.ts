@@ -13,7 +13,7 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./migration.page.scss'],
 })
 export class MigrationPage implements OnInit {
-  @ViewChild('importarea') importarea: ElementRef;
+  @ViewChild('importarea', { static: false }) importarea: ElementRef;
 
   user: RouteHubUser;
   public routeurl: string;

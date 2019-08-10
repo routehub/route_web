@@ -17,6 +17,7 @@ export class Route {
     summary: string;
     thumburl: string;
     is_gps: boolean;
+    is_private: boolean;
     created_at: string;
     private staticmap_url = 'https://map.yahooapis.jp/map/V1/static';
     private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
