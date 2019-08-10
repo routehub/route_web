@@ -13,7 +13,7 @@ import { RouteModel } from '../model/routemodel';
   styleUrls: ['list.page.scss']
 })
 export class ListPage implements OnInit {
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
 
   private search_url = environment.api.host + environment.api.search_path;
 

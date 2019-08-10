@@ -12,7 +12,7 @@ import * as L from 'leaflet';
 })
 
 export class EditPage implements OnInit {
-  @ViewChild('map') map_elem: ElementRef;
+  @ViewChild('map', { static: true }) map_elem: ElementRef;
   map: any;
   routemap: Routemap;
   elevation: any;

@@ -16,8 +16,8 @@ export class HomePage {
   query = '';
   list_style_class = 'funclist';
 
-  @ViewChild('logoutButton') logoutButton: any;
-  @ViewChild('loginButton') loginButton: any;
+  @ViewChild('logoutButton', { static: false }) logoutButton: any;
+  @ViewChild('loginButton', { static: false }) loginButton: any;
 
   constructor(
     public platform: Platform,
