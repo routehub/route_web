@@ -6,6 +6,7 @@ import * as Hammer from 'hammerjs';
 import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
 import { LayerselectPage } from '../layerselect/layerselect.page';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-edit',
@@ -34,6 +35,11 @@ export class EditPage implements OnInit {
   routingMode: number = 0;
   // https://valhalla.readthedocs.io/en/latest/api/turn-by-turn/api-reference/
   routingModeList: string[] = ["自転車(ロード),bicycle,Road", "自転車(グラベル),bicycle,Mountain", "車,auto,"];
+
+  watch_location_subscribe: any;
+  watch: any;
+  currenPossitionMarker: any;
+  isWatchLocation = false;
 
   routing_url = environment.api.host + environment.api.routing_path;
   distance = 0.0;
@@ -68,6 +74,7 @@ export class EditPage implements OnInit {
     public toastController: ToastController,
     public platform: Platform,
     public modalCtrl: ModalController,
+    private geolocation: Geolocation,
   ) {
     this.routemap = new Routemap();
     this.line = [];
@@ -75,6 +82,7 @@ export class EditPage implements OnInit {
   }
 
   ngOnInit() {
+    this.watch = this.geolocation.watchPosition();
   }
 
   ionViewWillEnter() {
@@ -469,6 +477,43 @@ export class EditPage implements OnInit {
     });
     toast.present();
   }
+
+
+  toggleLocation(event) {
+    event.stopPropagation();
+    // 無効化
+    if (this.watch_location_subscribe && this.watch_location_subscribe.isStopped !== true) {
+      this.presentToast('GPS off');
+
+      this.watch_location_subscribe.unsubscribe();
+      this.isWatchLocation = false;
+      if (this.currenPossitionMarker) {
+        this.map.removeLayer(this.currenPossitionMarker);
+        this.currenPossitionMarker = null;
+      }
+      return;
+    }
+
+    // 有効化
+    this.presentToast('GPS on');
+    this.isWatchLocation = true;
+    this.watch_location_subscribe = this.watch.subscribe((pos) => {
+      this.watch.subscribe((pos) => {
+        if (this.watch_location_subscribe.isStopped === true) {
+          return;
+        }
+        let latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude);
+
+        if (!this.currenPossitionMarker) {
+          this.currenPossitionMarker = new L.marker(latlng, { icon: this.routemap.gpsIcon }).addTo(this.map);
+          this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true }); //初回のみ移動
+        } else {
+          this.currenPossitionMarker.setLatLng(latlng);
+        }
+      });
+    });
+  }
+
 }
 
 
