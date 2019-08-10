@@ -14,6 +14,10 @@ import { environment } from '../../environments/environment';
 
 export class EditPage implements OnInit {
   @ViewChild('map', { static: true }) map_elem: ElementRef;
+  @ViewChild('total_dist', { static: true }) total_dist_elem: ElementRef;
+  @ViewChild('total_elev', { static: true }) total_elev_elem: ElementRef;
+  @ViewChild('max_elev', { static: true }) max_elev_elem: ElementRef;
+
   map: any;
   routemap: Routemap;
   elevation: any;
@@ -342,10 +346,9 @@ export class EditPage implements OnInit {
         that.height_gain += start_data.height_gain;
         that.height_max = Math.max(that.height_max, start_data.height_max);
 
-        console.log(that.line.length);
-        console.log("route distance: " + that.distance);
-        console.log("route height_max: " + that.height_max);
-        console.log("route height_gain: " + that.height_gain);
+        that.total_dist_elem.nativeElement.innerText = Math.round(that.distance * 10) / 10;
+        that.total_elev_elem.nativeElement.innerText = Math.round(that.height_gain * 10) / 10;
+        that.max_elev_elem.nativeElement.innerText = Math.round(that.height_max * 10) / 10;
 
         that.refresh_geojson();
       });
@@ -401,7 +404,7 @@ export class EditPage implements OnInit {
       let ret = [];
 
       res.forEach((p: any) => {
-        ret.push([p[1], p[0], p[2],]);
+        ret.push([p[1], p[0], p[2] / 10,]);
       });
 
       return ret;
