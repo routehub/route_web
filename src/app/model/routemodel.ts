@@ -82,6 +82,9 @@ export class RouteModel {
     private staticmap_url = 'https://map.yahooapis.jp/map/V1/static';
     private thumbappid = "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-";
     private getThumbUrl(summary) {
+        if (!summary) {
+            return '';
+        }
         let line = summary.slice(11, -1).split(',').map(pos => {
             let p = pos.split(' ');
             return p[1] + ',' + p[0];
