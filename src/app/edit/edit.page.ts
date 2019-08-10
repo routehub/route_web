@@ -23,7 +23,7 @@ export class EditPage implements OnInit {
   map: any;
   routemap: Routemap;
   elevation: any;
-  editMode = false;
+  editMode = true;
   hammer: any;
   editMarkers = [];
   geojson: L.geoJSON;
