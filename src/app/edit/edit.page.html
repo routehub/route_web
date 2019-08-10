@@ -25,6 +25,10 @@
       <ion-icon [color]="editMode ? 'primary' : ''" name="md-create"></ion-icon>
     </ion-fab-button>
 
+    <ion-fab-button (click)="toggleRoutingMode($event)">
+      <ion-icon color="primary" name="md-walk"></ion-icon>
+    </ion-fab-button>
+
     <ion-fab-button (click)="presentLayerSelect($event)">
       <ion-icon color="primary" name="md-albums"></ion-icon>
     </ion-fab-button>

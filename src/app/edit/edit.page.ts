@@ -30,6 +30,9 @@ export class EditPage implements OnInit {
   private line: any;
   private _routemap: any;
   canEdit = true;
+  routingMode: number = 0;
+  // https://valhalla.readthedocs.io/en/latest/api/turn-by-turn/api-reference/
+  routingModeList: string[] = ["自転車(ロード),bicycle,Road", "自転車(グラベル),bicycle,Mountain", "車,auto,"];
 
   routing_url = environment.api.host + environment.api.routing_path;
   distance = 0.0;
@@ -399,7 +402,10 @@ export class EditPage implements OnInit {
 
   // ルート検索API呼び出し
   async routing(pointList: string[]) {
-    let url = this.routing_url + '?points=' + pointList.join(' ');
+    let costing_model = this.routingModeList[this.routingMode].split(',')[1];
+    let bicycle_type = this.routingModeList[this.routingMode].split(',')[2];
+    let url = this.routing_url + '?costing_model=' + costing_model + '&bicycle_type=' + bicycle_type + '&points=' + pointList.join(' ');
+
     return await this.http.get(url).toPromise().then((res: any) => {
       let ret = [];
 
@@ -411,7 +417,18 @@ export class EditPage implements OnInit {
     });
   }
 
+  toggleRoutingMode(event) {
+    console.log("toggleRoutingMode");
+    event.stopPropagation();
 
+    this.routingMode = this.routingMode + 1;
+    if (this.routingModeList.length < this.routingMode + 1) {
+      this.routingMode = 0;
+    }
+
+    this.presentToast('ルート検索モードを' + this.routingModeList[this.routingMode].split(',')[0] + 'に変更');
+
+  }
 
 
   toggleSlopeLayer(event) {
