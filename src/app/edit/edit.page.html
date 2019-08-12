@@ -83,7 +83,9 @@
         </ion-row>
       </ion-grid>
 
-      <ion-button color="primary" id="close_editbar" expand="block">閉じる</ion-button>
+      <ion-button color="primary" (click)="save(event)" expand="block">保存・更新する</ion-button>
+
+      <ion-button color="light" id="close_editbar" expand="block">閉じる</ion-button>
 
     </div>
 

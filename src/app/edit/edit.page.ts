@@ -512,6 +512,11 @@ export class EditPage implements OnInit {
       return;
     }
 
+    if (this.author === '') {
+      alert('ルートの作者名を入力してください')
+      return;
+    }
+
     // TODO ログインしていないときはローカルストレージに入れて一時保存させてあげたいなぁ
     let getKind = () => {
       let ret = [];
@@ -531,9 +536,9 @@ export class EditPage implements OnInit {
     let route = {
       id: this.route_id || '',
       title: this.title_elem.nativeElement.innerText.replace("\n", "") + "",
-      body: '', // TODO
-      author: '', // TODO
-      tag: this.tags.join(','),
+      body: this.body,
+      author: this.author,
+      tag: this.tags.map(t => { return t.value }).join(','),
       total_dist: Math.round(this.distance * 10) / 10 + "",
       total_elevation: Math.round(this.height_gain * 10) / 10 + "",
       max_elevation: Math.round(this.height_max * 10) / 10 + "",
@@ -541,7 +546,7 @@ export class EditPage implements OnInit {
       avg_slope: "0.0", //TODO
       start_point: '', //TODO
       goal_point: '', // TODO
-      is_private: "false", // TODO
+      is_private: !this.isNotPrivate ? 'true' : 'false',
       is_gps: "false", // TODO
       pos: this.line.map(p => { return p[0] + " " + p[1]; }).join(","),
       time: '', // TODO
