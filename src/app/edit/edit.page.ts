@@ -131,6 +131,17 @@ export class EditPage implements OnInit {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'none';
     }
+
+    let hidearea = window.document.querySelector('.hidearea') as HTMLElement;
+    document.getElementById('editbar').onclick = () => {
+      hidearea.style.display = "block";
+    }
+    document.getElementById('close_editbar').onclick = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      hidearea.style.display = "none";
+    }
+
   }
 
   ionViewWillLeave() {

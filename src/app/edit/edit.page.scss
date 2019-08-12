@@ -4,12 +4,14 @@
 }
 .title, .total_dist, .total_elev, .max_elev{
   display:inline-block;
-  color: white;
   margin-right:10px;
+}
+.total_dist, .total_elev, .max_elev{
+  font-size : 12px;
 }
 .total_dist > span , .total_elev > span , .max_elev > span {
   display:inline-block;
-  min-width: 40px;
+  min-width: 20px;
 }
 .editbar {
   width:100%;
@@ -18,8 +20,9 @@
   position : absolute;
   top:0;
   left:0;
-  background:#ec16447d;
-  z-index: 10;
+  background:white;
+  z-index: 99999;
+  color: #ec1845;
 }
 .title{
   width: 300px;
@@ -28,4 +31,7 @@
 }
 .leaflet-marker-icon {
   image-rendering: pixelated;
+}
+.hidearea {
+  display: none;
 }
