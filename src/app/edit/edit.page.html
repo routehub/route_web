@@ -49,9 +49,42 @@
     <div class="max_elev">最高標高 : <span #max_elev></span>m</div>
 
     <div class="hidearea">
-      <p>#hoge #fuga</p>
-      <textarea>hogehogehogehgoe</textarea>
-      <div id="close_editbar">閉じる</div>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col size=3>
+            <ion-item>
+              <ion-label color="primary">公開</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="isNotPrivate"></ion-toggle>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item>
+              <ion-label color="primary">ルートの作者<ion-text color="danger">*</ion-text>
+              </ion-label>
+              <ion-input color="primary" [(ngModel)]="author"></ion-input>
+            </ion-item>
+
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <tag-input style="font-size:0.9em" color="primary" placeholder="タグを入力" secondaryPlaceholder="タグを入力"
+              [(ngModel)]='tags'>
+            </tag-input>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-textarea color="primary" rows="6" cols="20" [(ngModel)]="body" placeholder="コースの説明など"></ion-textarea>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <ion-button color="primary" id="close_editbar" expand="block">閉じる</ion-button>
+
     </div>
 
   </div>

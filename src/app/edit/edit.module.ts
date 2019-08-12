@@ -7,6 +7,9 @@ import { IonicModule } from '@ionic/angular';
 
 import { EditPage } from './edit.page';
 
+import { TagInputModule } from 'ngx-chips';
+
+
 const routes: Routes = [
   {
     path: '',
@@ -16,6 +19,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    TagInputModule,
     CommonModule,
     FormsModule,
     IonicModule,
@@ -23,4 +27,4 @@ const routes: Routes = [
   ],
   declarations: [EditPage]
 })
-export class EditPageModule {}
+export class EditPageModule { }

@@ -35,6 +35,10 @@ export class EditPage implements OnInit {
   editMode = false;
   hammer: any;
   editMarkers = [];
+  tags = [];
+  isNotPrivate = true;
+  author = "";
+  body = "";
   geojson: L.geoJSON;
   private hotlineLayer: any;
   private isSlopeMode = false;
@@ -528,13 +532,13 @@ export class EditPage implements OnInit {
       id: this.route_id || '',
       title: this.title_elem.nativeElement.innerText.replace("\n", "") + "",
       body: '', // TODO
-      author: 'test author', // TODO
-      tag: '', // TODO
+      author: '', // TODO
+      tag: this.tags.join(','),
       total_dist: Math.round(this.distance * 10) / 10 + "",
       total_elevation: Math.round(this.height_gain * 10) / 10 + "",
       max_elevation: Math.round(this.height_max * 10) / 10 + "",
-      max_slope: "0.0",
-      avg_slope: "0.0",
+      max_slope: "0.0", //TODO
+      avg_slope: "0.0", //TODO
       start_point: '', //TODO
       goal_point: '', // TODO
       is_private: "false", // TODO

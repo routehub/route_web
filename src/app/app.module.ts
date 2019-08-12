@@ -19,6 +19,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
 
 @Injectable()
 export class IonicGestureConfig extends HammerGestureConfig {
@@ -38,6 +39,7 @@ export class IonicGestureConfig extends HammerGestureConfig {
   imports: [
     HttpClientModule,
     BrowserModule,
+    BrowserAnimationsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     RouteinfoPageModule,
