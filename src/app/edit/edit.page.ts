@@ -340,9 +340,10 @@ export class EditPage implements OnInit {
       that.height_max = Math.max(that.height_max, that.editMarkers[i].height_max);
     }
 
-    console.log("route distance: " + that.distance);
-    console.log("route height_max: " + that.height_max);
-    console.log("route height_gain: " + that.height_gain);
+    that.total_dist_elem.nativeElement.innerText = Math.round(that.distance * 10) / 10;
+    that.total_elev_elem.nativeElement.innerText = Math.round(that.height_gain * 10) / 10;
+    that.max_elev_elem.nativeElement.innerText = Math.round(that.height_max * 10) / 10;
+
 
     that.refresh_geojson();
     that.refresh_all_marker_icon();
