@@ -114,6 +114,13 @@ export class EditPage implements OnInit {
     // ルートidが指定されているときは読み込み
     this.route_id = this.ngRoute.snapshot.paramMap.get('id');
 
+    if (!this.route_id) {
+      window.document.getElementById('share_link_row').style.display = 'none';
+    } else {
+      window.document.getElementById('share_link').innerText = 'http://routehub.app/watch/' + this.route_id;
+      window.document.getElementById('share_link').setAttribute('href', 'http://routehub.app/watch/' + this.route_id);
+    }
+
     let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
@@ -502,6 +509,12 @@ export class EditPage implements OnInit {
     console.log("save");
     event.stopPropagation();
 
+    // TODO ログインしていないときはローカルストレージに入れて一時保存させてあげたいなぁ
+    if (!this.user || !this.user.token || this.user.token === '') {
+      alert('ログインしてから作成してください');
+      return;
+    }
+
     if (!this.line || this.line.length === 0) {
       alert('保存するルートがありません')
       return;
@@ -517,7 +530,6 @@ export class EditPage implements OnInit {
       return;
     }
 
-    // TODO ログインしていないときはローカルストレージに入れて一時保存させてあげたいなぁ
     let getKind = () => {
       let ret = [];
       for (let i = 0; i < this.editMarkers.length; i++) {
@@ -570,6 +582,14 @@ export class EditPage implements OnInit {
     this.route_id = await this.http.post(url, params, httpOptions).toPromise().then((res: any) => {
       return res.id;
     });
+
+    if (!this.route_id) {
+      alert('ルートの保存に失敗しました。ごめんなさい＞＜');
+    }
+
+    window.document.getElementById('share_link_row').style.display = 'block';
+    window.document.getElementById('share_link').innerText = 'http://routehub.app/watch/' + this.route_id;
+    window.document.getElementById('share_link').setAttribute('href', 'http://routehub.app/watch/' + this.route_id);
 
     // 閲覧ページへのリンクを提示
     if (window.confirm("ルートを保存しました。編集を終了しますか?")) {
