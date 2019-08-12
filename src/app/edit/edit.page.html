@@ -1,9 +1,13 @@
-<ion-fab vertical="top" horizontal="end" slot="fixed" id="menuButton">
+<ion-fab vertical="top" horizontal="end" slot="fixed" id="menuButton" style="top:50px;">
   <ion-fab-button>
     <ion-icon name="md-apps"></ion-icon>
   </ion-fab-button>
 
   <ion-fab-list side="start">
+
+    <ion-fab-button (click)="reset($event)">
+      <ion-icon color="primary" name="md-trash"></ion-icon>
+    </ion-fab-button>
 
     <ion-fab-button (click)="save($event)">
       <ion-icon color="primary" name="ios-save"></ion-icon>
@@ -12,10 +16,6 @@
   </ion-fab-list>
 
   <ion-fab-list side="bottom">
-
-    <ion-fab-button (click)="reset($event)">
-      <ion-icon color="primary" name="md-trash"></ion-icon>
-    </ion-fab-button>
 
     <ion-fab-button (click)="toggleCreateMode($event)">
       <ion-icon [color]="editMode ? 'primary' : ''" name="md-create"></ion-icon>

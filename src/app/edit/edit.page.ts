@@ -110,7 +110,6 @@ export class EditPage implements OnInit {
     // ルートidが指定されているときは読み込み
     this.route_id = this.ngRoute.snapshot.paramMap.get('id');
 
-
     let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
@@ -134,7 +133,7 @@ export class EditPage implements OnInit {
     }
   }
 
-  ionViewWillLeave(){
+  ionViewWillLeave() {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
     }
@@ -488,7 +487,31 @@ export class EditPage implements OnInit {
     console.log("save");
     event.stopPropagation();
 
+    if (!this.line || this.line.length === 0) {
+      alert('保存するルートがありません')
+      return;
+    }
+
+    if (this.title_elem.nativeElement.innerText === '' || this.title_elem.nativeElement.innerText === 'コース名') {
+      alert('タイトルを入力してください')
+      return;
+    }
+
     // TODO ログインしていないときはローカルストレージに入れて一時保存させてあげたいなぁ
+    let getKind = () => {
+      let ret = [];
+      for (let i = 0; i < this.editMarkers.length; i++) {
+        let m = this.editMarkers[i];
+        if (m.route.length > 0) {
+          let tmp = new Array(m.route.length - 1).fill(0);
+          tmp.push(1);
+          ret = ret.concat(tmp);
+        }
+      }
+      ret.shift();
+      ret.unshift(1);
+      return ret;
+    }
 
     let route = {
       id: this.route_id || '',
@@ -508,9 +531,9 @@ export class EditPage implements OnInit {
       pos: this.line.map(p => { return p[0] + " " + p[1]; }).join(","),
       time: '', // TODO
       level: this.line.map(p => { return p[2]; }).join(","),
-      kind: '1,0,1', // TODO
+      kind: getKind().join(','),
       note: JSON.stringify([
-        { pos: 1, txt: 'hogehoge' },
+        //        { pos: 1, txt: 'hogehoge' },
       ]),
       firebase_id_token: this.user.token + "",
     };
