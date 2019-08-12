@@ -1,3 +1,4 @@
+import { RouteModel } from './../model/routemodel';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ToastController, Platform, ModalController } from '@ionic/angular';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
@@ -438,6 +439,36 @@ export class EditPage implements OnInit {
 
       return ret;
     });
+  }
+
+  async save() {
+    let route = new RouteModel();
+    route.setFullData({
+      id: null,
+      title: '',
+      body: '',
+      author: '',
+      tag: '',
+      total_dist: 0.0,
+      total_elevation: 0.0,
+      max_elevation: 0.0,
+      max_slope: 0.0,
+      avg_slope: 0.0,
+      start_point: '',
+      goal_point: '',
+      is_private: false,
+      is_gps: false,
+      pos: '135.949415 34.53333694444444, 135.94979305555555 34.533436944444446',
+      time: '',
+      level: '348.1,348.4',
+      kind: '1,0,1',
+      note: '{0: "コメント1", 1: "コメント2" }',
+    });
+
+    // ルートをpost
+
+    // 閲覧ページへのリンクを提示
+
   }
 
   toggleRoutingMode(event) {
