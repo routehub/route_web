@@ -1,6 +1,6 @@
 import { RouteModel } from './../model/routemodel';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ToastController, Platform, ModalController } from '@ionic/angular';
+import { ToastController, Platform, ModalController, NavController } from '@ionic/angular';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Routemap } from '../watch/routemap';
 import * as Hammer from 'hammerjs';
@@ -8,6 +8,10 @@ import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
 import { LayerselectPage } from '../layerselect/layerselect.page';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { RouteHubUser } from './../model/routehubuser';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-edit',
@@ -17,10 +21,13 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 export class EditPage implements OnInit {
   @ViewChild('map', { static: true }) map_elem: ElementRef;
+  @ViewChild('title', { static: true }) title_elem: ElementRef;
   @ViewChild('total_dist', { static: true }) total_dist_elem: ElementRef;
   @ViewChild('total_elev', { static: true }) total_elev_elem: ElementRef;
   @ViewChild('max_elev', { static: true }) max_elev_elem: ElementRef;
 
+  user: RouteHubUser;
+  route_id: string = null;
   map: any;
   routemap: Routemap;
   elevation: any;
@@ -76,6 +83,8 @@ export class EditPage implements OnInit {
     public platform: Platform,
     public modalCtrl: ModalController,
     private geolocation: Geolocation,
+    private storage: Storage,
+    public navCtrl: NavController,
   ) {
     this.routemap = new Routemap();
     this.line = [];
@@ -84,6 +93,15 @@ export class EditPage implements OnInit {
 
   ngOnInit() {
     this.watch = this.geolocation.watchPosition();
+
+    // ログイン
+    let that = this;
+    this.storage.get('user').then((json) => {
+      if (!json || json == "") {
+        return;
+      }
+      that.user = JSON.parse(json);
+    });
   }
 
   ionViewWillEnter() {
@@ -451,32 +469,48 @@ export class EditPage implements OnInit {
   }
 
   async save() {
-    let route = new RouteModel();
-    route.setFullData({
-      id: null,
-      title: '',
-      body: '',
-      author: '',
-      tag: '',
-      total_dist: 0.0,
-      total_elevation: 0.0,
-      max_elevation: 0.0,
-      max_slope: 0.0,
-      avg_slope: 0.0,
-      start_point: '',
-      goal_point: '',
-      is_private: false,
-      is_gps: false,
-      pos: '135.949415 34.53333694444444, 135.94979305555555 34.533436944444446',
-      time: '',
-      level: '348.1,348.4',
-      kind: '1,0,1',
-      note: '{0: "コメント1", 1: "コメント2" }',
-    });
+    // TODO ログインしていないときはローカルストレージに入れて一時保存させてあげたいなぁ
+
+    let route = {
+      id: this.route_id || '',
+      title: this.title_elem.nativeElement.innerText.replace("\n", "") + "",
+      body: '', // TODO
+      author: 'test author', // TODO
+      tag: '', // TODO
+      total_dist: Math.round(this.distance * 10) / 10 + "",
+      total_elevation: Math.round(this.height_gain * 10) / 10 + "",
+      max_elevation: Math.round(this.height_max * 10) / 10 + "",
+      max_slope: "0.0",
+      avg_slope: "0.0",
+      start_point: '', //TODO
+      goal_point: '', // TODO
+      is_private: "false", // TODO
+      is_gps: "false", // TODO
+      pos: this.line.map(p => { return p[0] + " " + p[1]; }).join(","),
+      time: '', // TODO
+      level: this.line.map(p => { return p[2]; }).join(","),
+      kind: '1,0,1', // TODO
+      note: '{0: "コメント1", 1: "コメント2" }', // TODO
+      firebase_id_token: this.user.token + "",
+    };
 
     // ルートをpost
+    let url = environment.api.host + '/route';
+    // DBから削除
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      })
+    };
+    const params = new HttpParams({ fromObject: route });
+    this.route_id = await this.http.post(url, params, httpOptions).toPromise().then((res: any) => {
+      return res.id;
+    });
 
     // 閲覧ページへのリンクを提示
+    if (window.confirm("ルートを保存しました。編集を終了しますか?")) {
+      this.navCtrl.navigateForward('/watch/' + this.route_id);
+    }
 
   }
 
