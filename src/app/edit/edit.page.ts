@@ -24,7 +24,7 @@ export class EditPage implements OnInit {
   map: any;
   routemap: Routemap;
   elevation: any;
-  editMode = true;
+  editMode = false;
   hammer: any;
   editMarkers = [];
   geojson: L.geoJSON;
@@ -99,13 +99,21 @@ export class EditPage implements OnInit {
     document.getElementById('menuButton').click();
 
     this.hammer = new Hammer(this.map_elem.nativeElement);
+
+    // 編集モードに変更 (hammerjsロード後必須)
+    if (!this.editMode) {
+      this._toggleCreateMode();
+    }
   }
 
-
-
   toggleCreateMode(event) {
-    let that = this;
     event.stopPropagation();
+    this._toggleCreateMode();
+  }
+
+  _toggleCreateMode() {
+    let that = this;
+
     this.editMode = this.editMode ? false : true;
 
     if (this.editMode) {
@@ -469,6 +477,26 @@ export class EditPage implements OnInit {
 
     // 閲覧ページへのリンクを提示
 
+  }
+
+  reset(event) {
+    console.log("reset");
+    event.stopPropagation();
+    let that = this;
+
+    if (window.confirm("作成中ですがリセットしますか?")) {
+      this.editMarkers.map(markerData => {
+        markerData.marker.removeFrom(that.map);
+      });
+      this.editMarkers = [];
+      this.line = [];
+      this.remove_geojson()
+      this.elevation.clear();
+
+      that.total_dist_elem.nativeElement.innerText = 0;
+      that.total_elev_elem.nativeElement.innerText = 0;
+      that.max_elev_elem.nativeElement.innerText = 0;
+    }
   }
 
   toggleRoutingMode(event) {

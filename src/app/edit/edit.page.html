@@ -2,14 +2,17 @@
   <ion-fab-button>
     <ion-icon name="md-apps"></ion-icon>
   </ion-fab-button>
+
   <ion-fab-list side="start">
-    <ion-fab-button>
-      <ion-icon name="md-trash"></ion-icon>
+
+    <ion-fab-button (click)="reset($event)">
+      <ion-icon color="primary" name="md-trash"></ion-icon>
     </ion-fab-button>
 
-    <ion-fab-button>
+    <ion-fab-button (click)="save($event)">
       <ion-icon color="primary" name="ios-save"></ion-icon>
     </ion-fab-button>
+
   </ion-fab-list>
 
   <ion-fab-list side="bottom">
