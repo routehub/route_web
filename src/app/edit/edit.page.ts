@@ -12,6 +12,7 @@ import { RouteHubUser } from './../model/routehubuser';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import { Storage } from '@ionic/storage';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-edit',
@@ -85,6 +86,7 @@ export class EditPage implements OnInit {
     private geolocation: Geolocation,
     private storage: Storage,
     public navCtrl: NavController,
+    private ngRoute: ActivatedRoute,
   ) {
     this.routemap = new Routemap();
     this.line = [];
@@ -105,6 +107,10 @@ export class EditPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    // ルートidが指定されているときは読み込み
+    this.route_id = this.ngRoute.snapshot.paramMap.get('id');
+
+
     let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
@@ -121,6 +127,16 @@ export class EditPage implements OnInit {
     // 編集モードに変更 (hammerjsロード後必須)
     if (!this.editMode) {
       this._toggleCreateMode();
+    }
+
+    if (this.platform.is('mobile')) {
+      window.document.querySelector('ion-tab-bar').style.display = 'none';
+    }
+  }
+
+  ionViewWillLeave(){
+    if (this.platform.is('mobile')) {
+      window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
     }
   }
 
@@ -469,6 +485,9 @@ export class EditPage implements OnInit {
   }
 
   async save() {
+    console.log("save");
+    event.stopPropagation();
+
     // TODO ログインしていないときはローカルストレージに入れて一時保存させてあげたいなぁ
 
     let route = {
@@ -490,7 +509,9 @@ export class EditPage implements OnInit {
       time: '', // TODO
       level: this.line.map(p => { return p[2]; }).join(","),
       kind: '1,0,1', // TODO
-      note: '{0: "コメント1", 1: "コメント2" }', // TODO
+      note: JSON.stringify([
+        { pos: 1, txt: 'hogehoge' },
+      ]),
       firebase_id_token: this.user.token + "",
     };
 

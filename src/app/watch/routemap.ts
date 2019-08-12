@@ -138,7 +138,7 @@ export class Routemap {
             theme: 'steelblue-theme',
             // TODO : ウィンドウサイズ変更イベントに対応する
             width: window.innerWidth - 10,
-            height: 120,
+            height: 100,
             margins: {
                 top: 0,
                 right: 5,
@@ -187,9 +187,9 @@ export class Routemap {
                         let distDiff = point.distanceTo(prevPoint);
                         let elevDiff = l[2] - prevElevation;
                         slope = Math.ceil(elevDiff / distDiff * 100 * 100) / 100;
-                        if (Math.abs(slope)> 20 &&  slope > 20) {
+                        if (Math.abs(slope) > 20 && slope > 20) {
                             slope = 20;
-                        }else if(Math.abs(slope)> 20 && slope < 20) {
+                        } else if (Math.abs(slope) > 20 && slope < 20) {
                             slope = -20;
                         } else if (!slope) {
                             slope = 0;
@@ -208,7 +208,7 @@ export class Routemap {
                     outlineColor: 'blue',
                     min: -20,
                     max: 20,
-                    palette: {0.0: 'blue', 0.4 : '#6aff70', 1.0 : 'red'}
+                    palette: { 0.0: 'blue', 0.4: '#6aff70', 1.0: 'red' }
                 }).addTo(map);
             }
         };

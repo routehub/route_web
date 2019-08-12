@@ -93,12 +93,7 @@ export class WatchPage implements OnInit {
     this.routemap = new Routemap();
   }
 
-  ionViewDidEnter() {
-    if (this.platform.is('mobile')) {
-      window.document.querySelector('ion-tab-bar').style.display = 'none';
-    }
-  }
-  ionViewDidLeave() {
+  ionViewWillLeave() {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
     }
@@ -241,6 +236,10 @@ export class WatchPage implements OnInit {
       this.favoriteIcon = 'heart';
     });
 
+    // UIの調整
+    if (this.platform.is('mobile')) {
+      window.document.querySelector('ion-tab-bar').style.display = 'none';
+    }
   }
 
   async getFavoriteStatus(id): Promise<any[]> {
@@ -365,21 +364,9 @@ export class WatchPage implements OnInit {
     }
   }
 
-  alretEditable(event) {
+  edit(event) {
     event.stopPropagation();
-
-    this.presentToast('編集モード・フォーク機能は鋭意開発中です＞＜ \nもうしばらくお待ち下さい')
-
-    this.editMarkers.forEach(m => {
-      m.addTo(this.map);
-    });
-
-    let removeIcon = () => {
-      this.editMarkers.forEach(m => {
-        this.map.removeLayer(m);
-      });
-    }
-    setTimeout(removeIcon, 5000);
+    this.navCtrl.navigateForward('/edit/' + this.id);
   }
 
   private playSpeedIndex = 0;
