@@ -119,6 +119,8 @@ export class EditPage implements OnInit {
     } else {
       window.document.getElementById('share_link').innerText = 'http://routehub.app/watch/' + this.route_id;
       window.document.getElementById('share_link').setAttribute('href', 'http://routehub.app/watch/' + this.route_id);
+
+      this.load();
     }
 
     let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
@@ -152,7 +154,8 @@ export class EditPage implements OnInit {
       e.preventDefault();
       hidearea.style.display = "none";
     }
-
+    let layerDom = window.document.querySelector('div.leaflet-control-container > div.leaflet-top.leaflet-right > div') as HTMLElement;
+    layerDom.style.top = '42px';
   }
 
   ionViewWillLeave() {
@@ -196,32 +199,7 @@ export class EditPage implements OnInit {
           return;
         }
 
-        let marker = L.marker(latlng, { icon: that.routemap.editIcon, draggable: true });
-        let marker_data = new MarkerData(that, marker);
-
-        // ポイントドラッグ
-        marker.on('dragend', function (e) {
-          console.log("dragend");
-          marker_data.move_marker(e.target._latlng);
-        });
-
-        // ポイント削除ポップアップ
-        let content = document.createElement("popup");
-        content.innerHTML = "<a href='javascript:void(0);'>ポイント削除</a>";
-        content.onclick = function (e) {
-          marker_data.remove_marker();
-        };
-
-        let popup_remove = L.popup().setContent(content);
-
-        marker.bindPopup(popup_remove);
-        marker.on('popupopen', function (e) {
-          that.canEdit = false;
-        });
-
-        marker.on('popupclose', function (e) {
-          that.canEdit = true;
-        });
+        let marker_data = new MarkerData(that, latlng);
 
         // 経由点追加テスト
         let overlap_route = that.find_nearest_route_point_from_latlng(latlng, 16.0);
@@ -505,6 +483,60 @@ export class EditPage implements OnInit {
     });
   }
 
+  async load() {
+    let that = this;
+    let geturl = environment.api.host + environment.api.route_path;
+    this.http.get(geturl + '?id=' + this.route_id).toPromise()
+      .then((res: any) => {
+        if (!res.results) {
+          alert('ロードに失敗しました');
+          return;
+        }
+        return res.results;
+      }).then((_r: any) => {
+        let r = new RouteModel();
+        r.setFullData(_r);
+
+        that.title_elem.nativeElement.innerText = r.title;
+        that.author = r.display_name;
+        that.isNotPrivate = !r.is_private;
+        that.tags = r.tag;
+        that.body = r.body;
+
+        that.total_dist_elem.nativeElement.innerText = r.total_dist;
+        that.total_elev_elem.nativeElement.innerText = r.total_elevation;
+        that.max_elev_elem.nativeElement.innerText = r.max_elevation;
+
+        let prev: MarkerData;
+        r.pos_latlng.map((p, i) => {
+          // マーカーを設定
+          if (r.kind[i] === '1') {
+            let marker = new MarkerData(that, p);
+            marker.marker.addTo(that.map);
+            that.editMarkers.push(marker);
+
+            if (prev) {
+              marker.set_prev(prev);
+              prev.set_next(marker);
+            }
+            prev = marker;
+          }
+
+
+        });
+        that.refresh_all_marker_icon();
+
+        that.line = r.pos.map((p, i) => {
+          p.push(r.level[i]);
+          return p;
+        });
+        that.refresh_geojson();
+
+
+      });
+  }
+
+
   async save() {
     console.log("save");
     event.stopPropagation();
@@ -550,7 +582,7 @@ export class EditPage implements OnInit {
       title: this.title_elem.nativeElement.innerText.replace("\n", "") + "",
       body: this.body,
       author: this.author,
-      tag: this.tags.map(t => { return t.value }).join(','),
+      tag: this.tags.map(t => { return t.value }).join(' '),
       total_dist: Math.round(this.distance * 10) / 10 + "",
       total_elevation: Math.round(this.height_gain * 10) / 10 + "",
       max_elevation: Math.round(this.height_max * 10) / 10 + "",
@@ -722,7 +754,31 @@ class MarkerData {
   distance = 0.0;
 
 
-  constructor(private edit_page: EditPage, a_marker: L.markar) {
+  constructor(private edit_page: EditPage, latlng: any) {
+    let that = this;
+
+    let a_marker = L.marker(latlng, { icon: that.edit_page.routemap.editIcon, draggable: true });
+
+    // ポイントドラッグ
+    a_marker.on('dragend', function (e) {
+      console.log("dragend");
+      that.move_marker(e.target._latlng);
+    });
+
+    // ポイント削除ポップアップ
+    let content = document.createElement("popup");
+    content.innerHTML = "<a href='javascript:void(0);'>ポイント削除</a>";
+    content.onclick = function (e) {
+      that.remove_marker();
+    };
+    let popup_remove = L.popup().setContent(content);
+    a_marker.bindPopup(popup_remove);
+    a_marker.on('popupopen', function (e) {
+      that.edit_page.canEdit = false;
+    });
+    a_marker.on('popupclose', function (e) {
+      that.edit_page.canEdit = true;
+    });
     this.marker = a_marker;
   }
 

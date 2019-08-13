@@ -20,9 +20,11 @@ export class RouteModel {
     public is_private_ja: string;
 
     public pos = [];
+    public pos_latlng = [];
     public level = [];
     public note = [];
     public time = [];
+    public kind = [];
 
     constructor() { }
 
@@ -47,9 +49,11 @@ export class RouteModel {
 
 
         this.pos = r.pos.split(',').map(p => { return p.split(' ') });
+        this.pos_latlng = r.pos.split(',').map(_p => { let p = _p.split(' '); return [p[1], p[0]]; });
         this.level = r.level.split(',')
         this.note = r.note;
         this.time = r.time;
+        this.kind = r.kind.split(',');
     }
 
     public setData(r) {
