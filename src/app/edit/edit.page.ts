@@ -507,23 +507,30 @@ export class EditPage implements OnInit {
         that.total_elev_elem.nativeElement.innerText = r.total_elevation;
         that.max_elev_elem.nativeElement.innerText = r.max_elevation;
 
+        let previndex = 0;
         let prev: MarkerData;
         r.pos_latlng.map((p, i) => {
           // マーカーを設定
-          if (r.kind[i] === '1') {
-            let marker = new MarkerData(that, p);
+          if (r.kind[i] === '1')
+          {
+            let latlng = new L.LatLng(p[0], p[1]);
+            // console.log("marker index[" + i + "]: " + latlng);
+            let marker = new MarkerData(that, latlng);
             marker.marker.addTo(that.map);
             that.editMarkers.push(marker);
 
-            if (prev) {
-              marker.set_prev(prev);
+            if (prev)
+            {
               prev.set_next(marker);
+              prev.route = r.pos_latlng.slice( previndex, i );
+              // console.log( "route: " + prev.route );
+              prev.refresh_information();
             }
             prev = marker;
+            previndex = i;
           }
-
-
         });
+
         that.refresh_all_marker_icon();
 
         that.line = r.pos.map((p, i) => {
@@ -817,55 +824,7 @@ class MarkerData {
       await that.edit_page.routing([start, goal]).then((_route: any) => {
         that.route = _route;
 
-        if (_route.length > 0) {
-          let current_latlng = L.latLng(_route[0][1], _route[0][0]);
-          let last_latlng = current_latlng;
-          let latlng_min = current_latlng;
-          let latlng_max = current_latlng;
-          let current_height = _route[0][2];
-          let last_height = current_height;
-          that.height_max = current_height;
-          that.height_gain = 0.0;
-          that.distance = 0.0;
-
-          let radius = 6378.137;
-
-          for (let i = 1; i < _route.length; ++i) {
-            current_latlng = L.latLng(_route[i][1], _route[i][0]);
-
-            // 矩形更新
-            latlng_max.lat = Math.max(latlng_max.lat, current_latlng.lat);
-            latlng_max.lng = Math.max(latlng_max.lng, current_latlng.lng);
-
-            latlng_min.lat = Math.min(latlng_min.lat, current_latlng.lat);
-            latlng_min.lng = Math.min(latlng_min.lng, current_latlng.lng);
-
-            // 距離更新
-            that.distance += that.edit_page.map.distance(current_latlng, last_latlng) * 0.001;
-
-            // 獲得標高、最大標高更新
-            current_height = _route[i][2];
-            let height_delta = current_height - last_height;
-
-            that.height_max = Math.max(that.height_max, current_height);
-            that.height_gain += Math.max(height_delta, 0.0);
-
-            last_latlng = current_latlng;
-            last_height = current_height;
-          }
-          // latLngBounds更新
-          that.bounds = L.latLngBounds(latlng_min, latlng_max);
-
-          console.log("distance: " + that.distance);
-          console.log("height_max: " + that.height_max);
-          console.log("height_gain: " + that.height_gain);
-        }
-        else {
-          that.bounds = null;
-          that.height_max = 0.0;
-          that.height_gain = 0.0;
-          that.distance = 0.0;
-        }
+        that.refresh_information();
       });
     }
     else {
@@ -875,6 +834,72 @@ class MarkerData {
       that.height_gain = 0.0;
       that.distance = 0.0;
     }
+  }
+
+  refresh_information()
+  {
+    let that = this;
+
+    if ( that.route.length > 0 )
+    {
+      let current_latlng = L.latLng(that.route[0][1], that.route[0][0]);
+      let last_latlng = current_latlng;
+      let latlng_min = current_latlng;
+      let latlng_max = current_latlng;
+      let current_height = 0.0;
+      let last_height = current_height;
+      that.height_max = current_height;
+      that.height_gain = 0.0;
+      that.distance = 0.0;
+
+      if ( that.route[0].length >= 3 )
+      {
+        current_height = that.route[0][2];
+      }
+
+      for (let i = 1; i < that.route.length; ++i)
+      {
+        current_latlng = L.latLng(that.route[i][1], that.route[i][0]);
+
+        // 矩形更新
+        latlng_max.lat = Math.max(latlng_max.lat, current_latlng.lat);
+        latlng_max.lng = Math.max(latlng_max.lng, current_latlng.lng);
+
+        latlng_min.lat = Math.min(latlng_min.lat, current_latlng.lat);
+        latlng_min.lng = Math.min(latlng_min.lng, current_latlng.lng);
+
+        // 距離更新
+        that.distance += that.edit_page.map.distance(current_latlng, last_latlng) * 0.001;
+
+        // 獲得標高、最大標高更新
+        current_height = 0.0;
+        if ( that.route[i].length >= 3 )
+        {
+          current_height = that.route[i][2];
+        }
+          let height_delta = current_height - last_height;
+
+        that.height_max = Math.max(that.height_max, current_height);
+        that.height_gain += Math.max(height_delta, 0.0);
+
+        last_latlng = current_latlng;
+        last_height = current_height;
+      }
+
+      // latLngBounds更新
+      that.bounds = L.latLngBounds(latlng_min, latlng_max);
+
+      console.log("distance: " + that.distance);
+      console.log("height_max: " + that.height_max);
+      console.log("height_gain: " + that.height_gain);
+    }
+    else
+    {
+      that.bounds = null;
+      that.height_max = 0.0;
+      that.height_gain = 0.0;
+      that.distance = 0.0;
+}
   }
 
   // 自分の前後のルート検索
