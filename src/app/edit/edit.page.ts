@@ -497,7 +497,6 @@ export class EditPage implements OnInit {
         that.editMarkers = [];
         that.line = [];
         that.remove_geojson()
-        that.elevation.clear();
 
         that.total_dist_elem.nativeElement.innerText = 0;
         that.total_elev_elem.nativeElement.innerText = 0;
@@ -541,9 +540,10 @@ export class EditPage implements OnInit {
         that.refresh_all_marker_icon();
 
         that.line = r.pos.map((p, i) => {
-          p.push(r.level[i]);
+          p.push(r.level[i]*1);
           return p;
         });
+        
         that.refresh_geojson();
 
         // 描画範囲をよろしくする
