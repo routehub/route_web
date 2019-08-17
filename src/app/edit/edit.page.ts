@@ -494,6 +494,15 @@ export class EditPage implements OnInit {
         }
         return res.results;
       }).then((_r: any) => {
+        that.editMarkers = [];
+        that.line = [];
+        that.remove_geojson()
+        that.elevation.clear();
+
+        that.total_dist_elem.nativeElement.innerText = 0;
+        that.total_elev_elem.nativeElement.innerText = 0;
+        that.max_elev_elem.nativeElement.innerText = 0;
+
         let r = new RouteModel();
         r.setFullData(_r);
 
@@ -511,18 +520,16 @@ export class EditPage implements OnInit {
         let prev: MarkerData;
         r.pos_latlng.map((p, i) => {
           // マーカーを設定
-          if (r.kind[i] === '1')
-          {
+          if (r.kind[i] === '1') {
             let latlng = new L.LatLng(p[0], p[1]);
             // console.log("marker index[" + i + "]: " + latlng);
             let marker = new MarkerData(that, latlng);
             marker.marker.addTo(that.map);
             that.editMarkers.push(marker);
 
-            if (prev)
-            {
+            if (prev) {
               prev.set_next(marker);
-              prev.route = r.pos_latlng.slice( previndex, i );
+              prev.route = r.pos_latlng.slice(previndex, i);
               // console.log( "route: " + prev.route );
               prev.refresh_information();
             }
@@ -539,7 +546,8 @@ export class EditPage implements OnInit {
         });
         that.refresh_geojson();
 
-
+        // 描画範囲をよろしくする
+        that.map.fitBounds(that.routemap.posToLatLngBounds(r.pos));
       });
   }
 
@@ -836,12 +844,10 @@ class MarkerData {
     }
   }
 
-  refresh_information()
-  {
+  refresh_information() {
     let that = this;
 
-    if ( that.route.length > 0 )
-    {
+    if (that.route.length > 0) {
       let current_latlng = L.latLng(that.route[0][1], that.route[0][0]);
       let last_latlng = current_latlng;
       let latlng_min = current_latlng;
@@ -852,13 +858,11 @@ class MarkerData {
       that.height_gain = 0.0;
       that.distance = 0.0;
 
-      if ( that.route[0].length >= 3 )
-      {
+      if (that.route[0].length >= 3) {
         current_height = that.route[0][2];
       }
 
-      for (let i = 1; i < that.route.length; ++i)
-      {
+      for (let i = 1; i < that.route.length; ++i) {
         current_latlng = L.latLng(that.route[i][1], that.route[i][0]);
 
         // 矩形更新
@@ -873,11 +877,10 @@ class MarkerData {
 
         // 獲得標高、最大標高更新
         current_height = 0.0;
-        if ( that.route[i].length >= 3 )
-        {
+        if (that.route[i].length >= 3) {
           current_height = that.route[i][2];
         }
-          let height_delta = current_height - last_height;
+        let height_delta = current_height - last_height;
 
         that.height_max = Math.max(that.height_max, current_height);
         that.height_gain += Math.max(height_delta, 0.0);
@@ -893,13 +896,12 @@ class MarkerData {
       console.log("height_max: " + that.height_max);
       console.log("height_gain: " + that.height_gain);
     }
-    else
-    {
+    else {
       that.bounds = null;
       that.height_max = 0.0;
       that.height_gain = 0.0;
       that.distance = 0.0;
-}
+    }
   }
 
   // 自分の前後のルート検索

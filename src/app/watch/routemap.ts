@@ -3,7 +3,8 @@ import * as L from 'leaflet';
 import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
 import * as AnimatedMarker from './animatedMarker.js';
 import * as Hotline from 'leaflet-hotline';
-
+import turfbbox from '@turf/bbox';
+import * as turf from '@turf/helpers';
 /***
  * ルートModel
  * いろんなところで使いまわしたい
@@ -212,6 +213,17 @@ export class Routemap {
                 }).addTo(map);
             }
         };
+    }
+
+    posToLatLngBounds(pos) {
+        let line = turf.lineString(pos);
+        let bbox = turfbbox(line); // lonlat問題...
+        const latplus = Math.abs(bbox[1] - bbox[3]) * 0.1;
+        const lonplus = Math.abs(bbox[0] - bbox[2]) * 0.1;
+        return L.latLngBounds([ // いい感じの範囲にするために調整
+            [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
+            [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
+        ]);
     }
 }
 
