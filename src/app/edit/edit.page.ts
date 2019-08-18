@@ -47,7 +47,7 @@ export class EditPage implements OnInit {
   canEdit = true;
   routingMode: number = 0;
   // https://valhalla.readthedocs.io/en/latest/api/turn-by-turn/api-reference/
-  routingModeList: string[] = ["自転車(ロード),bicycle,Road", "自転車(グラベル),bicycle,Mountain", "車,auto,"];
+  routingModeList: string[] = ["自転車(ロード),bicycle,Road", "自転車(グラベル),bicycle,Mountain", "車,auto,", "直線,Line,",];
 
   watch_location_subscribe: any;
   watch: any;
