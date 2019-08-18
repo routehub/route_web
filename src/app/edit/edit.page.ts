@@ -476,7 +476,7 @@ export class EditPage implements OnInit {
       let ret = [];
 
       res.forEach((p: any) => {
-        ret.push([p[1], p[0], p[2] / 10,]);
+        ret.push([p[1], p[0], p[2]]);
       });
 
       return ret;
