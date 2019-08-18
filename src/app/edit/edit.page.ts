@@ -185,8 +185,8 @@ export class EditPage implements OnInit {
       let filename = (<HTMLInputElement>e.target).files[0];
 
       let reader = new FileReader();
-      reader.onloadend = function (loadEvent:FileReaderEventTarget) {
-        parse_gpx(loadEvent.target.result);
+      reader.onloadend = function (loadEvent) {
+        parse_gpx((<FileReaderEventTarget>loadEvent.target).result);
       }
       reader.readAsText(filename);
     }, false);
@@ -1001,5 +1001,5 @@ class MarkerData {
 }
 
 interface FileReaderEventTarget extends EventTarget {
-    result:string
+    result:string;
 }
