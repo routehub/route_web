@@ -562,7 +562,7 @@ export class EditPage implements OnInit {
 
             if (prev) {
               prev.set_next(marker);
-              prev.route = r.pos_latlng.slice(previndex, i);
+              prev.route = r.pos.slice(previndex, i);
               // console.log( "route: " + prev.route );
               prev.refresh_information();
             }
