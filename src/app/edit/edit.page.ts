@@ -162,9 +162,9 @@ export class EditPage implements OnInit {
 
     // ファイルアップロード関連の処理
     let parse_gpx = function (xml_string) {
-        var route = [];
-        var parser = new DOMParser();
-        var xmldoc = parser.parseFromString(xml_string, "text/xml");
+        let route = [];
+        let parser = new DOMParser();
+        let xmldoc = parser.parseFromString(xml_string, "text/xml");
 //        console.dir(xmldoc);
         that.title = xmldoc.querySelector('trk > name').textContent;
         xmldoc.querySelectorAll('trk > trkseg > trkpt').forEach(pt => {
@@ -178,13 +178,14 @@ export class EditPage implements OnInit {
 //        return route;
     };
 
-    var filedom = document.getElementById("file");
+    let filedom = document.getElementById("file");
     filedom.addEventListener('change', function (e) {
       e.stopPropagation();
       e.preventDefault();
-      var filename = e.target.files[0];
+      let target:HTMLInputElement = e.target;
+      let filename = target.files[0];
 
-      var reader = new FileReader();
+      let reader = new FileReader();
       reader.onloadend = function (loadEvent) {        
         parse_gpx(loadEvent.target.result);
       }
