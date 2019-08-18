@@ -182,11 +182,10 @@ export class EditPage implements OnInit {
     filedom.addEventListener('change', function (e) {
       e.stopPropagation();
       e.preventDefault();
-      let target:HTMLInputElement = e.target;
-      let filename = target.files[0];
+      let filename = (<HTMLInputElement>e.target).files[0];
 
       let reader = new FileReader();
-      reader.onloadend = function (loadEvent) {        
+      reader.onloadend = function (loadEvent:FileReaderEventTarget) {
         parse_gpx(loadEvent.target.result);
       }
       reader.readAsText(filename);
@@ -1001,3 +1000,6 @@ class MarkerData {
   }
 }
 
+interface FileReaderEventTarget extends EventTarget {
+    result:string
+}
