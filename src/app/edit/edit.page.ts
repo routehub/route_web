@@ -111,6 +111,7 @@ export class EditPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    var that = this;
     // ルートidが指定されているときは読み込み
     this.route_id = this.ngRoute.snapshot.paramMap.get('id');
 
@@ -156,6 +157,38 @@ export class EditPage implements OnInit {
     }
     let layerDom = window.document.querySelector('div.leaflet-control-container > div.leaflet-top.leaflet-right > div') as HTMLElement;
     layerDom.style.top = '42px';
+
+
+    // ファイルアップロード関連の処理
+    let parse_gpx = function (xml_string) {
+        var route = [];
+        var parser = new DOMParser();
+        var xmldoc = parser.parseFromString(xml_string, "text/xml");
+//        console.dir(xmldoc);
+        that.title_elem.nativeElement.innerText = xmldoc.querySelector('trk > name').textContent;
+        xmldoc.querySelectorAll('trk > trkseg > trkpt').forEach(pt => {
+//          console.dir(pt);
+          route.push([pt.attributes[1].value, pt.attributes[0].value, 0]);
+        });
+
+        that.line = route;
+        that.refresh_geojson();
+        that.map.fitBounds(that.routemap.posToLatLngBounds(route));
+//        return route;
+    };
+
+    var filedom = document.getElementById("file");
+    filedom.addEventListener('change', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var filename = e.target.files[0];
+
+      var reader = new FileReader();
+      reader.onloadend = function (loadEvent) {        
+        parse_gpx(loadEvent.target.result);
+      }
+      reader.readAsText(filename);
+    }, false);
   }
 
   ionViewWillLeave() {
@@ -665,6 +698,13 @@ export class EditPage implements OnInit {
     }
   }
 
+  importFile(event) {
+    console.log("importFile");
+    event.stopPropagation();
+    document.getElementById("file").click();
+  }
+
+
   toggleRoutingMode(event) {
     console.log("toggleRoutingMode");
     event.stopPropagation();
@@ -736,7 +776,6 @@ export class EditPage implements OnInit {
     this.presentToast('GPS on');
     this.isWatchLocation = true;
     this.watch_location_subscribe = this.watch.subscribe((pos) => {
-      this.watch.subscribe((pos) => {
         if (this.watch_location_subscribe.isStopped === true) {
           return;
         }
@@ -748,7 +787,6 @@ export class EditPage implements OnInit {
         } else {
           this.currenPossitionMarker.setLatLng(latlng);
         }
-      });
     });
   }
 

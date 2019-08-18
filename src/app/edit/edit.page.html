@@ -21,6 +21,11 @@
       <ion-icon [color]="editMode ? 'primary' : ''" name="md-create"></ion-icon>
     </ion-fab-button>
 
+    <ion-fab-button (click)="importFile($event)">
+    <ion-icon color="primary" name="document"></ion-icon>
+    <input id="file" type=file class=button accept=".gpx" style="visibility:hidden;width:0;hegiht:0;overflow:hidden;">
+    </ion-fab-button>
+
     <ion-fab-button (click)="toggleRoutingMode($event)">
       <ion-icon color="primary" name="md-walk"></ion-icon>
     </ion-fab-button>
