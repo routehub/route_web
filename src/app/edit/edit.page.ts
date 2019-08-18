@@ -37,6 +37,7 @@ export class EditPage implements OnInit {
   editMarkers = [];
   tags = [];
   isNotPrivate = true;
+  title = "";
   author = "";
   body = "";
   geojson: L.geoJSON;
@@ -156,7 +157,7 @@ export class EditPage implements OnInit {
       hidearea.style.display = "none";
     }
     let layerDom = window.document.querySelector('div.leaflet-control-container > div.leaflet-top.leaflet-right > div') as HTMLElement;
-    layerDom.style.top = '42px';
+    layerDom.style.top = '62px';
 
 
     // ファイルアップロード関連の処理
@@ -165,7 +166,7 @@ export class EditPage implements OnInit {
         var parser = new DOMParser();
         var xmldoc = parser.parseFromString(xml_string, "text/xml");
 //        console.dir(xmldoc);
-        that.title_elem.nativeElement.innerText = xmldoc.querySelector('trk > name').textContent;
+        that.title = xmldoc.querySelector('trk > name').textContent;
         xmldoc.querySelectorAll('trk > trkseg > trkpt').forEach(pt => {
 //          console.dir(pt);
           route.push([pt.attributes[1].value, pt.attributes[0].value, 0]);
@@ -538,7 +539,7 @@ export class EditPage implements OnInit {
         let r = new RouteModel();
         r.setFullData(_r);
 
-        that.title_elem.nativeElement.innerText = r.title;
+        that.title = r.title;
         that.author = r.display_name;
         that.isNotPrivate = !r.is_private;
         that.tags = r.tag;
@@ -600,7 +601,7 @@ export class EditPage implements OnInit {
       return;
     }
 
-    if (this.title_elem.nativeElement.innerText === '' || this.title_elem.nativeElement.innerText === 'コース名') {
+    if (this.title === '') {
       alert('タイトルを入力してください')
       return;
     }
@@ -627,7 +628,7 @@ export class EditPage implements OnInit {
 
     let route = {
       id: this.route_id || '',
-      title: this.title_elem.nativeElement.innerText.replace("\n", "") + "",
+      title: this.title.replace("\n", "") + "",
       body: this.body,
       author: this.author,
       tag: this.tags.map(t => { return t.value }).join(' '),

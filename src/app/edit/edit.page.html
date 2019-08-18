@@ -1,4 +1,4 @@
-<ion-fab vertical="top" horizontal="end" slot="fixed" id="menuButton" style="top:50px;">
+<ion-fab vertical="top" horizontal="end" slot="fixed" id="menuButton" style="top:70px;">
   <ion-fab-button>
     <ion-icon name="md-apps"></ion-icon>
   </ion-fab-button>
@@ -48,7 +48,8 @@
 
 <ion-content class="mapcontainer">
   <div class="editbar" id="editbar">
-    <div class="title" contenteditable="true" #title>コース名</div>
+    <ion-input class="title" color="primary" placeholder="タイトル" [(ngModel)]="title"></ion-input>
+<!--    <div class="title" contenteditable="true" #title>コース名</div>-->
     <div class="total_dist">総距離 : <span #total_dist></span>km</div>
     <div class="total_elev">獲得標高 : <span #total_elev></span>m</div>
     <div class="max_elev">最高標高 : <span #max_elev></span>m</div>
