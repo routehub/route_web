@@ -27,6 +27,14 @@ export class EditPage implements OnInit {
   @ViewChild('total_elev', { static: true }) total_elev_elem: ElementRef;
   @ViewChild('max_elev', { static: true }) max_elev_elem: ElementRef;
 
+  @ViewChild('editbar', { static: true }) editbar_elem: ElementRef;
+  @ViewChild('hidearea', { static: true }) hidearea_elem: ElementRef;
+  @ViewChild('close_editbar', { static: true }) close_editbar_elem: ElementRef;
+
+
+
+
+
   user: RouteHubUser;
   route_id: string = null;
   map: any;
@@ -125,9 +133,11 @@ export class EditPage implements OnInit {
       this.load();
     }
 
-    let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
-    this.map = routemap.map;
-    this.elevation = routemap.elevation;
+    if (!this.map) {
+      let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
+      this.map = routemap.map;
+      this.elevation = routemap.elevation;
+    }
 
     // デバッグ時にテンションを上げるためY!地図にする
     //let layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
@@ -147,15 +157,10 @@ export class EditPage implements OnInit {
       window.document.querySelector('ion-tab-bar').style.display = 'none';
     }
 
-    let hidearea = window.document.querySelector('.hidearea') as HTMLElement;
-    document.getElementById('editbar').onclick = () => {
-      hidearea.style.display = "block";
+    this.editbar_elem.nativeElement.onclick = () => {
+      this.hidearea_elem.nativeElement.style.display = "block";
     }
-    document.getElementById('close_editbar').onclick = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      hidearea.style.display = "none";
-    }
+
     let layerDom = window.document.querySelector('div.leaflet-control-container > div.leaflet-top.leaflet-right > div') as HTMLElement;
     layerDom.style.top = '62px';
 
@@ -196,6 +201,12 @@ export class EditPage implements OnInit {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
     }
+  }
+
+  close_editbar(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    this.hidearea_elem.nativeElement.style.display = "none";
   }
 
   toggleCreateMode(event) {
@@ -931,9 +942,9 @@ class MarkerData {
       // latLngBounds更新
       that.bounds = L.latLngBounds(latlng_min, latlng_max);
 
-      console.log("distance: " + that.distance);
-      console.log("height_max: " + that.height_max);
-      console.log("height_gain: " + that.height_gain);
+      //      console.log("distance: " + that.distance);
+      //      console.log("height_max: " + that.height_max);
+      //      console.log("height_gain: " + that.height_gain);
     }
     else {
       that.bounds = null;

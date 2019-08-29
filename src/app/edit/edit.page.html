@@ -22,8 +22,8 @@
     </ion-fab-button>
 
     <ion-fab-button (click)="importFile($event)">
-    <ion-icon color="primary" name="document"></ion-icon>
-    <input id="file" type=file class=button accept=".gpx" style="visibility:hidden;width:0;hegiht:0;overflow:hidden;">
+      <ion-icon color="primary" name="document"></ion-icon>
+      <input id="file" type=file class=button accept=".gpx" style="visibility:hidden;width:0;hegiht:0;overflow:hidden;">
     </ion-fab-button>
 
     <ion-fab-button (click)="toggleRoutingMode($event)">
@@ -47,14 +47,14 @@
 </ion-fab>
 
 <ion-content class="mapcontainer">
-  <div class="editbar" id="editbar">
+  <div class="editbar" #editbar>
     <ion-input class="title" color="primary" placeholder="タイトル" [(ngModel)]="title"></ion-input>
-<!--    <div class="title" contenteditable="true" #title>コース名</div>-->
+    <!--    <div class="title" contenteditable="true" #title>コース名</div>-->
     <div class="total_dist">総距離 : <span #total_dist></span>km</div>
     <div class="total_elev">獲得標高 : <span #total_elev></span>m</div>
     <div class="max_elev">最高標高 : <span #max_elev></span>m</div>
 
-    <div class="hidearea">
+    <div class="hidearea" #hidearea>
 
       <ion-grid>
         <ion-row>
@@ -98,9 +98,9 @@
         </ion-row>
       </ion-grid>
 
-      <ion-button color="primary" (click)="save(event)" expand="block">保存・更新する</ion-button>
+      <ion-button color="primary" (click)="save($event)" expand="block">保存・更新する</ion-button>
 
-      <ion-button color="light" id="close_editbar" expand="block">閉じる</ion-button>
+      <ion-button color="light" expand="block" (click)="close_editbar($event)">閉じる</ion-button>
 
     </div>
 

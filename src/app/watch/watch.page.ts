@@ -128,9 +128,11 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
-    this.map = routemap.map;
-    this.elevation = routemap.elevation;
+    if (!this.map) {
+      let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
+      this.map = routemap.map;
+      this.elevation = routemap.elevation;
+    }
 
     this.id = this.route.snapshot.paramMap.get('id');
     //    this.route_data.id = id;
@@ -205,7 +207,7 @@ export class WatchPage implements OnInit {
       that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
 
       // 再生モジュール追加
-      that.animatedMarker = routemap.addAnimatedMarker(pos);
+      that.animatedMarker = that._routemap.addAnimatedMarker(pos);
 
       that.line = pos;
     });
