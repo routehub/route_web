@@ -128,11 +128,11 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    if (!this.map) {
-      let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
-      this.map = routemap.map;
-      this.elevation = routemap.elevation;
-    }
+
+    let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
+    this.map = routemap.map;
+    this.elevation = routemap.elevation;
+
 
     this.id = this.route.snapshot.paramMap.get('id');
     //    this.route_data.id = id;
