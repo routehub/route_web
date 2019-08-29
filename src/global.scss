@@ -83,6 +83,10 @@
   max-height: 150px !important; //any size 
   }
 
+.leaflet-tile {
+  image-rendering: pixelated;
+  filter: saturate(160%);
+}
 .leaflet-control-layers-toggle {
   display:none;
 }

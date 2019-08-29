@@ -130,8 +130,8 @@ export class EditPage implements OnInit {
     this.elevation = routemap.elevation;
 
     // デバッグ時にテンションを上げるためY!地図にする
-    let layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
-    layerControlElement.getElementsByTagName('input')[2].click();
+    //let layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
+    //layerControlElement.getElementsByTagName('input')[2].click();
 
     // 見やすくするために最初からメニューを開いておく
     document.getElementById('menuButton').click();
@@ -162,20 +162,20 @@ export class EditPage implements OnInit {
 
     // ファイルアップロード関連の処理
     let parse_gpx = function (xml_string) {
-        let route = [];
-        let parser = new DOMParser();
-        let xmldoc = parser.parseFromString(xml_string, "text/xml");
-//        console.dir(xmldoc);
-        that.title = xmldoc.querySelector('trk > name').textContent;
-        xmldoc.querySelectorAll('trk > trkseg > trkpt').forEach(pt => {
-//          console.dir(pt);
-          route.push([pt.attributes[1].value, pt.attributes[0].value, 0]);
-        });
+      let route = [];
+      let parser = new DOMParser();
+      let xmldoc = parser.parseFromString(xml_string, "text/xml");
+      //        console.dir(xmldoc);
+      that.title = xmldoc.querySelector('trk > name').textContent;
+      xmldoc.querySelectorAll('trk > trkseg > trkpt').forEach(pt => {
+        //          console.dir(pt);
+        route.push([pt.attributes[1].value, pt.attributes[0].value, 0]);
+      });
 
-        that.line = route;
-        that.refresh_geojson();
-        that.map.fitBounds(that.routemap.posToLatLngBounds(route));
-//        return route;
+      that.line = route;
+      that.refresh_geojson();
+      that.map.fitBounds(that.routemap.posToLatLngBounds(route));
+      //        return route;
     };
 
     let filedom = document.getElementById("file");
@@ -574,10 +574,10 @@ export class EditPage implements OnInit {
         that.refresh_all_marker_icon();
 
         that.line = r.pos.map((p, i) => {
-          p.push(r.level[i]*1);
+          p.push(r.level[i] * 1);
           return p;
         });
-        
+
         that.refresh_geojson();
 
         // 描画範囲をよろしくする
@@ -777,17 +777,17 @@ export class EditPage implements OnInit {
     this.presentToast('GPS on');
     this.isWatchLocation = true;
     this.watch_location_subscribe = this.watch.subscribe((pos) => {
-        if (this.watch_location_subscribe.isStopped === true) {
-          return;
-        }
-        let latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude);
+      if (this.watch_location_subscribe.isStopped === true) {
+        return;
+      }
+      let latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude);
 
-        if (!this.currenPossitionMarker) {
-          this.currenPossitionMarker = new L.marker(latlng, { icon: this.routemap.gpsIcon }).addTo(this.map);
-          this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true }); //初回のみ移動
-        } else {
-          this.currenPossitionMarker.setLatLng(latlng);
-        }
+      if (!this.currenPossitionMarker) {
+        this.currenPossitionMarker = new L.marker(latlng, { icon: this.routemap.gpsIcon }).addTo(this.map);
+        this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true }); //初回のみ移動
+      } else {
+        this.currenPossitionMarker.setLatLng(latlng);
+      }
     });
   }
 
@@ -1001,5 +1001,5 @@ class MarkerData {
 }
 
 interface FileReaderEventTarget extends EventTarget {
-    result:string;
+  result: string;
 }
