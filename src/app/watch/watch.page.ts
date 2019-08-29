@@ -358,7 +358,9 @@ export class WatchPage implements OnInit {
 
   edit(event) {
     event.stopPropagation();
-    this.navCtrl.navigateForward('/edit/' + this.id);
+    // 状態の管理ができないのでアプリケーションの初期化をする
+    //this.navCtrl.navigateForward('/edit/' + this.id);
+    window.document.location.href = '/edit/' + this.id;
   }
 
   private playSpeedIndex = 0;

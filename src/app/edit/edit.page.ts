@@ -642,7 +642,9 @@ export class EditPage implements OnInit {
       title: this.title.replace("\n", "") + "",
       body: this.body,
       author: this.author,
-      tag: this.tags.map(t => { return t.value }).join(' '),
+      tag: this.tags.map(t => {
+        return (typeof t === 'object') ? t.value : t;
+      }).join(' '),
       total_dist: Math.round(this.distance * 10) / 10 + "",
       total_elevation: Math.round(this.height_gain * 10) / 10 + "",
       max_elevation: Math.round(this.height_max * 10) / 10 + "",
@@ -670,6 +672,7 @@ export class EditPage implements OnInit {
         'Content-Type': 'application/x-www-form-urlencoded'
       })
     };
+
     const params = new HttpParams({ fromObject: route });
     this.route_id = await this.http.post(url, params, httpOptions).toPromise().then((res: any) => {
       return res.id;
@@ -685,7 +688,9 @@ export class EditPage implements OnInit {
 
     // 閲覧ページへのリンクを提示
     if (window.confirm("ルートを保存しました。編集を終了しますか?")) {
-      this.navCtrl.navigateForward('/watch/' + this.route_id);
+      //状態をリセットするため、画面を再構築
+      //this.navCtrl.navigateForward('/watch/' + this.route_id);
+      window.document.location.href = '/watch/' + this.route_id;
     }
 
   }
