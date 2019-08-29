@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 
 import { EditPage } from './edit.page';
 
@@ -23,6 +24,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    HttpClientModule,
+    HttpClientJsonpModule,
     RouterModule.forChild(routes)
   ],
   declarations: [EditPage]

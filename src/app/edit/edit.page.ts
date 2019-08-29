@@ -113,6 +113,7 @@ export class EditPage implements OnInit {
     let that = this;
     this.storage.get('user').then((json) => {
       if (!json || json == "") {
+        alert("ログインしていない場合は保存ができません。\nログインされることをおすすめします。")
         return;
       }
       that.user = JSON.parse(json);
@@ -637,6 +638,13 @@ export class EditPage implements OnInit {
       return ret;
     }
 
+    let start_point_name = await this.getAddressName(this.line[0]).then(address => {
+      return address;
+    });
+    let goal_point_name = await this.getAddressName(this.line[this.line.length - 1]).then(address => {
+      return address;
+    })
+
     let route = {
       id: this.route_id || '',
       title: this.title.replace("\n", "") + "",
@@ -650,8 +658,8 @@ export class EditPage implements OnInit {
       max_elevation: Math.round(this.height_max * 10) / 10 + "",
       max_slope: "0.0", //TODO
       avg_slope: "0.0", //TODO
-      start_point: '', //TODO
-      goal_point: '', // TODO
+      start_point: start_point_name,
+      goal_point: goal_point_name,
       is_private: !this.isNotPrivate ? 'true' : 'false',
       is_gps: "false", // TODO
       pos: this.line.map(p => { return p[0] + " " + p[1]; }).join(","),
@@ -718,7 +726,8 @@ export class EditPage implements OnInit {
   importFile(event) {
     console.log("importFile");
     event.stopPropagation();
-    document.getElementById("file").click();
+    alert("現在、インポート機能は準備中です。");
+    //document.getElementById("file").click();
   }
 
 
@@ -805,6 +814,21 @@ export class EditPage implements OnInit {
         this.currenPossitionMarker.setLatLng(latlng);
       }
     });
+  }
+
+
+  async getAddressName(pos) {
+    let url = 'https://map.yahooapis.jp/geoapi/V1/reverseGeoCoder';
+    let appid = 'dj00aiZpPXlGRWpKYXlpbHA2ZCZzPWNvbnN1bWVyc2VjcmV0Jng9ZTg-';
+    let ret = await this.http.jsonp(url + '?output=json&appid=' + appid + '&lat=' + pos[1] + '&lon=' + pos[0], 'callback').toPromise().then((res: any) => {
+      return res;
+    });
+    try {
+      return ret.Feature[0].Property.Address
+    } catch (e) {
+      return '番地なし';
+    }
+
   }
 
 }
