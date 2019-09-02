@@ -3,7 +3,6 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ToastController, Platform, ModalController, NavController } from '@ionic/angular';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Routemap } from '../watch/routemap';
-import * as Hammer from 'hammerjs';
 import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
 import { LayerselectPage } from '../layerselect/layerselect.page';
@@ -41,7 +40,6 @@ export class EditPage implements OnInit {
   routemap: Routemap;
   elevation: any;
   editMode = false;
-  hammer: any;
   editMarkers = [];
   tags = [];
   isNotPrivate = true;
@@ -147,9 +145,6 @@ export class EditPage implements OnInit {
     // 見やすくするために最初からメニューを開いておく
     document.getElementById('menuButton').click();
 
-    this.hammer = new Hammer(this.map_elem.nativeElement);
-
-    // 編集モードに変更 (hammerjsロード後必須)
     if (!this.editMode) {
       this._toggleCreateMode();
     }
@@ -222,10 +217,10 @@ export class EditPage implements OnInit {
 
     if (this.editMode) {
       // TODO : SP用の動作をまた実装する(hammer panが便利)
-      this.presentToast('ルート編集モードに変更');
+      //this.presentToast('ルート編集モードに変更');
 
-
-      that.hammer.on('tap', function (ev) {
+      this.map_elem.nativeElement.onclick = (ev) => {
+        //      that.hammer.on('tap', function (ev) {
         if (!that.canEdit) {
           // 編集不可
           return;
@@ -235,8 +230,8 @@ export class EditPage implements OnInit {
         if (that.platform.is('mobile')) {
           header_height = 10;
         }
-
-        let _point = L.point(ev.center.x, ev.center.y - header_height);
+        console.dir(ev);
+        let _point = L.point(ev.clientX, ev.clientY - header_height);
         let latlng = that.map.containerPointToLatLng(_point);
 
         let overlap_marker = that.find_nearest_marker_from_latlng(latlng, 16.0);
@@ -257,13 +252,13 @@ export class EditPage implements OnInit {
           // タップ位置がルート上
           that.insert_marker(marker_data, overlap_route.next_data);
         }
-      });
+      };
 
 
 
     } else {
       this.presentToast('ルート表示モードに変更');
-      this.hammer.off('tap');
+      this.map_elem.nativeElement.onclick = undefined;
     }
 
   }
