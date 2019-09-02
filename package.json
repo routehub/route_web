@@ -37,7 +37,6 @@
     "firebase": "^5.11.1",
     "firebaseui": "^3.6.1",
     "gpx-builder": "^2.0.1",
-    "hammerjs": "^2.0.8",
     "leaflet": "^1.5.1",
     "leaflet-hotline": "^0.4.0",
     "leaflet.elevation": "github:ctyo/Leaflet.Elevation#innerlabel_tooltips",
