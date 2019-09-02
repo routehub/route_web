@@ -216,11 +216,9 @@ export class EditPage implements OnInit {
     this.editMode = this.editMode ? false : true;
 
     if (this.editMode) {
-      // TODO : SP用の動作をまた実装する(hammer panが便利)
       //this.presentToast('ルート編集モードに変更');
 
       this.map_elem.nativeElement.onclick = (ev) => {
-        //      that.hammer.on('tap', function (ev) {
         if (!that.canEdit) {
           // 編集不可
           return;

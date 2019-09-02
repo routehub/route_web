@@ -1,6 +1,6 @@
 import { LayerselectPageModule } from './layerselect/layerselect.module';
 import { NgModule, Injectable } from '@angular/core';
-import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
@@ -20,18 +20,6 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
-
-@Injectable()
-export class IonicGestureConfig extends HammerGestureConfig {
-  buildHammer(element: HTMLElement) {
-    const mc = new (<any>window).Hammer(element);
-    for (const eventName of Object.keys(this.overrides)) {
-      mc.get(eventName).set(this.overrides[eventName]);
-    }
-    return mc;
-  }
-}
-
 
 @NgModule({
   declarations: [AppComponent],
@@ -55,7 +43,6 @@ export class IonicGestureConfig extends HammerGestureConfig {
     SplashScreen,
     Geolocation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig }
   ],
   bootstrap: [AppComponent]
 })
