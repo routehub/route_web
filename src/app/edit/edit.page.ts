@@ -13,6 +13,7 @@ import * as Hammer from 'hammerjs';
 import 'firebase/auth';
 import { Storage } from '@ionic/storage';
 import { ActivatedRoute } from '@angular/router';
+import undefined = require('firebase/auth');
 
 @Component({
   selector: 'app-edit',
@@ -201,6 +202,19 @@ export class EditPage implements OnInit {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
     }
+
+    // リセット
+    let that = this;
+    this.editMarkers.map(markerData => {
+      markerData.marker.removeFrom(that.map);
+    });
+    this.editMarkers = [];
+    this.line = [];
+    this.remove_geojson()
+    this.elevation.clear();
+    this.total_dist_elem.nativeElement.innerText = 0;
+    this.total_elev_elem.nativeElement.innerText = 0;
+    this.max_elev_elem.nativeElement.innerText = 0;
   }
 
   close_editbar(e) {
@@ -220,10 +234,7 @@ export class EditPage implements OnInit {
     this.editMode = this.editMode ? false : true;
 
     if (this.editMode) {
-      //this.presentToast('ルート編集モードに変更');
-
       that.hammer.on('tap', (ev) => {
-        console.dir(ev);
         if (!that.canEdit) {
           // 編集不可
           return;
@@ -233,7 +244,6 @@ export class EditPage implements OnInit {
         if (that.platform.is('mobile')) {
           header_height = 10;
         }
-        console.dir(ev);
         let _point = L.point(ev.center.x, ev.center.y - header_height);
         let latlng = that.map.containerPointToLatLng(_point);
 
@@ -258,7 +268,7 @@ export class EditPage implements OnInit {
       });
 
 
-
+      this.presentToast('ルート編集モードに変更');
     } else {
       this.presentToast('ルート表示モードに変更');
       this.hammer.off('tap');
