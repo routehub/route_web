@@ -138,6 +138,7 @@ export class EditPage implements OnInit {
     if (!this.map) {
       let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
       this.map = routemap.map;
+      L.control.zoom({ position: 'topleft' }).addTo(this.map);
       this.elevation = routemap.elevation;
     }
 
@@ -163,7 +164,9 @@ export class EditPage implements OnInit {
     }
 
     let layerDom = window.document.querySelector('div.leaflet-control-container > div.leaflet-top.leaflet-right > div') as HTMLElement;
+    let Zoomctrl = window.document.querySelector('div.leaflet-control-container > div.leaflet-top.leaflet-left > div') as HTMLElement;
     layerDom.style.top = '62px';
+    Zoomctrl.style.top = '62px';
 
 
     // ファイルアップロード関連の処理
