@@ -617,7 +617,7 @@ export class EditPage implements OnInit {
   }
 
 
-  async save() {
+  async save(event) {
     console.log("save");
     event.stopPropagation();
 
