@@ -16,6 +16,7 @@ export const environment = {
     'search_path': '/search',
     'route_path': '/route',
     'route_delete_path': '/route_delete',
+    'routing_path': '/routing',
     'my_path': '/my',
     'like_path': '/like',
     'like_delete_path': '/like_delete',

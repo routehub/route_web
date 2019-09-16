@@ -4,30 +4,23 @@ import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
-import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 
-import { EditPage } from './edit.page';
-
-import { TagInputModule } from 'ngx-chips';
-
+import { TermsPage } from './terms.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: EditPage
+    component: TermsPage
   }
 ];
 
 @NgModule({
   imports: [
-    TagInputModule,
     CommonModule,
     FormsModule,
     IonicModule,
-    HttpClientModule,
-    HttpClientJsonpModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [EditPage]
+  declarations: [TermsPage]
 })
-export class EditPageModule { }
+export class TermsPageModule {}

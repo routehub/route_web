@@ -1,38 +1,111 @@
-<ion-fab vertical="top" horizontal="end" slot="fixed" id="menuButton">
+<ion-fab vertical="top" horizontal="end" slot="fixed" id="menuButton" style="top:70px;">
   <ion-fab-button>
     <ion-icon name="md-apps"></ion-icon>
   </ion-fab-button>
+
+  <ion-fab-list side="start">
+
+    <ion-fab-button (click)="reset($event)">
+      <ion-icon color="primary" name="md-trash"></ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-button (click)="save($event)">
+      <ion-icon color="primary" name="ios-save"></ion-icon>
+    </ion-fab-button>
+
+  </ion-fab-list>
+
   <ion-fab-list side="bottom">
+
     <ion-fab-button (click)="toggleCreateMode($event)">
       <ion-icon [color]="editMode ? 'primary' : ''" name="md-create"></ion-icon>
     </ion-fab-button>
+
+    <ion-fab-button (click)="importFile($event)">
+      <ion-icon color="primary" name="document"></ion-icon>
+      <input id="file" type=file class=button accept=".gpx" style="visibility:hidden;width:0;hegiht:0;overflow:hidden;">
+    </ion-fab-button>
+
+    <ion-fab-button (click)="toggleRoutingMode($event)">
+      <ion-icon color="primary" name="md-walk"></ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-button (click)="presentLayerSelect($event)">
+      <ion-icon color="primary" name="md-albums"></ion-icon>
+    </ion-fab-button>
+
     <ion-fab-button (click)="toggleSlopeLayer($event)">
       <ion-icon color="primary" name="trending-up"></ion-icon>
     </ion-fab-button>
+
+    <ion-fab-button (click)="toggleLocation($event)">
+      <ion-icon [color]="isWatchLocation ? 'primary' : ''" name="md-locate"> </ion-icon>
+    </ion-fab-button>
+
+
   </ion-fab-list>
 </ion-fab>
 
 <ion-content class="mapcontainer">
-  <div class="message" id="message">
-    <h2>ベータ版作成機能</h2>
-    <p>
-      この画面はベータ版作成機能です。<br>
-      日本国内のルートを引くことができます。(7/22更新)<br>
-      作成機能の感覚を見ていただくためのもので、保存はできません。<br>
-    </p>
-    <h3>使い方</h3>
-    <ul>
-      <li>地図をクリックするとポイント追加</li>
-      <li>ポイントをクリックするとポイント削除</li>
-      <li>ポイントをドラッグするとポイント移動</li>
-      <li>ルート上をクリックすると経由点追加</li>
-    </ul>
-    <p>
-      お気づき点があれば<a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSegfE8nWPfd40NEraL5EH_YFfnt1UaGIrWIrrhAvvgYYPapRw/viewform?usp=send_form">お問い合せ</a>までご意見をお願いします。<br>
-      <br>
-      <br>
-      <a href="javascript:void(0);" onclick="document.getElementsByClassName('mapcontainer')[0].style['z-index'] = 'auto'; document.getElementById('message').style.display = 'none'; return false;">閉じる</a>
-    </p>
+  <div class="editbar" #editbar>
+    <ion-input class="title" color="primary" placeholder="タイトル" [(ngModel)]="title"></ion-input>
+    <!--    <div class="title" contenteditable="true" #title>コース名</div>-->
+    <div class="total_dist">総距離 : <span #total_dist></span>km</div>
+    <div class="total_elev">獲得標高 : <span #total_elev></span>m</div>
+    <div class="max_elev">最高標高 : <span #max_elev></span>m</div>
+
+    <div class="hidearea" #hidearea>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-item style="font-size:0.8em;" id="share_link_row">
+              <ion-label color="primary">共有リンク : </ion-label>
+              <ion-text color="primary"><a target="_blank" href="" id="share_link"></a></ion-text>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size=3>
+            <ion-item>
+              <ion-label color="primary">公開</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="isNotPrivate"></ion-toggle>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item>
+              <ion-label color="primary">ルートの作者<ion-text color="danger">*</ion-text>
+              </ion-label>
+              <ion-input color="primary" [(ngModel)]="author"></ion-input>
+            </ion-item>
+
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <tag-input style="font-size:0.9em" color="primary" placeholder="タグを入力" secondaryPlaceholder="タグを入力"
+              [(ngModel)]='tags'>
+            </tag-input>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-textarea color="primary" rows="6" cols="20" [(ngModel)]="body" placeholder="コースの説明など"></ion-textarea>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <ion-button color="primary" (click)="save($event)" expand="block">保存・更新する</ion-button>
+
+      <ion-button color="light" expand="block" (click)="close_editbar($event)">閉じる</ion-button>
+
+      <ion-button color="light" expand="block" (click)="moveTop($event)">編集を終了する</ion-button>
+
+    </div>
+
   </div>
   <div class="mainmap" #map></div>
 </ion-content>

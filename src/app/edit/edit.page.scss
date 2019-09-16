@@ -2,14 +2,36 @@
   width: 100%;
   height: 100%;
 }
-.message {
-  position: absolute;
-  z-index: 99999;
-  background: #ffffffd1;
-  width: 100%;
-  height: 100%;
-  padding: 10px;
+.title, .total_dist, .total_elev, .max_elev{
+  display:inline-block;
+  margin-right:10px;
 }
-.mapcontainer {
+.total_dist, .total_elev, .max_elev{
+  font-size : 12px;
+}
+.total_dist > span , .total_elev > span , .max_elev > span {
+  display:inline-block;
+  min-width: 20px;
+}
+.editbar {
+  width:100%;
+  min-height: 50px;
+  padding : 10px;
+  position : absolute;
+  top:0;
+  left:0;
+  background:white;
   z-index: 99999;
+  color: #ec1845;
+}
+.title{
+  width: 300px;
+  border: #ff9ba9 solid 1px;
+  padding-left: 10px;
+}
+.leaflet-marker-icon {
+  image-rendering: pixelated;
+}
+.hidearea {
+  display: none;
 }

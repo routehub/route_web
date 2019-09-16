@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams } from '@ionic/angular';
+import { ModalController, NavParams, ToastController } from '@ionic/angular';
 import { buildGPX, GarminBuilder } from 'gpx-builder';
 import ejs from 'ejs';
 import { environment } from '../../environments/environment';
@@ -17,13 +17,20 @@ export class ExportPage implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private navParams: NavParams
+    private navParams: NavParams,
+    public toastController: ToastController,
   ) { }
 
   ngOnInit() {
     this.route = this.navParams.get('route');
     this.noteData = this.navParams.get('noteData');
+  }
 
+  async copy() {
+    let pastemaphtml = document.getElementById('pastemaphtml') as HTMLTextAreaElement;
+    pastemaphtml.select();
+    document.execCommand('copy');
+    await this.presentToast("クリップボードのコピーしました")
   }
 
   async closeModal() {
@@ -120,4 +127,12 @@ export class ExportPage implements OnInit {
     link.click()
   }
 
+  async presentToast(message) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      color: "primary",
+    });
+    toast.present();
+  }
 }

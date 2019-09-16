@@ -4,8 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
-import turfbbox from '@turf/bbox';
-import * as turf from '@turf/helpers';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { LayerselectPage } from '../layerselect/layerselect.page';
@@ -93,12 +91,7 @@ export class WatchPage implements OnInit {
     this.routemap = new Routemap();
   }
 
-  ionViewDidEnter() {
-    if (this.platform.is('mobile')) {
-      window.document.querySelector('ion-tab-bar').style.display = 'none';
-    }
-  }
-  ionViewDidLeave() {
+  ionViewWillLeave() {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
     }
@@ -135,9 +128,11 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
+
     let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
+
 
     this.id = this.route.snapshot.paramMap.get('id');
     //    this.route_data.id = id;
@@ -208,19 +203,11 @@ export class WatchPage implements OnInit {
         }
       }
 
-
       // 描画範囲をよろしくする
-      let line = turf.lineString(pos);
-      let bbox = turfbbox(line); // lonlat問題...
-      const latplus = Math.abs(bbox[1] - bbox[3]) * 0.1;
-      const lonplus = Math.abs(bbox[0] - bbox[2]) * 0.1;
-      that.map.fitBounds([ // いい感じの範囲にするために調整
-        [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
-        [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus]
-      ]);
+      that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
 
       // 再生モジュール追加
-      that.animatedMarker = routemap.addAnimatedMarker(pos);
+      that.animatedMarker = that._routemap.addAnimatedMarker(pos);
 
       that.line = pos;
     });
@@ -241,6 +228,10 @@ export class WatchPage implements OnInit {
       this.favoriteIcon = 'heart';
     });
 
+    // UIの調整
+    if (this.platform.is('mobile')) {
+      window.document.querySelector('ion-tab-bar').style.display = 'none';
+    }
   }
 
   async getFavoriteStatus(id): Promise<any[]> {
@@ -365,21 +356,11 @@ export class WatchPage implements OnInit {
     }
   }
 
-  alretEditable(event) {
+  edit(event) {
     event.stopPropagation();
-
-    this.presentToast('編集モード・フォーク機能は鋭意開発中です＞＜ \nもうしばらくお待ち下さい')
-
-    this.editMarkers.forEach(m => {
-      m.addTo(this.map);
-    });
-
-    let removeIcon = () => {
-      this.editMarkers.forEach(m => {
-        this.map.removeLayer(m);
-      });
-    }
-    setTimeout(removeIcon, 5000);
+    // 状態の管理ができないのでアプリケーションの初期化をする
+    //this.navCtrl.navigateForward('/edit/' + this.id);
+    window.document.location.href = '/edit/' + this.id;
   }
 
   private playSpeedIndex = 0;

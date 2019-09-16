@@ -6,7 +6,7 @@
 
 <ion-content>
   <p style="margin: 20px;">
-    コメント点を、waypoint付きでデバイスに送信します。<br>
+    ルートをwaypoint付きでデバイスに送信します。<br>
     GarminConnectをスマートフォンに入れていて、端末と接続している場合にはBluetooth通信でデバイスにルートを送信することが可能です。<br>
     すべての端末にて動作検証できていませんが、動くこと確認できましたら追記いたしますので、ご一報をお願いします。
   </p>
@@ -24,17 +24,17 @@
       <ion-label>Garminデバイスに送る(.gpx)</ion-label>
     </ion-item>
 
-    <ion-item>
+    <ion-item style="margin-top:20px">
       <ion-label>ブログ・サイトに貼り付ける</ion-label>
     </ion-item>
-    <ion-item>
-      <ion-textarea>
+    <ion-item (click)="copy()">
+      <textarea id="pastemaphtml" style="border: none;width: 100%;height: 120px; font-size: 13px;" readonly>
         &lt;iframe height=&#039;405&#039; width=&#039;590&#039; frameborder=&#039;0&#039;
         allowtransparency=&#039;true&#039;
         scrolling=&#039;no&#039;
         lazyload=&#039;on&#039;
         src=&#039;https://{{hostname}}/embed/{{route.id}}&#039;&gt;&lt;/iframe&gt;
-      </ion-textarea>
+      </textarea>
     </ion-item>
   </ion-list>
   <ion-button color="light" expand="block" (click)="closeModal()">閉じる</ion-button>

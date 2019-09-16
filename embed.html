@@ -42,22 +42,31 @@
     header {
       height: 65px;
       background-color: #ff346a;
+      display: flex;
     }
 
     h1 {
-      margin: 0;
-      margin: 10px 0 0 20px;
-      float: left;
+      padding: 0 10px;
+    }
+
+    .info>ul {
+      display: inline-flex;
+      list-style: none;
+      margin: 5px 0;
+      line-height: 1.4em;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info>ul>li {
+      margin-left: 5px;
     }
 
     h1>a>img {
       height: 30px;
-    }
-
-    ul {
-      display: inline-flex;
-      list-style: none;
-      margin: 5px;
     }
 
     a,
@@ -77,6 +86,10 @@
       font-size: 1.2em;
     }
 
+    #title:hover {
+      text-decoration: underline;
+    }
+
     .loading {
       position: absolute;
       top: 0;
@@ -92,37 +105,38 @@
 </head>
 
 <body>
-  <div class="loading">
+  <div class="loading"></div>
 
-  </div>
   <div class="wrapper">
     <header>
       <h1><a target="_blank" href="https://routehub.app/"><img src="https://routehub.app/assets/logo-white.png"
             alt="routehub"></a></h1>
-      <ul>
-        <li id="title" style="margin-right:20px"><a target="_blank" href=""></a></li>
-        <li id="author">by <a></a></li>
-        <!--<li id="created_at"></li>-->
-      </ul>
+      <div class="info">
+        <ul>
+          <li id="title"><a target="_blank" href=""></a></li>
+          <li id="author">by <a></a></li>
+          <li id="created_at"></li>
+        </ul>
+        <ul>
+          <li id="dist">距離<span></span></li>
+          <li id="elevation">獲得標高<span></span></li>
+        </ul>
+      </div>
 
-      <ul>
-        <li id="dist" style="margin-left:10px">距離<span></span></li>
-        <li id="elevation">獲得標高<span></span></li>
-      </ul>
     </header>
-    <div class="map" id="map">
-    </div>
+
+    <div class="map" id="map"></div>
   </div>
 
 
 
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"> </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
 <link rel="stylesheet" href="https://routehub.app/assets/leaflet.elevation-0.0.4.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.5/turf.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js" charset="utf-8"></script>
 <script src="https://routehub.app/assets/leaflet.elevation-0.0.4.min.js"> </script>
 
 <style>
@@ -214,35 +228,38 @@
   }
 </style>
 <script>
-  // mapはglobalにする
-  map = L.map('map', { zoomControl: false });
-  var url = 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png';
-  var tileLayer = L.tileLayer(url, {
-    attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-    maxZoom: 19
-  });
-  tileLayer.addTo(map);
-  map.on('load', function () {
-    $('.loading').css('top', '-' + window.innerHeight + 'px');
+  $(function () {
+    // mapはglobalにする
+    map = L.map('map', { zoomControl: false });
 
-    var params = (new URL(document.location)).searchParams;
-    var id = params.get('id');
-    $.get('https://api.routehub.app/route/1.0.0/route?id=' + id, {})
-      .done(function (data) {
-        setRouteMap(data);
-      });
+    var url = 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png';
+    var tileLayer = L.tileLayer(url, {
+      attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+      maxZoom: 19
+    });
+    tileLayer.addTo(map);
+
+    map.on('load', function () {
+      var params = (new URL(document.location)).searchParams;
+      var id = params.get('id');
+      $.get('https://api.routehub.app/route/1.0.0/route?id=' + id, {})
+        .done(function (data) {
+          $('.loading').css('top', '-' + window.innerHeight + 'px');
+          setRouteMap(data);
+        });
+    });
+    map.setView([36.575, 135.984], 5);
   });
 
   setTimeout(function () {
     $('.loading').hide();
   }, 500);
-  map.setView([36.575, 135.984], 5);
 
   function setRouteMap(d) {
     $('#title>a').text(d.results.title || '');
     $('#title>a').attr('href', 'https://routehub.app/watch/' + d.results.id);
     $('#author>a').text(d.results.author || '');
-    $('#created_at').text(d.results.created_at || '');
+    $('#created_at').text(d.results.created_at.substr(0, 10).replace(/-/g, '/') || '');
     $('#dist>span').text(d.results.total_dist + 'km' || '0.0km');
     $('#elevation>span').text(d.results.total_elevation + 'm' || '0.0m');
 
@@ -278,6 +295,7 @@
     // elevation
     try {
       var elevHeight = window.innerHeight <= 500 ? 80 : 150;
+      console.dir(elevHeight);
       var elevation = L.control.elevation({
         position: 'bottomright',
         theme: 'steelblue-theme',
