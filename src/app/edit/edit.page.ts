@@ -568,6 +568,11 @@ export class EditPage implements OnInit {
         that.tags = r.tag;
         that.body = r.body;
 
+        // TODO : max_slopeとかやる
+        that.distance = r.total_dist;
+        that.height_gain = r.total_elevation;
+        that.height_max = r.max_elevation;
+
         that.total_dist_elem.nativeElement.innerText = r.total_dist;
         that.total_elev_elem.nativeElement.innerText = r.total_elevation;
         that.max_elev_elem.nativeElement.innerText = r.max_elevation;
