@@ -13,7 +13,6 @@ import * as Hammer from 'hammerjs';
 import 'firebase/auth';
 import { Storage } from '@ionic/storage';
 import { ActivatedRoute } from '@angular/router';
-import undefined = require('firebase/auth');
 
 @Component({
   selector: 'app-edit',
@@ -158,6 +157,10 @@ export class EditPage implements OnInit {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'none';
     }
+
+    this.editbar_elem.nativeElement.addEventListener('touchstart', () => {
+      this.hidearea_elem.nativeElement.style.display = "block";
+    });
 
     this.editbar_elem.nativeElement.onclick = () => {
       this.hidearea_elem.nativeElement.style.display = "block";
@@ -717,6 +720,10 @@ export class EditPage implements OnInit {
       window.document.location.href = '/watch/' + this.route_id;
     }
 
+  }
+
+  moveTop(event) {
+    this.navCtrl.navigateForward('/home');
   }
 
   reset(event) {
