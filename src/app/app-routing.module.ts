@@ -27,6 +27,8 @@ const routes: Routes = [
   { path: 'layerselect', loadChildren: './layerselect/layerselect.module#LayerselectPageModule' },
   { path: 'edit', loadChildren: './edit/edit.module#EditPageModule' },
   { path: 'edit/:id', loadChildren: './edit/edit.module#EditPageModule' },
+  { path: 'terms', loadChildren: './terms/terms.module#TermsPageModule' },
+  { path: 'privacypolicy', loadChildren: './privacypolicy/privacypolicy.module#PrivacypolicyPageModule' },
 
 ];
 
