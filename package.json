@@ -43,7 +43,8 @@
     "ng-lazyload-image": "^5.1.2",
     "ngx-chips": "^2.0.2",
     "rxjs": "~6.5.2",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "hammerjs": "^2.0.8"
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.12.3",

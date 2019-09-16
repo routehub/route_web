@@ -9,6 +9,7 @@ import { LayerselectPage } from '../layerselect/layerselect.page';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { RouteHubUser } from './../model/routehubuser';
 import * as firebase from 'firebase/app';
+import * as Hammer from 'hammerjs';
 import 'firebase/auth';
 import { Storage } from '@ionic/storage';
 import { ActivatedRoute } from '@angular/router';
@@ -88,6 +89,7 @@ export class EditPage implements OnInit {
       "line-opacity": 0.7,
     }
   };
+  hammer: any;
 
   constructor(
     private http: HttpClient,
@@ -144,6 +146,8 @@ export class EditPage implements OnInit {
 
     // 見やすくするために最初からメニューを開いておく
     document.getElementById('menuButton').click();
+
+    this.hammer = new Hammer(this.map_elem.nativeElement);
 
     if (!this.editMode) {
       this._toggleCreateMode();
@@ -218,7 +222,8 @@ export class EditPage implements OnInit {
     if (this.editMode) {
       //this.presentToast('ルート編集モードに変更');
 
-      this.map_elem.nativeElement.onclick = (ev) => {
+      that.hammer.on('tap', (ev) => {
+        console.dir(ev);
         if (!that.canEdit) {
           // 編集不可
           return;
@@ -229,7 +234,7 @@ export class EditPage implements OnInit {
           header_height = 10;
         }
         console.dir(ev);
-        let _point = L.point(ev.clientX, ev.clientY - header_height);
+        let _point = L.point(ev.center.x, ev.center.y - header_height);
         let latlng = that.map.containerPointToLatLng(_point);
 
         let overlap_marker = that.find_nearest_marker_from_latlng(latlng, 16.0);
@@ -250,13 +255,13 @@ export class EditPage implements OnInit {
           // タップ位置がルート上
           that.insert_marker(marker_data, overlap_route.next_data);
         }
-      };
+      });
 
 
 
     } else {
       this.presentToast('ルート表示モードに変更');
-      this.map_elem.nativeElement.onclick = undefined;
+      this.hammer.off('tap');
     }
 
   }
