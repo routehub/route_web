@@ -700,7 +700,11 @@ export class EditPage implements OnInit {
       })
     };
 
-    const params = new HttpParams({ fromObject: route });
+    //const params = new HttpParams({ fromObject: route });
+    let params = '';
+    for (var key in route) {
+      params += key + '=' + encodeURI(route[key]);
+    }
     this.route_id = await this.http.post(url, params, httpOptions).toPromise().then((res: any) => {
       return res.id;
     });
