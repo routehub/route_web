@@ -2,7 +2,7 @@ import { RouteHubUser } from './../model/routehubuser';
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Platform, NavController } from '@ionic/angular';
-import { Events } from 'ionic-angular';
+import { Events } from '../Events'
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
@@ -183,7 +183,7 @@ export class MyPage implements OnInit {
   }
 
   logout() {
-    this.events.publish('user:logout');
+    this.events.publish('user:logout', {});
     this.navCtrl.navigateForward('/login');
   }
 

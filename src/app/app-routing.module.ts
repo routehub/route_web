@@ -9,26 +9,26 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: './home/home.module#HomePageModule'
+    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
   {
     path: 'list',
-    loadChildren: './list/list.module#ListPageModule'
+    loadChildren: () => import('./list/list.module').then(m => m.ListPageModule)
   },
   {
     path: 'watch/:id',
-    loadChildren: './watch/watch.module#WatchPageModule'
+    loadChildren: () => import('./watch/watch.module').then(m => m.WatchPageModule)
   },
-  { path: 'migration', loadChildren: './migration/migration.module#MigrationPageModule' },
-  { path: 'routeinfo', loadChildren: './routeinfo/routeinfo.module#RouteinfoPageModule' },
-  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
-  { path: 'export', loadChildren: './export/export.module#ExportPageModule' },
-  { path: 'my', loadChildren: './my/my.module#MyPageModule' },
-  { path: 'layerselect', loadChildren: './layerselect/layerselect.module#LayerselectPageModule' },
-  { path: 'edit', loadChildren: './edit/edit.module#EditPageModule' },
-  { path: 'edit/:id', loadChildren: './edit/edit.module#EditPageModule' },
-  { path: 'terms', loadChildren: './terms/terms.module#TermsPageModule' },
-  { path: 'privacypolicy', loadChildren: './privacypolicy/privacypolicy.module#PrivacypolicyPageModule' },
+  { path: 'migration', loadChildren: () => import('./migration/migration.module').then(m => m.MigrationPageModule) },
+  { path: 'routeinfo', loadChildren: () => import('./routeinfo/routeinfo.module').then(m => m.RouteinfoPageModule) },
+  { path: 'login', loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule) },
+  { path: 'export', loadChildren: () => import('./export/export.module').then(m => m.ExportPageModule) },
+  { path: 'my', loadChildren: () => import('./my/my.module').then(m => m.MyPageModule) },
+  { path: 'layerselect', loadChildren: () => import('./layerselect/layerselect.module').then(m => m.LayerselectPageModule) },
+  { path: 'edit', loadChildren: () => import('./edit/edit.module').then(m => m.EditPageModule) },
+  { path: 'edit/:id', loadChildren: () => import('./edit/edit.module').then(m => m.EditPageModule) },
+  { path: 'terms', loadChildren: () => import('./terms/terms.module').then(m => m.TermsPageModule) },
+  { path: 'privacypolicy', loadChildren: () => import('./privacypolicy/privacypolicy.module').then(m => m.PrivacypolicyPageModule) },
 
 ];
 

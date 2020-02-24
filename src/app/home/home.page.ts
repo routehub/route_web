@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Platform, NavController } from '@ionic/angular';
-import { Events } from 'ionic-angular';
+import { Events } from '../Events'
 import { Storage } from '@ionic/storage';
 
 @Component({
@@ -17,8 +17,8 @@ export class HomePage {
   query = '';
   list_style_class = 'funclist';
 
-  @ViewChild('logoutButton', { static: false }) logoutButton: any;
-  @ViewChild('loginButton', { static: false }) loginButton: any;
+  @ViewChild('logoutButton') logoutButton: any;
+  @ViewChild('loginButton') loginButton: any;
 
   constructor(
     public platform: Platform,
@@ -62,12 +62,12 @@ export class HomePage {
   }
 
   logout() {
-    this.events.publish('user:logout');
+    this.events.publish('user:logout', {});
     this.logoutButton.el.style.display = 'none';
     this.loginButton.el.style.display = 'block';
 
   }
   toLoginPage() {
-    this.events.publish('user:toLoginPage');
+    this.events.publish('user:toLoginPage', {});
   }
 }
