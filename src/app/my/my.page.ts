@@ -1,7 +1,8 @@
 import { RouteHubUser } from './../model/routehubuser';
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Platform, NavController, Events } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular';
+import { Events } from 'ionic-angular';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
@@ -50,7 +51,7 @@ export class MyPage implements OnInit {
 
   }
 
-  toggle_private (item) {
+  toggle_private(item) {
     // UI変更
     item.is_private = !item.is_private;
     item.is_private_ja = item.is_private ? "非公開" : "公開";
@@ -58,7 +59,8 @@ export class MyPage implements OnInit {
     const httpOptions = {
       headers: new HttpHeaders(
         'Content-Type:application/x-www-form-urlencoded'
-      )};
+      )
+    };
     const url = environment.api.host + environment.api.route_change_private_path;
     let private_param = item.is_private ? "true" : "false";
     this.http.post(url,

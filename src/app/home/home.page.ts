@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { Platform, Events, NavController } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular';
+import { Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
 @Component({

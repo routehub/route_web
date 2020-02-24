@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Platform, Events } from '@ionic/angular';
+import { Platform, Events } from 'ionic-angular';
 import { HttpClient } from '@angular/common/http';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';

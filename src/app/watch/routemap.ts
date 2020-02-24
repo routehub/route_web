@@ -1,4 +1,3 @@
-import { Events } from '@ionic/angular';
 import * as L from 'leaflet';
 import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js';
 import * as AnimatedMarker from './animatedMarker.js';
@@ -171,7 +170,7 @@ export class Routemap {
                 return animatedMarker;
             },
             addElevationHotlineLayer: (line) => {
-                let max_elev = Math.max(...line.map(l => l[2]));
+                let max_elev = Math.max(line.map(l => l[2]));
                 let latlngelevlist = line.map(l => { return [l[1], l[0], l[2] / max_elev]; });
                 return L.hotline(latlngelevlist, {
                     outlineWidth: 1,
