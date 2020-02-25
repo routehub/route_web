@@ -723,7 +723,7 @@ export class EditPage implements OnInit {
   }
 
   moveTop(event) {
-    this.navCtrl.navigateForward('/home');
+    this.navCtrl.navigateForward('/');
   }
 
   reset(event) {

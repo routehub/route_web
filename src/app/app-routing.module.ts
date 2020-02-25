@@ -2,23 +2,8 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
-  {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
-  },
-  {
-    path: 'list',
-    loadChildren: () => import('./list/list.module').then(m => m.ListPageModule)
-  },
-  {
-    path: 'watch/:id',
-    loadChildren: () => import('./watch/watch.module').then(m => m.WatchPageModule)
-  },
+  { path: '', loadChildren: () => import('./list/list.module').then(m => m.ListPageModule) },
+  { path: 'watch/:id', loadChildren: () => import('./watch/watch.module').then(m => m.WatchPageModule) },
   { path: 'migration', loadChildren: () => import('./migration/migration.module').then(m => m.MigrationPageModule) },
   { path: 'routeinfo', loadChildren: () => import('./routeinfo/routeinfo.module').then(m => m.RouteinfoPageModule) },
   { path: 'login', loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule) },

@@ -91,7 +91,7 @@ export class ListPage implements OnInit {
       param += 'elev_opt=' + this.elev_opt + '&';
     }
     //console.log(param);
-    this.location.replaceState("/list", param);
+    this.location.replaceState("/", param);
 
     this.changeTitle();
   }

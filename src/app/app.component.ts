@@ -18,33 +18,20 @@ import { Events } from './Events'
 export class AppComponent implements OnInit {
   public appPages = [
     {
-      title: 'トップ',
-      icon: 'home',
-      route: () => {
-        this.navCtrl.navigateForward('/');
-      }
+      title: '検索',
+      icon: 'search',
+      route: () => { this.navCtrl.navigateForward('/') }
     },
     {
-      title: 'ルートラボから取込',
-      icon: 'md-add', // 'cloud-download'
-      route: () => {
-        this.navCtrl.navigateForward(this.isLogin() ? '/migration' : '/login');
-      }
+      title: 'ルートラボ移行',
+      icon: 'cloud-upload-outline',
+      route: () => { this.navCtrl.navigateForward(this.isLogin() ? '/migration' : '/login') }
     },
     {
-      title: 'ルートを作成',
-      icon: 'md-create',
-      route: () => {
-        this.navCtrl.navigateForward('/edit');
-      }
+      title: '作成',
+      icon: 'create-outline',
+      route: () => { this.navCtrl.navigateForward('/edit') }
     },
-    {
-      title: 'ルートを検索',
-      icon: 'md-search',
-      route: () => {
-        this.navCtrl.navigateForward('/list');
-      }
-    }
   ];
 
   public tabslot = 'top';
