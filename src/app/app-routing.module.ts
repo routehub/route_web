@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
+  { path: 'home', redirectTo: '' }, // ブラウザキャッシュ対策
   { path: '', loadChildren: () => import('./list/list.module').then(m => m.ListPageModule) },
   { path: 'watch/:id', loadChildren: () => import('./watch/watch.module').then(m => m.WatchPageModule) },
   { path: 'migration', loadChildren: () => import('./migration/migration.module').then(m => m.MigrationPageModule) },
