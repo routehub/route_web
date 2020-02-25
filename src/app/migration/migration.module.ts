@@ -25,4 +25,4 @@ const routes: Routes = [
   ],
   declarations: [MigrationPage]
 })
-export class MigrationPageModule {}
+export class MigrationPageModule { }

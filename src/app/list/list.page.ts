@@ -1,6 +1,5 @@
-import { Route } from './../watch/routemap';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { IonInfiniteScroll, NavController, PopoverController } from '@ionic/angular';
 import { SearchSettingComponent } from '../search-setting/search-setting.component';
 import { Location } from '@angular/common';

@@ -23,4 +23,4 @@ const routes: Routes = [
   ],
   declarations: [LayerselectPage]
 })
-export class LayerselectPageModule {}
+export class LayerselectPageModule { }

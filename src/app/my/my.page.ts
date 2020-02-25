@@ -7,7 +7,6 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
-import { Route } from '../watch/routemap';
 import { RouteModel } from '../model/routemodel';
 
 @Component({

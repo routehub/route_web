@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Platform, NavController } from '@ionic/angular';
 import { Events } from '../Events'
 import { Storage } from '@ionic/storage';
@@ -49,7 +49,6 @@ export class HomePage {
         return;
       }
       let user = JSON.parse(json);
-      console.dir(user);
       that.photoURL = user.photo_url;
       that.logoutButton.el.style.display = 'block';
       that.logoutButton.el.style.color = '#ffffff9c';

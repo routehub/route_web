@@ -23,4 +23,4 @@ const routes: Routes = [
   ],
   declarations: [PrivacypolicyPage]
 })
-export class PrivacypolicyPageModule {}
+export class PrivacypolicyPageModule { }
