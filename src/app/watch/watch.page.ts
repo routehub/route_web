@@ -15,6 +15,9 @@ import { RouteHubUser } from './../model/routehubuser';
 import { RouteModel } from '../model/routemodel';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import gql from 'graphql-tag';
+import { Apollo } from 'apollo-angular';
+
 
 @Component({
   selector: 'app-watch',
@@ -86,7 +89,9 @@ export class WatchPage implements OnInit {
     public navCtrl: NavController,
     public platform: Platform,
     private storage: Storage,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private apollo: Apollo,
+
   ) {
     this.routemap = new Routemap();
   }
@@ -138,7 +143,38 @@ export class WatchPage implements OnInit {
     //    this.route_data.id = id;
 
     var that = this;
-    this.get(this.id).then(function (route: any) {
+    const graphquery = gql`query PublicSearch($ids: [String!]!) {
+      publicSearch(search: { ids: $ids}) {
+        id
+        title
+        body
+        author
+        total_dist
+        max_elevation
+        total_elevation
+        created_at
+        start_point
+        goal_point
+        summary
+      }
+      getPublicRoutes(ids: $ids) {
+        id
+        pos
+        level
+        kind
+        note
+      }
+    }`;
+    this.apollo.query({
+
+      query: graphquery,
+      variables: {
+        ids: [this.id]
+      }
+    }).subscribe(({ data }) => {
+      const _route: any = data
+      const route = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0])
+
       that.route_data = new RouteModel();
       that.route_data.setFullData(route);
 

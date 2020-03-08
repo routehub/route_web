@@ -48,9 +48,8 @@ export class RouteModel {
         this.is_private = r.is_private;
         this.is_private_ja = r.is_private ? '非公開' : '公開';
 
-
-        this.pos = r.pos.split(',').map(p => { return p.split(' ') });
-        this.pos_latlng = r.pos.split(',').map(_p => { let p = _p.split(' '); return [p[1], p[0]]; });
+        this.pos_latlng = polyline.decode(r.pos)
+        this.pos = this.pos_latlng.map(_p => { return [_p[1], _p[0]] });
         this.level = r.level.split(',')
         this.note = r.note;
         this.time = r.time;
@@ -90,7 +89,6 @@ export class RouteModel {
         if (!summary) {
             return '';
         }
-        console.dir(summary)
         let line = summary.map(pos => pos.join(',')).join(',');
         return this.staticmap_url + '?appid=' + this.thumbappid
             + '&autoscale=on&scalebar=off&width=600&height=300&l=' + '0,0,255,105,4,' // rgb, a, weight
