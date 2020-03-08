@@ -4,6 +4,11 @@ import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angu
 import { RouteReuseStrategy } from '@angular/router';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
+import { Apollo, ApolloModule } from 'apollo-angular';
+import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+
+
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -21,6 +26,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
 
+
 @Injectable()
 export class IonicGestureConfig extends HammerGestureConfig {
   buildHammer(element: HTMLElement) {
@@ -37,6 +43,7 @@ export class IonicGestureConfig extends HammerGestureConfig {
   entryComponents: [],
   imports: [
     HttpClientModule,
+    ApolloModule,
     BrowserModule,
     BrowserAnimationsModule,
     IonicModule.forRoot(),
@@ -58,4 +65,12 @@ export class IonicGestureConfig extends HammerGestureConfig {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(apollo: Apollo) {
+    apollo.create({
+      link: createHttpLink({ uri: 'https://routehub-api.herokuapp.com/' }),
+      // uri specifies the endpoint for our graphql server
+      cache: new InMemoryCache()
+    })
+  }
+}

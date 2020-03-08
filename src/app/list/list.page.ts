@@ -5,6 +5,8 @@ import { SearchSettingComponent } from '../search-setting/search-setting.compone
 import { Location } from '@angular/common';
 import { environment } from '../../environments/environment';
 import { RouteModel } from '../model/routemodel';
+import gql from 'graphql-tag';
+import { Apollo } from 'apollo-angular';
 
 @Component({
   selector: 'app-list',
@@ -41,6 +43,7 @@ export class ListPage implements OnInit {
     public navCtrl: NavController,
     public popoverController: PopoverController,
     private location: Location,
+    private apollo: Apollo,
   ) {
   }
 
@@ -170,6 +173,14 @@ export class ListPage implements OnInit {
     this.search();
   }
 
+  private q(query) {
+    if (!query) {
+      return '';
+    }
+    return query;
+
+  }
+
   private create_searchquery() {
     return this.search_url
       + '?q=' + this.q(this.query)
@@ -183,36 +194,60 @@ export class ListPage implements OnInit {
       ;
   }
 
-  private q(query) {
-    if (!query) {
-      return '';
-    }
-    return query;
+  search() {
+    const graphquery = gql`query PublicSearch($query: String, $page: Float) {
+      publicSearch(search: { query: $query, page: $page}) {
+        id
+        title
+        body
+        author
+        total_dist
+        max_elevation
+        total_elevation
+        created_at
+        start_point
+        goal_point
+        summary
+      }
+    }`;
+    this.apollo.query({
 
-  }
+      query: graphquery,
+      variables: {
+        query: this.query == "" ? null : this.query,
+        /* 
+        sort: this.q(this.sort_type),
+        order: this.q(this.order_type),
+        dist_opt: this.q(this.dist_opt),
+        elev_opt: this.q(this.elev_opt),
+        per_page: this.q(this.per_page),
+        */
+        page: this.page,
+      }
+    }).subscribe(({ data }) => {
+      const res: any = data;
 
-  search(): Promise<any[]> {
-    return this.http.get(this.create_searchquery()).toPromise()
-      .then((res: any) => {
-        this.changeURL();
+      this.changeURL();
 
-        if (!res.results) {
-          return;
-        }
+      if (!res.publicSearch) {
+        return;
+      }
 
-        if (res.results.length === 0) {
-          this.infiniteScroll.disabled = true;
-        }
-        for (let i = 0; i < res.results.length; i++) {
-          let r = new RouteModel();
-          r.setData(res.results[i]);
-          this.items.push(r);
+      if (res.publicSearch.length === 0) {
+        this.infiniteScroll.disabled = true;
+      }
 
-          this.infiniteScroll.complete();
-        }
+      for (let i = 0; i < res.publicSearch.length; i++) {
+        let r = new RouteModel();
+        r.setData(res.publicSearch[i]);
+        this.items.push(r);
 
-        const response: any = res;
-        return response;
-      });
+        this.infiniteScroll.complete();
+      }
+
+      const response: any = res.publicSearch;
+      return response;
+
+    });
   }
 }
