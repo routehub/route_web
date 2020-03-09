@@ -10,6 +10,11 @@ import { Storage } from '@ionic/storage';
 import { RouteHubUser } from './model/routehubuser';
 import { environment } from '../environments/environment';
 import { Events } from './Events'
+import gql from 'graphql-tag';
+
+import { Apollo, ApolloModule } from 'apollo-angular';
+import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 @Component({
   selector: 'app-root',
@@ -45,7 +50,7 @@ export class AppComponent implements OnInit {
     private navCtrl: NavController,
     public events: Events,
     private storage: Storage,
-    private http: HttpClient,
+    private apollo: Apollo,
   ) {
     this.initializeApp();
     this.initializeAuth();
@@ -76,40 +81,57 @@ export class AppComponent implements OnInit {
     });
   }
 
-  initializeAuth() {
+  async initializeAuth() {
     // 現在のログイン状態を確認
     this.user = this.auth.auth.currentUser;
 
-    this.auth.authState.subscribe(async (user) => {
-      if (user) {
-        let token = await user.getIdToken();
-        const url = environment.api.host + environment.api.user_path;
-        let nickname = await this.http.get(url + '?firebase_id_token=' + token).toPromise()
-          .then((res: any) => {
-            if (!res || !res[0] || res[0].display_name) {
-              return "";
-            }
-            return res[0].display_name;
-          });
+    // ログイン済みでヘッダをつけてクライアントを作成
+    this.auth.authState.subscribe(async (_user) => {
+      if (!_user) {
+        this.user = null
+        this.storage.remove('user')
+        return
+      }
 
-        this.user = user;
+      this.user = _user
+      let rhuser = new RouteHubUser(
+        _user.uid,
+        '',
+        _user.displayName,
+        _user.photoURL,
+        _user.providerData[0].providerId,
+        '',
+      )
+      this.storage.set('user', JSON.stringify(rhuser))
+
+
+      // clientにヘッダーをつける作業&表示名取得
+      const token = await _user.getIdToken()
+      // apollo client 更新
+      this.apollo.removeClient()
+      this.apollo.create({
+        link: createHttpLink({
+          uri: 'https://routehub-api.herokuapp.com/',
+          headers: { token: token },
+        }),
+        cache: new InMemoryCache()
+      })
+      const graphquery = gql`{ getUser{ display_name  } }`;
+      this.apollo.query({
+        query: graphquery,
+      }).subscribe(({ data }) => {
+        const nickname: any = data
         let rhuser = new RouteHubUser(
-          user.uid,
-          nickname + "",
-          user.displayName,
-          user.photoURL,
-          user.providerData[0].providerId,
+          _user.uid,
+          nickname,
+          _user.displayName,
+          _user.photoURL,
+          _user.providerData[0].providerId,
           token,
         );
-
         this.storage.set('user', JSON.stringify(rhuser));
-        // TODO : 画像が設定されていない場合はデフォ画像を入れたい
-        // TODO : ログインのexpireをstorageに入れるべきでは?
-      } else {
-        this.user = null;
-        this.storage.remove('user');
-      }
-    });
+      });
+    })
   }
 
   isLogin() {

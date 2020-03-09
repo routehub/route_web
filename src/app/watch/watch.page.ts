@@ -7,7 +7,7 @@ import * as L from 'leaflet';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { LayerselectPage } from '../layerselect/layerselect.page';
-import { Platform } from '@ionic/angular';
+import { Platform, LoadingController } from '@ionic/angular';
 import { Routemap } from './routemap';
 import { Storage } from '@ionic/storage';
 import { environment } from '../../environments/environment';
@@ -15,6 +15,9 @@ import { RouteHubUser } from './../model/routehubuser';
 import { RouteModel } from '../model/routemodel';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import gql from 'graphql-tag';
+import { Apollo } from 'apollo-angular';
+
 
 @Component({
   selector: 'app-watch',
@@ -24,6 +27,8 @@ import 'firebase/auth';
 
 export class WatchPage implements OnInit {
   @ViewChild('map', { static: true }) map_elem: ElementRef;
+
+  loading = null
 
   user: RouteHubUser;
   route_data: RouteModel;
@@ -62,7 +67,7 @@ export class WatchPage implements OnInit {
   };
   private line: any;
 
-  favoriteIcon = 'heart-empty';
+  favoriteIcon = 'star-outline';
   isFavorite = false;
 
   private animatedMarker: any;
@@ -84,9 +89,12 @@ export class WatchPage implements OnInit {
     private geolocation: Geolocation,
     public modalCtrl: ModalController,
     public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
     public platform: Platform,
     private storage: Storage,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private apollo: Apollo,
+
   ) {
     this.routemap = new Routemap();
   }
@@ -128,6 +136,7 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.presentLoading();
 
     let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
@@ -138,7 +147,40 @@ export class WatchPage implements OnInit {
     //    this.route_data.id = id;
 
     var that = this;
-    this.get(this.id).then(function (route: any) {
+    const graphquery = gql`query PublicSearch($ids: [String!]!) {
+      publicSearch(search: { ids: $ids}) {
+        id
+        title
+        body
+        author
+        total_dist
+        max_elevation
+        total_elevation
+        created_at
+        start_point
+        goal_point
+        summary
+      }
+      getPublicRoutes(ids: $ids) {
+        id
+        pos
+        level
+        kind
+        note
+      }
+    }`;
+    this.apollo.query({
+
+      query: graphquery,
+      variables: {
+        ids: [this.id]
+      }
+    }).subscribe(({ data }) => {
+      this.dissmissLoading()
+
+      const _route: any = data
+      const route = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0])
+
       that.route_data = new RouteModel();
       that.route_data.setFullData(route);
 
@@ -225,7 +267,7 @@ export class WatchPage implements OnInit {
         return;
       }
       this.isFavorite = true;
-      this.favoriteIcon = 'heart';
+      this.favoriteIcon = 'star-fill';
     });
 
     // UIの調整
@@ -258,7 +300,7 @@ export class WatchPage implements OnInit {
     if (!this.isFavorite) {
       // いいね登録する
       this.isFavorite = true;
-      this.favoriteIcon = 'heart';
+      this.favoriteIcon = 'star-fill';
       // post
       const httpOptions = {
         headers: new HttpHeaders(
@@ -277,7 +319,7 @@ export class WatchPage implements OnInit {
     } else {
       // いいね削除する
       this.isFavorite = false;
-      this.favoriteIcon = 'heart-empty';
+      this.favoriteIcon = 'star-outline';
       // delete
       let url = environment.api.host + environment.api.like_delete_path;
       // DBから削除
@@ -444,6 +486,18 @@ export class WatchPage implements OnInit {
       color: "primary",
     });
     toast.present();
+  }
+
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'loading',
+      duration: 3000
+    });
+    // ローディング画面を表示
+    await this.loading.present();
+  }
+  async dissmissLoading() {
+    await this.loading.onDidDismiss();
   }
 
 }

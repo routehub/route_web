@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IonInfiniteScroll, NavController, PopoverController } from '@ionic/angular';
+import { IonInfiniteScroll, NavController, PopoverController, LoadingController } from '@ionic/angular';
 import { SearchSettingComponent } from '../search-setting/search-setting.component';
 import { Location } from '@angular/common';
 import { environment } from '../../environments/environment';
 import { RouteModel } from '../model/routemodel';
+import gql from 'graphql-tag';
+import { Apollo } from 'apollo-angular';
 
 @Component({
   selector: 'app-list',
@@ -16,6 +18,7 @@ export class ListPage implements OnInit {
 
   private search_url = environment.api.host + environment.api.search_path;
 
+  loading = null
 
   /**
    * 検索用パラメーター
@@ -39,8 +42,10 @@ export class ListPage implements OnInit {
   constructor(
     private http: HttpClient,
     public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
     public popoverController: PopoverController,
     private location: Location,
+    private apollo: Apollo,
   ) {
   }
 
@@ -57,6 +62,8 @@ export class ListPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.presentLoading()
+
     // URLのパラメーター処理
     let param = new URLSearchParams((new URL(window.location.href)).search);
     this.query = param.get('query') || '';
@@ -170,6 +177,14 @@ export class ListPage implements OnInit {
     this.search();
   }
 
+  private q(query) {
+    if (!query) {
+      return '';
+    }
+    return query;
+
+  }
+
   private create_searchquery() {
     return this.search_url
       + '?q=' + this.q(this.query)
@@ -183,36 +198,75 @@ export class ListPage implements OnInit {
       ;
   }
 
-  private q(query) {
-    if (!query) {
-      return '';
-    }
-    return query;
+  search() {
+    const graphquery = gql`query PublicSearch($query: String, $page: Float) {
+      publicSearch(search: { query: $query, page: $page}) {
+        id
+        title
+        body
+        author
+        total_dist
+        max_elevation
+        total_elevation
+        created_at
+        start_point
+        goal_point
+        summary
+      }
+    }`;
+    this.apollo.query({
 
+      query: graphquery,
+      variables: {
+        query: this.query == "" ? null : this.query,
+        /* 
+        sort: this.q(this.sort_type),
+        order: this.q(this.order_type),
+        dist_opt: this.q(this.dist_opt),
+        elev_opt: this.q(this.elev_opt),
+        per_page: this.q(this.per_page),
+        */
+        page: this.page,
+      }
+    }).subscribe(({ data }) => {
+      this.dissmissLoading()
+
+      const res: any = data;
+
+      this.changeURL();
+
+      if (!res.publicSearch) {
+        return;
+      }
+
+      if (res.publicSearch.length === 0) {
+        this.infiniteScroll.disabled = true;
+      }
+
+      for (let i = 0; i < res.publicSearch.length; i++) {
+        let r = new RouteModel();
+        r.setData(res.publicSearch[i]);
+        this.items.push(r);
+
+        this.infiniteScroll.complete();
+      }
+
+      const response: any = res.publicSearch;
+      return response;
+
+    });
   }
 
-  search(): Promise<any[]> {
-    return this.http.get(this.create_searchquery()).toPromise()
-      .then((res: any) => {
-        this.changeURL();
-
-        if (!res.results) {
-          return;
-        }
-
-        if (res.results.length === 0) {
-          this.infiniteScroll.disabled = true;
-        }
-        for (let i = 0; i < res.results.length; i++) {
-          let r = new RouteModel();
-          r.setData(res.results[i]);
-          this.items.push(r);
-
-          this.infiniteScroll.complete();
-        }
-
-        const response: any = res;
-        return response;
-      });
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'loading',
+      duration: 3000
+    });
+    // ローディング画面を表示
+    await this.loading.present();
   }
+  async dissmissLoading() {
+    await this.loading.onDidDismiss();
+  }
+
 }

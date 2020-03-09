@@ -1,4 +1,5 @@
 import { environment } from '../../environments/environment';
+import polyline from "@mapbox/polyline"
 
 export class RouteModel {
     public id: string;
@@ -47,9 +48,8 @@ export class RouteModel {
         this.is_private = r.is_private;
         this.is_private_ja = r.is_private ? '非公開' : '公開';
 
-
-        this.pos = r.pos.split(',').map(p => { return p.split(' ') });
-        this.pos_latlng = r.pos.split(',').map(_p => { let p = _p.split(' '); return [p[1], p[0]]; });
+        this.pos_latlng = polyline.decode(r.pos)
+        this.pos = this.pos_latlng.map(_p => { return [_p[1], _p[0]] });
         this.level = r.level.split(',')
         this.note = r.note;
         this.time = r.time;
@@ -63,7 +63,7 @@ export class RouteModel {
         this.author = r.author || "";
         this.tag = r.tag ? r.tag.split(' ') : [];
         this.display_name = r.display_name || "";
-        this.thumburl = this.getThumbUrl(r.summary);
+        this.thumburl = this.getThumbUrl(polyline.decode(r.summary));
         this.created_at = r.created_at.slice(0, -14).replace(/-/g, '/');
         this.total_dist = r.total_dist;
         this.total_elevation = r.total_elevation;
@@ -89,10 +89,7 @@ export class RouteModel {
         if (!summary) {
             return '';
         }
-        let line = summary.slice(11, -1).split(',').map(pos => {
-            let p = pos.split(' ');
-            return p[1] + ',' + p[0];
-        }).join(',');
+        let line = summary.map(pos => pos.join(',')).join(',');
         return this.staticmap_url + '?appid=' + this.thumbappid
             + '&autoscale=on&scalebar=off&width=600&height=300&l=' + '0,0,255,105,4,' // rgb, a, weight
             + line;
