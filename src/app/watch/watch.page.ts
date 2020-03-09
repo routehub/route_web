@@ -65,7 +65,7 @@ export class WatchPage implements OnInit {
   };
   private line: any;
 
-  favoriteIcon = 'heart-empty';
+  favoriteIcon = 'star-outline';
   isFavorite = false;
 
   private animatedMarker: any;
@@ -261,7 +261,7 @@ export class WatchPage implements OnInit {
         return;
       }
       this.isFavorite = true;
-      this.favoriteIcon = 'heart';
+      this.favoriteIcon = 'star-fill';
     });
 
     // UIの調整
@@ -294,7 +294,7 @@ export class WatchPage implements OnInit {
     if (!this.isFavorite) {
       // いいね登録する
       this.isFavorite = true;
-      this.favoriteIcon = 'heart';
+      this.favoriteIcon = 'star-fill';
       // post
       const httpOptions = {
         headers: new HttpHeaders(
@@ -313,7 +313,7 @@ export class WatchPage implements OnInit {
     } else {
       // いいね削除する
       this.isFavorite = false;
-      this.favoriteIcon = 'heart-empty';
+      this.favoriteIcon = 'star-outline';
       // delete
       let url = environment.api.host + environment.api.like_delete_path;
       // DBから削除
