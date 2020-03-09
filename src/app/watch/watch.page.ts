@@ -7,7 +7,7 @@ import * as L from 'leaflet';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { LayerselectPage } from '../layerselect/layerselect.page';
-import { Platform } from '@ionic/angular';
+import { Platform, LoadingController } from '@ionic/angular';
 import { Routemap } from './routemap';
 import { Storage } from '@ionic/storage';
 import { environment } from '../../environments/environment';
@@ -27,6 +27,8 @@ import { Apollo } from 'apollo-angular';
 
 export class WatchPage implements OnInit {
   @ViewChild('map', { static: true }) map_elem: ElementRef;
+
+  loading = null
 
   user: RouteHubUser;
   route_data: RouteModel;
@@ -87,6 +89,7 @@ export class WatchPage implements OnInit {
     private geolocation: Geolocation,
     public modalCtrl: ModalController,
     public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
     public platform: Platform,
     private storage: Storage,
     public toastController: ToastController,
@@ -133,6 +136,7 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.presentLoading();
 
     let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
@@ -172,6 +176,8 @@ export class WatchPage implements OnInit {
         ids: [this.id]
       }
     }).subscribe(({ data }) => {
+      this.dissmissLoading()
+
       const _route: any = data
       const route = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0])
 
@@ -480,6 +486,18 @@ export class WatchPage implements OnInit {
       color: "primary",
     });
     toast.present();
+  }
+
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'loading',
+      duration: 3000
+    });
+    // ローディング画面を表示
+    await this.loading.present();
+  }
+  async dissmissLoading() {
+    await this.loading.onDidDismiss();
   }
 
 }

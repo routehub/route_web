@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IonInfiniteScroll, NavController, PopoverController } from '@ionic/angular';
+import { IonInfiniteScroll, NavController, PopoverController, LoadingController } from '@ionic/angular';
 import { SearchSettingComponent } from '../search-setting/search-setting.component';
 import { Location } from '@angular/common';
 import { environment } from '../../environments/environment';
@@ -18,6 +18,7 @@ export class ListPage implements OnInit {
 
   private search_url = environment.api.host + environment.api.search_path;
 
+  loading = null
 
   /**
    * 検索用パラメーター
@@ -41,6 +42,7 @@ export class ListPage implements OnInit {
   constructor(
     private http: HttpClient,
     public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
     public popoverController: PopoverController,
     private location: Location,
     private apollo: Apollo,
@@ -60,6 +62,8 @@ export class ListPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.presentLoading()
+
     // URLのパラメーター処理
     let param = new URLSearchParams((new URL(window.location.href)).search);
     this.query = param.get('query') || '';
@@ -225,6 +229,8 @@ export class ListPage implements OnInit {
         page: this.page,
       }
     }).subscribe(({ data }) => {
+      this.dissmissLoading()
+
       const res: any = data;
 
       this.changeURL();
@@ -250,4 +256,17 @@ export class ListPage implements OnInit {
 
     });
   }
+
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'loading',
+      duration: 3000
+    });
+    // ローディング画面を表示
+    await this.loading.present();
+  }
+  async dissmissLoading() {
+    await this.loading.onDidDismiss();
+  }
+
 }
