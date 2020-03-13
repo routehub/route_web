@@ -104,7 +104,6 @@ export class AppComponent implements OnInit {
       )
       this.storage.set('user', JSON.stringify(rhuser))
 
-
       // clientにヘッダーをつける作業&表示名取得
       const token = await _user.getIdToken()
       // apollo client 更新
@@ -112,6 +111,7 @@ export class AppComponent implements OnInit {
       this.apollo.create({
         link: createHttpLink({
           uri: 'https://routehub-api.herokuapp.com/',
+          // uri: 'http://localhost:4000/',
           headers: { token: token },
         }),
         cache: new InMemoryCache()
