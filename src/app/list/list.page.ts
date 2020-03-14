@@ -266,7 +266,7 @@ export class ListPage implements OnInit {
     await this.loading.present();
   }
   async dissmissLoading() {
-    await this.loading.onDidDismiss();
+    await this.loading.dismiss();
   }
 
 }

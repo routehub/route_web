@@ -164,15 +164,15 @@ export class MyPage implements OnInit {
         page: 1,
       }
     }).subscribe(({ data }) => {
-      console.dir(data)
-      const res: any = data
+      const _res: any = data
+      const res: any = _res.privateSearch ? _res.privateSearch : _res.getLikeSesrch
 
-      if (!res.privateSearch) {
+      if (!res) {
         return;
       }
-      for (let i = 0; i < res.privateSearch.length; i++) {
+      for (let i = 0; i < res.length; i++) {
         let r = new RouteModel();
-        r.setData(res.privateSearch[i]);
+        r.setData(res[i]);
         this.items.push(r);
       }
 

@@ -168,9 +168,6 @@ export class WatchPage implements OnInit {
         kind
         note
       }
-      getLikeSesrch(search: { ids: $ids}) {
-        id
-      }
     }`;
     this.apollo.query({
 
@@ -187,12 +184,8 @@ export class WatchPage implements OnInit {
       that.route_data = new RouteModel();
       that.route_data.setFullData(route);
 
-      // お気に入りの反映
-      console.dir(_route)
-      if (_route.getLikeSesrch.length > 0) {
-        this.isFavorite = true
-        this.favoriteIcon = 'star'
-      }
+      // お気に入りの更新
+      this.updateFavorite()
 
       // タイトル変更
       that.title = that.route_data.title;
@@ -268,12 +261,39 @@ export class WatchPage implements OnInit {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'none';
     }
+
+  }
+
+  updateFavorite() {
+    if (!this.route_data.id || !this.user.uid) {
+      return
+    }
+
+    // お気に入りの反映
+    const graphquery = gql`query GetLikeSesrch($ids: [String!]!) {
+    getLikeSesrch(search: { ids: $ids }) {
+      id
+    }
+    }`
+    this.apollo.query({
+      query: graphquery,
+      variables: {
+        ids: [this.route_data.id]
+      }
+    }).subscribe(({ data }) => {
+      const _route: any = data
+      if (_route.getLikeSesrch.length > 0) {
+        this.isFavorite = true
+        this.favoriteIcon = 'star'
+      }
+    })
   }
 
 
   toggleFavorite() {
     if (!this.user) {
       window.alert('ログイン・ユーザー登録をしてください');
+      return
     }
 
     if (!this.isFavorite) {
@@ -287,7 +307,6 @@ export class WatchPage implements OnInit {
         mutation: graphquery,
         variables: { ids: [this.route_data.id] }
       }).subscribe(({ data }) => {
-        console.dir(data)
         this.isFavorite = true;
         this.favoriteIcon = 'star';
       })
@@ -302,7 +321,6 @@ export class WatchPage implements OnInit {
         mutation: graphquery,
         variables: { ids: [this.route_data.id] }
       }).subscribe(({ data }) => {
-        console.dir(data)
         this.isFavorite = true;
         this.favoriteIcon = 'star-outline';
       })
@@ -472,7 +490,7 @@ export class WatchPage implements OnInit {
     await this.loading.present();
   }
   async dissmissLoading() {
-    await this.loading.onDidDismiss();
+    await this.loading.dismiss();
   }
 
 }
