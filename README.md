@@ -27,7 +27,7 @@ Issues にあるいろいろな修正にご協力いただけると嬉しいで�
 ### 構成図
 以下のうち`route_web`, `route_api`のソースコードを公開しています。
 
-<a href="https://docs.google.com/drawings/d/1-j1wY3Atx18dsJyJvMHZBh-WWlkrLOEM1ZdZeNwHAmQ/edit?usp=sharing"><img src="https://docs.google.com/drawings/d/e/2PACX-1vRTYinMNdPkRYAo9ZMHG3BEYChmmlkCbC6XerniVrXw_tdCU2OEdZ849JUznfzyDQ60tq8GwMY4upkG/pub?w=890&amp;h=485" style="width:50%"></a>
+<a href="https://docs.google.com/drawings/d/1-j1wY3Atx18dsJyJvMHZBh-WWlkrLOEM1ZdZeNwHAmQ/edit?usp=sharing"><img src="https://docs.google.com/drawings/d/e/2PACX-1vRTYinMNdPkRYAo9ZMHG3BEYChmmlkCbC6XerniVrXw_tdCU2OEdZ849JUznfzyDQ60tq8GwMY4upkG/pub?w=890&amp;h=485" width="50%"></a>
 
 
 ### 環境構築の手順
@@ -49,7 +49,7 @@ $ ionic serve -l
 
 2020/04より自転車創業社よりサーバのホスティング費用のサポートをしていただいています。 <span style="font-size:230%">🚴‍♀️🚴‍♂️</span>
 
-<a href="https://bike-startup.co.jp/"><img src="https://bike-startup.co.jp/wp-content/themes/bones-bikestartup/library/images/logo.png" alt="自転車創業|Bike Startup & Co" style="width:50%"></a>
+<a href="https://bike-startup.co.jp/"><img src="https://bike-startup.co.jp/wp-content/themes/bones-bikestartup/library/images/logo.png" alt="自転車創業|Bike Startup & Co" width="50%"></a>
 
 <a href="https://jitensha-hoken.jp/blog/
 ">FRAME(フレイム)</a>  /  <a href="https://www.road-quest.bike/">Road Quest</a>
