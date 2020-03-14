@@ -60,9 +60,7 @@ export class ListPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    if (!this.loading) {
-      this.presentLoading()
-    }
+    this.presentLoading()
 
     // URLのパラメーター処理
     let param = new URLSearchParams((new URL(window.location.href)).search);
@@ -245,6 +243,9 @@ export class ListPage implements OnInit {
   }
 
   async presentLoading() {
+    if (this.loading) {
+      return;
+    }
     this.loading = await this.loadingCtrl.create({
       message: 'loading',
       duration: 3000
