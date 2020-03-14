@@ -60,7 +60,9 @@ export class ListPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.presentLoading()
+    if (!this.loading) {
+      this.presentLoading()
+    }
 
     // URLのパラメーター処理
     let param = new URLSearchParams((new URL(window.location.href)).search);
