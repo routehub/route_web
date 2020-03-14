@@ -1,6 +1,6 @@
 import { RouteModel } from './../model/routemodel';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ToastController, Platform, ModalController, NavController } from '@ionic/angular';
+import { ToastController, Platform, ModalController, NavController, LoadingController } from '@ionic/angular';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Routemap } from '../watch/routemap';
 import * as L from 'leaflet';
@@ -13,6 +13,8 @@ import * as Hammer from 'hammerjs';
 import 'firebase/auth';
 import { Storage } from '@ionic/storage';
 import { ActivatedRoute } from '@angular/router';
+import { getRouteQuery } from '../gql/RouteQuery'
+import { Apollo } from 'apollo-angular';
 
 @Component({
   selector: 'app-edit',
@@ -33,7 +35,7 @@ export class EditPage implements OnInit {
 
 
 
-
+  loading = null;
 
   user: RouteHubUser;
   route_id: string = null;
@@ -100,6 +102,8 @@ export class EditPage implements OnInit {
     private storage: Storage,
     public navCtrl: NavController,
     private ngRoute: ActivatedRoute,
+    public loadingCtrl: LoadingController,
+    private apollo: Apollo,
   ) {
     this.routemap = new Routemap();
     this.line = [];
@@ -545,75 +549,78 @@ export class EditPage implements OnInit {
 
   async load() {
     let that = this;
-    let geturl = environment.api.host + '/route';
-    this.http.get(geturl + '?id=' + this.route_id).toPromise()
-      .then((res: any) => {
-        if (!res.results) {
-          alert('ロードに失敗しました');
-          return;
-        }
-        return res.results;
-      }).then((_r: any) => {
-        that.editMarkers = [];
-        that.line = [];
-        that.remove_geojson()
+    this.presentLoading()
 
-        that.total_dist_elem.nativeElement.innerText = 0;
-        that.total_elev_elem.nativeElement.innerText = 0;
-        that.max_elev_elem.nativeElement.innerText = 0;
+    this.apollo.query({
+      query: getRouteQuery(),
+      variables: { ids: [this.route_id] },
+      fetchPolicy: 'no-cache',
+    }).subscribe(({ data }) => {
+      this.dissmissLoading()
 
-        let r = new RouteModel();
-        r.setFullData(_r);
+      const _route: any = data
+      const _r = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0])
 
-        that.title = r.title;
-        that.author = r.display_name;
-        that.isNotPrivate = !r.is_private;
-        that.tags = r.tag;
-        that.body = r.body;
+      that.editMarkers = [];
+      that.line = [];
+      that.remove_geojson()
 
-        // TODO : max_slopeとかやる
-        that.distance = r.total_dist;
-        that.height_gain = r.total_elevation;
-        that.height_max = r.max_elevation;
+      that.total_dist_elem.nativeElement.innerText = 0;
+      that.total_elev_elem.nativeElement.innerText = 0;
+      that.max_elev_elem.nativeElement.innerText = 0;
 
-        that.total_dist_elem.nativeElement.innerText = r.total_dist;
-        that.total_elev_elem.nativeElement.innerText = r.total_elevation;
-        that.max_elev_elem.nativeElement.innerText = r.max_elevation;
+      let r = new RouteModel();
+      r.setFullData(_r);
 
-        let previndex = 0;
-        let prev: MarkerData;
-        r.pos_latlng.map((p, i) => {
-          // マーカーを設定
-          if (r.kind[i] === '1') {
-            let latlng = new L.LatLng(p[0], p[1]);
-            // console.log("marker index[" + i + "]: " + latlng);
-            let marker = new MarkerData(that, latlng);
-            marker.marker.addTo(that.map);
-            that.editMarkers.push(marker);
+      that.title = r.title;
+      that.author = r.display_name;
+      that.isNotPrivate = !r.is_private;
+      that.tags = r.tag;
+      that.body = r.body;
 
-            if (prev) {
-              prev.set_next(marker);
-              prev.route = r.pos.slice(previndex, i);
-              // console.log( "route: " + prev.route );
-              prev.refresh_information();
-            }
-            prev = marker;
-            previndex = i;
+      // TODO : max_slopeとかやる
+      that.distance = r.total_dist;
+      that.height_gain = r.total_elevation;
+      that.height_max = r.max_elevation;
+
+      that.total_dist_elem.nativeElement.innerText = r.total_dist;
+      that.total_elev_elem.nativeElement.innerText = r.total_elevation;
+      that.max_elev_elem.nativeElement.innerText = r.max_elevation;
+
+      let previndex = 0;
+      let prev: MarkerData;
+      r.pos_latlng.map((p, i) => {
+        // マーカーを設定
+        if (r.kind[i] === '1') {
+          let latlng = new L.LatLng(p[0], p[1]);
+          // console.log("marker index[" + i + "]: " + latlng);
+          let marker = new MarkerData(that, latlng);
+          marker.marker.addTo(that.map);
+          that.editMarkers.push(marker);
+
+          if (prev) {
+            prev.set_next(marker);
+            prev.route = r.pos.slice(previndex, i);
+            // console.log( "route: " + prev.route );
+            prev.refresh_information();
           }
-        });
-
-        that.refresh_all_marker_icon();
-
-        that.line = r.pos.map((p, i) => {
-          p.push(r.level[i] * 1);
-          return p;
-        });
-
-        that.refresh_geojson();
-
-        // 描画範囲をよろしくする
-        that.map.fitBounds(that.routemap.posToLatLngBounds(r.pos));
+          prev = marker;
+          previndex = i;
+        }
       });
+
+      that.refresh_all_marker_icon();
+
+      that.line = r.pos.map((p, i) => {
+        p.push(r.level[i] * 1);
+        return p;
+      });
+
+      that.refresh_geojson();
+
+      // 描画範囲をよろしくする
+      that.map.fitBounds(that.routemap.posToLatLngBounds(r.pos));
+    });
   }
 
 
@@ -852,6 +859,18 @@ export class EditPage implements OnInit {
       return '番地なし';
     }
 
+  }
+
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'loading',
+      duration: 3000
+    });
+    // ローディング画面を表示
+    await this.loading.present();
+  }
+  async dissmissLoading() {
+    await this.loading.dismiss();
   }
 
 }

@@ -15,6 +15,7 @@ import { RouteHubUser } from './../model/routehubuser';
 import { RouteModel } from '../model/routemodel';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import { getRouteQuery } from '../gql/RouteQuery'
 import gql from 'graphql-tag';
 import { Apollo } from 'apollo-angular';
 
@@ -147,34 +148,10 @@ export class WatchPage implements OnInit {
     //    this.route_data.id = id;
 
     var that = this;
-    const graphquery = gql`query PublicSearch($ids: [String!]!) {
-      publicSearch(search: { ids: $ids}) {
-        id
-        title
-        body
-        author
-        total_dist
-        max_elevation
-        total_elevation
-        created_at
-        start_point
-        goal_point
-        summary
-      }
-      getPublicRoutes(ids: $ids) {
-        id
-        pos
-        level
-        kind
-        note
-      }
-    }`;
-    this.apollo.query({
 
-      query: graphquery,
-      variables: {
-        ids: [this.id]
-      }
+    this.apollo.query({
+      query: getRouteQuery(),
+      variables: { ids: [this.id] }
     }).subscribe(({ data }) => {
       this.dissmissLoading()
 
@@ -422,18 +399,6 @@ export class WatchPage implements OnInit {
     this.presentToast('現在' + speed[1] + 'で走行中');
     this.animatedMarker.setInterval(speed[0]);
 
-  }
-
-
-  get(id): Promise<any[]> {
-    let geturl = environment.api.host + environment.api.route_path;
-    return this.http.get(geturl + '?id=' + id).toPromise()
-      .then((res: any) => {
-        if (!res.results) {
-          return;
-        }
-        return res.results;
-      });
   }
 
   back() {
