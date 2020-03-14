@@ -455,7 +455,7 @@ export class WatchPage implements OnInit {
     await this.loading.present();
   }
   async dissmissLoading() {
-    if (this.loading.dismiss) {
+    if (this.loading) {
       await this.loading.dismiss();
     }
   }
