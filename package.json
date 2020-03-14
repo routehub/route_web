@@ -5,12 +5,15 @@
   "homepage": "https://routehub.app/",
   "scripts": {
     "ng": "ng",
-    "start": "cp ./node_modules/leaflet.elevation/dist/leaflet.elevation-0.0.4.min.js ./src/assets/ && ng serve",
-    "build": "cp ./node_modules/leaflet.elevation/dist/leaflet.elevation-0.0.4.min.js ./src/assets/ && ng build && cp ./_redirects ./www/ && cp ./embed.html ./www/",
-    "release": "cp ./node_modules/leaflet.elevation/dist/leaflet.elevation-0.0.4.min.js ./src/assets/ && ng build --prod --aot && cp ./_redirects ./www/ && cp ./robots.txt ./www &&cp ./embed.html ./www/",
+    "start": "npm run setup && ng serve",
+    "build": "npm run setup && ng build && npm run setup_after",
+    "stage": "npm run setup && ng build -c stg && npm run setup_after",
+    "release": "npm run setup && ng build --prod && npm run setup_after",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "setup": "cp ./node_modules/leaflet.elevation/dist/leaflet.elevation-0.0.4.min.js ./src/assets/ ",
+    "setup_after": "cp ./_redirects ./www/ && cp ./robots.txt ./www && cp ./embed.html ./www/ "
   },
   "private": true,
   "dependencies": {
