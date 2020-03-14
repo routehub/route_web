@@ -8,13 +8,15 @@ jobs:
   eslint:
     name: eslint
     runs-on: ubuntu-latest
-    timeout-minutes: 3
     steps:
-      - uses: actions/checkout@v1
-      - name: Prepare
-        run: npm ci
-      - name: Lint
-        uses: mooyoul/tslint-actions@v1.1.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: '*.ts'
+    - uses: actions/checkout@v1
+    - name: install node v10
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10
+    - name: npm install
+      run: npm install; npm install eslint
+    - name: eslint
+      uses: icrawl/action-eslint@v1
+      with:
+        custom-glob: src/app
