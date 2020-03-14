@@ -1,7 +1,7 @@
 import { RouteHubUser } from './../model/routehubuser';
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Platform, NavController } from '@ionic/angular';
+import { Platform, NavController, LoadingController } from '@ionic/angular';
 import { Events } from '../Events'
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -17,6 +17,7 @@ import { Apollo } from 'apollo-angular';
   styleUrls: ['./my.page.scss', '../list/list.page.scss'],
 })
 export class MyPage implements OnInit {
+  loading = null
 
   user: RouteHubUser;
   display_name: string;
@@ -26,6 +27,7 @@ export class MyPage implements OnInit {
 
   constructor(
     private navCtrl: NavController,
+    public loadingCtrl: LoadingController,
     private storage: Storage,
     private http: HttpClient,
     public events: Events,
@@ -41,39 +43,40 @@ export class MyPage implements OnInit {
         return;
       }
       that.user = JSON.parse(json);
-      console.dir(this.user)
-      const url = environment.api.host + environment.api.user_path;
-      var ret = this.http.get(url + '?firebase_id_token=' + this.user.token).toPromise().then((res: any) => {
-        if (!res || !res[0] || !res[0].display_name) {
-          return;
-        }
-        that.display_name = res[0].display_name;
-      });
-    });
-
-
+    })
   }
 
+  /**
+   * 公開非公開切り替えのイベントハンドラ
+   * @param item 
+   */
   toggle_private(item) {
     // UI変更
     item.is_private = !item.is_private;
     item.is_private_ja = item.is_private ? "非公開" : "公開";
 
-    const httpOptions = {
-      headers: new HttpHeaders(
-        'Content-Type:application/x-www-form-urlencoded'
-      )
-    };
-    const url = environment.api.host + environment.api.route_change_private_path;
-    let private_param = item.is_private ? "true" : "false";
-    this.http.post(url,
-      'firebase_id_token=' + this.user.token + '&id=' + item.id + '&is_private=' + private_param,
-      httpOptions).toPromise();
+    const graphquery = gql`mutation ChangePrivateStatus($id: String!, $is_private: Boolean!) {
+        changePrivateStatus(id: $id, is_private : $is_private) { 
+          id,
+          is_private
+        } 
+    }`;
+    this.apollo.mutate({
+      mutation: graphquery,
+      variables: {
+        id: item.id,
+        is_private: item.is_private
+      }
+    }).subscribe(({ data }) => { })
+
   }
 
+  /**
+   * ルート削除のイベントハンドラ
+   * @param item
+   */
   delete(item) {
-    let check = window.confirm("もとに戻せません。本当に削除しますか？");
-    if (!check) {
+    if (!window.confirm("もとに戻せません。本当に削除しますか？")) {
       return;
     }
 
@@ -82,24 +85,35 @@ export class MyPage implements OnInit {
         // UIから削除
         this.items.splice(i, 1);
         // DBから削除
-        const httpOptions = {
-          headers: new HttpHeaders(
-            'Content-Type:application/x-www-form-urlencoded'
-          )
-        };
-        const url = environment.api.host + environment.api.route_delete_path;
-        this.http.post(url,
-          'firebase_id_token=' + this.user.token + '&' + 'id=' + item.id,
-          httpOptions).toPromise();
+        this.deleteRoute(item.id)
       }
     }
+  }
+
+  /**
+   * ルートの削除
+   * @param id 
+   */
+  private deleteRoute(id) {
+    const graphquery = gql`mutation deleteRoute($ids: [String!]!) {
+        deleteRoute(ids: $ids) { 
+          id
+        } 
+        }`;
+    this.apollo.mutate({
+      mutation: graphquery,
+      variables: { ids: [id] }
+    }).subscribe(({ data }) => {
+      console.dir(data)
+    })
   }
 
   showMyRoute() {
     this.isMyRoute = true;
     this.items = [];
+    // update順ではなくcreate順
     const graphquery = gql`query PrivateSearch($page: Float) {
-      privateSearch(search: { page: $page}) {
+      privateSearch(search: { page: $page, sort_key: "created_at"}) {
         id
         title
         body
@@ -111,6 +125,7 @@ export class MyPage implements OnInit {
         start_point
         goal_point
         summary
+        is_private
       }
     }`;
     this.getMyLikeRoute(graphquery);
@@ -132,38 +147,66 @@ export class MyPage implements OnInit {
         start_point
         goal_point
         summary
+        is_private
       }
     }`;
     this.getMyLikeRoute(graphquery);
   }
 
   ionViewWillEnter() {
-    this.showMyRoute();
     window.document.title = 'マイページ RouteHub(β)'
+
+    // 表示用ユーザー名を取得
+    const graphquery = gql`{
+      getUser { 
+        display_name
+      } 
+    }`;
+    this.apollo.query({
+      query: graphquery
+    }).subscribe(({ data }) => {
+      const _d: any = data;
+      this.display_name = _d.getUser.display_name
+
+      this.showMyRoute()
+    })
+
   }
   pageSelected(item) {
     this.navCtrl.navigateForward('/watch/' + item.id);
   }
 
+  /**
+   * ユーザー名変更
+   */
   displayNameChanged() {
-    const httpOptions = {
-      headers: new HttpHeaders(
-        'Content-Type:application/x-www-form-urlencoded'
-      )
-    };
-    const url = environment.api.host + environment.api.user_path;
-    this.http.post(url,
-      'firebase_id_token=' + this.user.token + '&' + 'display_name=' + this.display_name,
-      httpOptions).toPromise();
+    const graphquery = gql`mutation SaveUser($display_name: String!) {
+        saveUser(display_name: $display_name) { 
+          display_name
+        } 
+        }`;
+    this.apollo.mutate({
+      mutation: graphquery,
+      variables: { display_name: this.display_name }
+    }).subscribe(({ data }) => { })
   }
 
+  /**
+   * My, お気に入りルート表示
+   * @param graphquery 
+   */
   async getMyLikeRoute(graphquery) {
+    this.presentLoading()
+
     this.apollo.query({
       query: graphquery,
       variables: {
         page: 1,
-      }
+      },
+      fetchPolicy: 'no-cache'
     }).subscribe(({ data }) => {
+      this.dissmissLoading()
+
       const _res: any = data
       const res: any = _res.privateSearch ? _res.privateSearch : _res.getLikeSesrch
 
@@ -196,4 +239,16 @@ export class MyPage implements OnInit {
     this.navCtrl.navigateForward('/login');
   }
 
+
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'loading',
+      duration: 3000
+    });
+    // ローディング画面を表示
+    await this.loading.present();
+  }
+  async dissmissLoading() {
+    await this.loading.dismiss();
+  }
 }

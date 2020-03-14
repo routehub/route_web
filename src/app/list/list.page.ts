@@ -16,8 +16,6 @@ import { Apollo } from 'apollo-angular';
 export class ListPage implements OnInit {
   @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
 
-  private search_url = environment.api.host + environment.api.search_path;
-
   loading = null
 
   /**
@@ -183,19 +181,6 @@ export class ListPage implements OnInit {
     }
     return query;
 
-  }
-
-  private create_searchquery() {
-    return this.search_url
-      + '?q=' + this.q(this.query)
-      + '&mode=' + this.q(this.query_type)
-      + '&sort=' + this.q(this.sort_type)
-      + '&order=' + this.q(this.order_type)
-      + '&dist_opt=' + this.q(this.dist_opt)
-      + '&elev_opt=' + this.q(this.elev_opt)
-      + '&per_page=' + this.q(this.per_page)
-      + '&page=' + this.q(this.page)
-      ;
   }
 
   search() {

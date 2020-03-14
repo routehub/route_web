@@ -545,7 +545,7 @@ export class EditPage implements OnInit {
 
   async load() {
     let that = this;
-    let geturl = environment.api.host + environment.api.route_path;
+    let geturl = environment.api.host + '/route';
     this.http.get(geturl + '?id=' + this.route_id).toPromise()
       .then((res: any) => {
         if (!res.results) {
