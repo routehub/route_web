@@ -26,7 +26,7 @@ Issues にあるいろいろな修正にご協力いただけると嬉しいで�
 
 ### 構成図
 以下のうち`route_web`, `route_api`のソースコードを公開しています。
-<img src="./src/assets/routehub-architect.svg">
+<a href="https://docs.google.com/drawings/d/1-j1wY3Atx18dsJyJvMHZBh-WWlkrLOEM1ZdZeNwHAmQ/edit?usp=sharing"><img src="https://docs.google.com/drawings/d/e/2PACX-1vRTYinMNdPkRYAo9ZMHG3BEYChmmlkCbC6XerniVrXw_tdCU2OEdZ849JUznfzyDQ60tq8GwMY4upkG/pub?w=593&amp;h=323"></a>
 
 ### 環境構築の手順
 必要となるNode.jsのバージョン: 10.x 以上
