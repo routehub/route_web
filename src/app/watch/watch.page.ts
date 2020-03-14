@@ -242,7 +242,7 @@ export class WatchPage implements OnInit {
   }
 
   updateFavorite() {
-    if (!this.route_data.id || !this.user.uid) {
+    if (!this.route_data.id || !this.user || !this.user.uid) {
       return
     }
 
