@@ -8,6 +8,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import { RouteModel } from '../model/routemodel';
+import gql from 'graphql-tag';
+import { Apollo } from 'apollo-angular';
 
 @Component({
   selector: 'app-my',
@@ -28,6 +30,7 @@ export class MyPage implements OnInit {
     private http: HttpClient,
     public events: Events,
     public platform: Platform,
+    private apollo: Apollo,
   ) { }
 
   ngOnInit() {
@@ -38,6 +41,7 @@ export class MyPage implements OnInit {
         return;
       }
       that.user = JSON.parse(json);
+      console.dir(this.user)
       const url = environment.api.host + environment.api.user_path;
       var ret = this.http.get(url + '?firebase_id_token=' + this.user.token).toPromise().then((res: any) => {
         if (!res || !res[0] || !res[0].display_name) {
@@ -94,16 +98,43 @@ export class MyPage implements OnInit {
   showMyRoute() {
     this.isMyRoute = true;
     this.items = [];
-    const url = environment.api.host + environment.api.my_path;
-
-    this.getMyLikeRoute(url);
+    const graphquery = gql`query PrivateSearch($page: Float) {
+      privateSearch(search: { page: $page}) {
+        id
+        title
+        body
+        author
+        total_dist
+        max_elevation
+        total_elevation
+        created_at
+        start_point
+        goal_point
+        summary
+      }
+    }`;
+    this.getMyLikeRoute(graphquery);
   }
 
   showLikeRoute() {
     this.isMyRoute = false;
     this.items = [];
-    const url = environment.api.host + environment.api.like_path;
-    this.getMyLikeRoute(url);
+    const graphquery = gql`query GetLikeSesrch($page: Float) {
+      getLikeSesrch(search: { page: $page}) {
+        id
+        title
+        body
+        author
+        total_dist
+        max_elevation
+        total_elevation
+        created_at
+        start_point
+        goal_point
+        summary
+      }
+    }`;
+    this.getMyLikeRoute(graphquery);
   }
 
   ionViewWillEnter() {
@@ -126,49 +157,28 @@ export class MyPage implements OnInit {
       httpOptions).toPromise();
   }
 
-  async getMyLikeRoute(url) {
-    if (!this.user) {
-      if (firebase.auth().currentUser) {
-        let idtoken = await firebase.auth().currentUser.getIdToken(true);
-        if (!idtoken || idtoken === '') {
-          this.navCtrl.navigateForward('/login');
-        }
-      } else {
-        // 多分0.2msぐらい待てばいいはずだけど、面倒なのでreturn
+  async getMyLikeRoute(graphquery) {
+    this.apollo.query({
+      query: graphquery,
+      variables: {
+        page: 1,
+      }
+    }).subscribe(({ data }) => {
+      const _res: any = data
+      const res: any = _res.privateSearch ? _res.privateSearch : _res.getLikeSesrch
+
+      if (!res) {
         return;
       }
-    }
+      for (let i = 0; i < res.length; i++) {
+        let r = new RouteModel();
+        r.setData(res[i]);
+        this.items.push(r);
+      }
 
-    url += '?firebase_id_token=' + this.user.token
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': ' application/x-www-form-urlencoded',
-      })
-    };
-    httpOptions.headers.set('fireabase_auth_token', this.user.token + ""); // String is not string
-
-    return this.http.get(url, httpOptions).toPromise()
-      .then((res: any) => {
-        if (!res.results) {
-          return;
-        }
-        for (let i = 0; i < res.results.length; i++) {
-          let r = new RouteModel();
-          r.setData(res.results[i]);
-          this.items.push(r);
-        }
-
-        const response: any = res;
-        return response;
-      });
-  }
-
-  private getBodyHead(body) {
-    let limit = 70;
-    if (body.length < limit) {
-      return body;
-    }
-    return body.substr(0, limit) + '...';
+      const response: any = res;
+      return response;
+    })
   }
 
   private getThumbUrl(summary) {

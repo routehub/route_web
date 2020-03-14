@@ -184,6 +184,9 @@ export class WatchPage implements OnInit {
       that.route_data = new RouteModel();
       that.route_data.setFullData(route);
 
+      // お気に入りの更新
+      this.updateFavorite()
+
       // タイトル変更
       that.title = that.route_data.title;
       window.document.title = that.route_data.title + ' RouteHub(β)';
@@ -254,83 +257,73 @@ export class WatchPage implements OnInit {
       that.line = pos;
     });
 
-    /**
-     * いいねの取得
-     */
-    // ログインしているか確認
-    if (!this.user && !this.id) {
-      return;
-    }
-    // ログインしていたらデータを取得    
-    let is_favorite = this.getFavoriteStatus(this.id).then((ret: any) => {
-      if (!ret.results || ret.results.length === 0) {
-        return;
-      }
-      this.isFavorite = true;
-      this.favoriteIcon = 'star-fill';
-    });
-
     // UIの調整
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'none';
     }
+
   }
 
-  async getFavoriteStatus(id): Promise<any[]> {
-    // TODO : ダサい実装よくない. eventとかのほうがまだいい
-    if (!this.user || !this.user.token) {
-      const sleep = (msec) => new Promise(resolve => setTimeout(resolve, msec));
-      await sleep(1200);
-      if (!this.user) {
-        return;
-      }
+  updateFavorite() {
+    if (!this.route_data.id || !this.user.uid) {
+      return
     }
-    let url = environment.api.host + environment.api.like_path + '?id=' + id + '&firebase_id_token=' + this.user.token;
-    return this.http.get(url).toPromise()
-      .then((res: any) => {
-        return res;
-      });
+
+    // お気に入りの反映
+    const graphquery = gql`query GetLikeSesrch($ids: [String!]!) {
+    getLikeSesrch(search: { ids: $ids }) {
+      id
+    }
+    }`
+    this.apollo.query({
+      query: graphquery,
+      variables: {
+        ids: [this.route_data.id]
+      }
+    }).subscribe(({ data }) => {
+      const _route: any = data
+      if (_route.getLikeSesrch.length > 0) {
+        this.isFavorite = true
+        this.favoriteIcon = 'star'
+      }
+    })
   }
+
 
   toggleFavorite() {
     if (!this.user) {
       window.alert('ログイン・ユーザー登録をしてください');
+      return
     }
 
     if (!this.isFavorite) {
       // いいね登録する
-      this.isFavorite = true;
-      this.favoriteIcon = 'star-fill';
-      // post
-      const httpOptions = {
-        headers: new HttpHeaders(
-          'Content-Type:application/x-www-form-urlencoded'
-        )
-      };
-      let url = environment.api.host + environment.api.like_path;
-      this.http.post(url,
-        'id=' + this.route_data.id + '&' + 'firebase_id_token=' + this.user.token,
-        httpOptions).toPromise();
-      /*{
-      id: this.route_data.id,
-      firebase_id_token: firebase_id_token
-    }*/
-
+      const graphquery = gql`mutation LikeRoute($ids: [String!]!) {
+        likeRoute(ids: $ids) { 
+          id
+        } 
+      }`;
+      this.apollo.mutate({
+        mutation: graphquery,
+        variables: { ids: [this.route_data.id] }
+      }).subscribe(({ data }) => {
+        this.isFavorite = true;
+        this.favoriteIcon = 'star';
+      })
     } else {
-      // いいね削除する
-      this.isFavorite = false;
-      this.favoriteIcon = 'star-outline';
-      // delete
-      let url = environment.api.host + environment.api.like_delete_path;
-      // DBから削除
-      const httpOptions = {
-        headers: new HttpHeaders(
-          'Content-Type:application/x-www-form-urlencoded'
-        )
-      };
-      this.http.post(url,
-        'firebase_id_token=' + this.user.token + '&' + 'id=' + this.route_data.id,
-        httpOptions).toPromise();
+      // いいねを削除する
+      const graphquery = gql`mutation UnLikeRoute($ids: [String!]!) {
+        unLikeRoute(ids: $ids) { 
+          id
+        } 
+      }`;
+      this.apollo.mutate({
+        mutation: graphquery,
+        variables: { ids: [this.route_data.id] }
+      }).subscribe(({ data }) => {
+        this.isFavorite = true;
+        this.favoriteIcon = 'star-outline';
+      })
     }
 
   }
@@ -497,7 +490,7 @@ export class WatchPage implements OnInit {
     await this.loading.present();
   }
   async dissmissLoading() {
-    await this.loading.onDidDismiss();
+    await this.loading.dismiss();
   }
 
 }
