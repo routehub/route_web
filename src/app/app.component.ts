@@ -110,8 +110,8 @@ export class AppComponent implements OnInit {
       this.apollo.removeClient()
       this.apollo.create({
         link: createHttpLink({
-          uri: 'https://routehub-api.herokuapp.com/',
-          // uri: 'http://localhost:4000/',
+          // uri: 'https://routehub-api.herokuapp.com/',
+          uri: 'http://localhost:4000/',
           headers: { token: token },
         }),
         cache: new InMemoryCache()

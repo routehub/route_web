@@ -168,6 +168,9 @@ export class WatchPage implements OnInit {
         kind
         note
       }
+      getLikeSesrch(search: { ids: $ids}) {
+        id
+      }
     }`;
     this.apollo.query({
 
@@ -183,6 +186,13 @@ export class WatchPage implements OnInit {
 
       that.route_data = new RouteModel();
       that.route_data.setFullData(route);
+
+      // お気に入りの反映
+      console.dir(_route)
+      if (_route.getLikeSesrch.length > 0) {
+        this.isFavorite = true
+        this.favoriteIcon = 'star'
+      }
 
       // タイトル変更
       that.title = that.route_data.title;
@@ -254,43 +264,12 @@ export class WatchPage implements OnInit {
       that.line = pos;
     });
 
-    /**
-     * いいねの取得
-     */
-    // ログインしているか確認
-    if (!this.user && !this.id) {
-      return;
-    }
-    // ログインしていたらデータを取得    
-    let is_favorite = this.getFavoriteStatus(this.id).then((ret: any) => {
-      if (!ret.results || ret.results.length === 0) {
-        return;
-      }
-      this.isFavorite = true;
-      this.favoriteIcon = 'star-fill';
-    });
-
     // UIの調整
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'none';
     }
   }
 
-  async getFavoriteStatus(id): Promise<any[]> {
-    // TODO : ダサい実装よくない. eventとかのほうがまだいい
-    if (!this.user || !this.user.token) {
-      const sleep = (msec) => new Promise(resolve => setTimeout(resolve, msec));
-      await sleep(1200);
-      if (!this.user) {
-        return;
-      }
-    }
-    let url = environment.api.host + environment.api.like_path + '?id=' + id + '&firebase_id_token=' + this.user.token;
-    return this.http.get(url).toPromise()
-      .then((res: any) => {
-        return res;
-      });
-  }
 
   toggleFavorite() {
     if (!this.user) {
@@ -299,38 +278,34 @@ export class WatchPage implements OnInit {
 
     if (!this.isFavorite) {
       // いいね登録する
-      this.isFavorite = true;
-      this.favoriteIcon = 'star-fill';
-      // post
-      const httpOptions = {
-        headers: new HttpHeaders(
-          'Content-Type:application/x-www-form-urlencoded'
-        )
-      };
-      let url = environment.api.host + environment.api.like_path;
-      this.http.post(url,
-        'id=' + this.route_data.id + '&' + 'firebase_id_token=' + this.user.token,
-        httpOptions).toPromise();
-      /*{
-      id: this.route_data.id,
-      firebase_id_token: firebase_id_token
-    }*/
-
+      const graphquery = gql`mutation LikeRoute($ids: [String!]!) {
+        likeRoute(ids: $ids) { 
+          id
+        } 
+      }`;
+      this.apollo.mutate({
+        mutation: graphquery,
+        variables: { ids: [this.route_data.id] }
+      }).subscribe(({ data }) => {
+        console.dir(data)
+        this.isFavorite = true;
+        this.favoriteIcon = 'star';
+      })
     } else {
-      // いいね削除する
-      this.isFavorite = false;
-      this.favoriteIcon = 'star-outline';
-      // delete
-      let url = environment.api.host + environment.api.like_delete_path;
-      // DBから削除
-      const httpOptions = {
-        headers: new HttpHeaders(
-          'Content-Type:application/x-www-form-urlencoded'
-        )
-      };
-      this.http.post(url,
-        'firebase_id_token=' + this.user.token + '&' + 'id=' + this.route_data.id,
-        httpOptions).toPromise();
+      // いいねを削除する
+      const graphquery = gql`mutation UnLikeRoute($ids: [String!]!) {
+        unLikeRoute(ids: $ids) { 
+          id
+        } 
+      }`;
+      this.apollo.mutate({
+        mutation: graphquery,
+        variables: { ids: [this.route_data.id] }
+      }).subscribe(({ data }) => {
+        console.dir(data)
+        this.isFavorite = true;
+        this.favoriteIcon = 'star-outline';
+      })
     }
 
   }
