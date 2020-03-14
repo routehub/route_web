@@ -47,7 +47,7 @@ $ ionic serve -l
 
 ## ホスティング&開発サポート企業　
 
-2020/04より自転車創業社よりサーバのホスティング費用のサポートをしていただいています。 <span style="font-size:230%">🚴‍♀️🚴‍♂️</span>
+2020/04より自転車創業社よりサーバのホスティングしてるサーバの調達をサポートをしていただいています。 <span style="font-size:230%">🚴‍♀️🚴‍♂️</span>
 
 <a href="https://bike-startup.co.jp/"><img src="https://bike-startup.co.jp/wp-content/themes/bones-bikestartup/library/images/logo.png" alt="自転車創業|Bike Startup & Co" width="50%"></a>
 
