@@ -403,13 +403,13 @@ export class WatchPage implements OnInit {
 
   back() {
     if (window.history.length >= 1) {
-      this.navCtrl.navigateForward('/list');
+      this.navCtrl.navigateForward('/');
     } else {
       this.navCtrl.back();
     }
   }
   moveAuthorList() {
-    this.navCtrl.navigateForward('/list?mode=author&query=' + this.route_data.author);
+    this.navCtrl.navigateForward('/?mode=author&query=' + this.route_data.author);
   }
 
   async presentRouteInfoPage(event) {
