@@ -9,7 +9,7 @@
 ## ルートハブとは
 手軽なルート共有・作成サイトです。
 
-2019年にルートラボのクローズの告知をうけて、手軽にルートを作れて仲間に共有できるサイトをつくりたいと思い開発されました。
+2019年に手軽にルートを作れて仲間に共有できるサイトをつくりたいと思い開発されました。
 
 2020年から、より活発に開発して末永く運営していく目的でソースコードをオープンにして開発コミュニティとともに発展していくことに決めました。
 
@@ -41,3 +41,14 @@ $ ionic serve -l
 # http://localhost:8200/ にモバイル検証サイトが動作する
 
 ```
+
+
+## ホスティング&開発サポート企業　
+
+2020/04より自転車創業社よりサーバのホスティング費用のサポートをしていただいています。 <span style="font-size:230%">🚴‍♀️🚴‍♂️</span>
+
+<a href="https://bike-startup.co.jp/"><img src="https://bike-startup.co.jp/wp-content/themes/bones-bikestartup/library/images/logo.png" alt="自転車創業|Bike Startup & Co"></a>
+
+<a href="https://jitensha-hoken.jp/blog/
+">FRAME(フレイム)</a>  /  <a href="https://www.road-quest.bike/">Road Quest</a>
+
