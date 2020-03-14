@@ -69,8 +69,7 @@ export class AppModule {
   ) {
     apollo.create({
       link: createHttpLink({
-        uri: 'http://localhost:4000/',
-        //  uri: 'https://routehub-api.herokuapp.com/'
+        uri: environment.api.graphql_host,
       }),
       // uri specifies the endpoint for our graphql server
       cache: new InMemoryCache()
