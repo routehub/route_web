@@ -10,7 +10,7 @@ describe('ListPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListPage ],
+      declarations: [ListPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
       .compileComponents();
@@ -31,5 +31,4 @@ describe('ListPage', () => {
     const items = listPage.querySelectorAll('ion-item');
     expect(items.length).toEqual(10);
   });
-
 });

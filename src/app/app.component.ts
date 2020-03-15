@@ -1,45 +1,46 @@
 import { Component, OnInit } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { User } from 'firebase';
-import { NavController } from '@ionic/angular';
+
 import { Storage } from '@ionic/storage';
-import { RouteHubUser } from './model/routehubuser';
-import { environment } from '../environments/environment';
-import { Events } from './Events'
 import gql from 'graphql-tag';
 
 import { Apollo, ApolloModule } from 'apollo-angular';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { Events } from './Events';
+import { environment } from '../environments/environment';
+import { RouteHubUser } from './model/routehubuser';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
 })
 export class AppComponent implements OnInit {
   public appPages = [
     {
       title: '検索',
       icon: 'search',
-      route: () => { this.navCtrl.navigateForward('/') }
+      route: () => { this.navCtrl.navigateForward('/'); },
     },
     {
       title: 'ルートラボ移行',
       icon: 'cloud-upload-outline',
-      route: () => { this.navCtrl.navigateForward(this.isLogin() ? '/migration' : '/login') }
+      route: () => { this.navCtrl.navigateForward(this.isLogin() ? '/migration' : '/login'); },
     },
     {
       title: '作成',
       icon: 'create-outline',
-      route: () => { this.navCtrl.navigateForward('/edit') }
+      route: () => { this.navCtrl.navigateForward('/edit'); },
     },
   ];
 
   public tabslot = 'top';
+
   public user: User;
 
   constructor(
@@ -88,39 +89,39 @@ export class AppComponent implements OnInit {
     // ログイン済みでヘッダをつけてクライアントを作成
     this.auth.authState.subscribe(async (_user) => {
       if (!_user) {
-        this.user = null
-        this.storage.remove('user')
-        return
+        this.user = null;
+        this.storage.remove('user');
+        return;
       }
 
-      this.user = _user
-      let rhuser = new RouteHubUser(
+      this.user = _user;
+      const rhuser = new RouteHubUser(
         _user.uid,
         '',
         _user.displayName,
         _user.photoURL,
         _user.providerData[0].providerId,
         '',
-      )
-      this.storage.set('user', JSON.stringify(rhuser))
+      );
+      this.storage.set('user', JSON.stringify(rhuser));
 
       // clientにヘッダーをつける作業&表示名取得
-      const token = await _user.getIdToken()
+      const token = await _user.getIdToken();
       // apollo client 更新
-      this.apollo.removeClient()
+      this.apollo.removeClient();
       this.apollo.create({
         link: createHttpLink({
           uri: environment.api.graphql_host,
-          headers: { token: token },
+          headers: { token },
         }),
-        cache: new InMemoryCache()
-      })
+        cache: new InMemoryCache(),
+      });
       const graphquery = gql`{ getUser{ display_name  } }`;
       this.apollo.query({
         query: graphquery,
       }).subscribe(({ data }) => {
-        const nickname: any = data
-        let rhuser = new RouteHubUser(
+        const nickname: any = data;
+        const rhuser = new RouteHubUser(
           _user.uid,
           nickname,
           _user.displayName,
@@ -130,7 +131,7 @@ export class AppComponent implements OnInit {
         );
         this.storage.set('user', JSON.stringify(rhuser));
       });
-    })
+    });
   }
 
   isLogin() {

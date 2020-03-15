@@ -17,14 +17,14 @@ import { ListPage } from './list.page';
     IonicModule,
     HttpClientModule,
     LazyLoadImageModule.forRoot({
-      preset: intersectionObserverPreset
+      preset: intersectionObserverPreset,
     }),
     RouterModule.forChild([
       {
         path: '',
-        component: ListPage
-      }
-    ])
+        component: ListPage,
+      },
+    ]),
   ],
   declarations: [
     ListPage,
@@ -32,6 +32,6 @@ import { ListPage } from './list.page';
   ],
   entryComponents: [
     SearchSettingComponent,
-  ]
+  ],
 })
 export class ListPageModule { }

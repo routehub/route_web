@@ -12,8 +12,8 @@ import { MyPage } from './my.page';
 const routes: Routes = [
   {
     path: '',
-    component: MyPage
-  }
+    component: MyPage,
+  },
 ];
 
 @NgModule({
@@ -23,10 +23,10 @@ const routes: Routes = [
     IonicModule,
     HttpClientModule,
     LazyLoadImageModule.forRoot({
-      preset: intersectionObserverPreset
+      preset: intersectionObserverPreset,
     }),
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [MyPage]
+  declarations: [MyPage],
 })
 export class MyPageModule { }

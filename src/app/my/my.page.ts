@@ -1,15 +1,15 @@
-import { RouteHubUser } from './../model/routehubuser';
+import { RouteHubUser } from '../model/routehubuser';
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Platform, NavController, LoadingController } from '@ionic/angular';
-import { Events } from '../Events'
-import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
-import { RouteModel } from '../model/routemodel';
 import gql from 'graphql-tag';
 import { Apollo } from 'apollo-angular';
+import { RouteModel } from '../model/routemodel';
+import { environment } from '../../environments/environment';
+import { Events } from '../Events';
 
 @Component({
   selector: 'app-my',
@@ -20,7 +20,9 @@ export class MyPage implements OnInit {
   loading = null
 
   user: RouteHubUser;
+
   display_name: string;
+
   isMyRoute: Boolean;
 
   items: Array<RouteModel> = [];
@@ -37,23 +39,23 @@ export class MyPage implements OnInit {
 
   ngOnInit() {
     // ログイン
-    let that = this;
+    const that = this;
     this.storage.get('user').then((json) => {
-      if (!json || json == "") {
+      if (!json || json == '') {
         return;
       }
       that.user = JSON.parse(json);
-    })
+    });
   }
 
   /**
    * 公開非公開切り替えのイベントハンドラ
-   * @param item 
+   * @param item
    */
   toggle_private(item) {
     // UI変更
     item.is_private = !item.is_private;
-    item.is_private_ja = item.is_private ? "非公開" : "公開";
+    item.is_private_ja = item.is_private ? '非公開' : '公開';
 
     const graphquery = gql`mutation ChangePrivateStatus($id: String!, $is_private: Boolean!) {
         changePrivateStatus(id: $id, is_private : $is_private) { 
@@ -65,10 +67,9 @@ export class MyPage implements OnInit {
       mutation: graphquery,
       variables: {
         id: item.id,
-        is_private: item.is_private
-      }
-    }).subscribe(({ data }) => { })
-
+        is_private: item.is_private,
+      },
+    }).subscribe(({ data }) => { });
   }
 
   /**
@@ -76,7 +77,7 @@ export class MyPage implements OnInit {
    * @param item
    */
   delete(item) {
-    if (!window.confirm("もとに戻せません。本当に削除しますか？")) {
+    if (!window.confirm('もとに戻せません。本当に削除しますか？')) {
       return;
     }
 
@@ -85,14 +86,14 @@ export class MyPage implements OnInit {
         // UIから削除
         this.items.splice(i, 1);
         // DBから削除
-        this.deleteRoute(item.id)
+        this.deleteRoute(item.id);
       }
     }
   }
 
   /**
    * ルートの削除
-   * @param id 
+   * @param id
    */
   private deleteRoute(id) {
     const graphquery = gql`mutation deleteRoute($ids: [String!]!) {
@@ -102,10 +103,10 @@ export class MyPage implements OnInit {
         }`;
     this.apollo.mutate({
       mutation: graphquery,
-      variables: { ids: [id] }
+      variables: { ids: [id] },
     }).subscribe(({ data }) => {
-      console.dir(data)
-    })
+      console.dir(data);
+    });
   }
 
   showMyRoute() {
@@ -154,7 +155,7 @@ export class MyPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    window.document.title = 'マイページ RouteHub(β)'
+    window.document.title = 'マイページ RouteHub(β)';
 
     // 表示用ユーザー名を取得
     const graphquery = gql`{
@@ -163,17 +164,17 @@ export class MyPage implements OnInit {
       } 
     }`;
     this.apollo.query({
-      query: graphquery
+      query: graphquery,
     }).subscribe(({ data }) => {
       const _d: any = data;
-      this.display_name = _d.getUser.display_name
+      this.display_name = _d.getUser.display_name;
 
-      this.showMyRoute()
-    })
-
+      this.showMyRoute();
+    });
   }
+
   pageSelected(item) {
-    this.navCtrl.navigateForward('/watch/' + item.id);
+    this.navCtrl.navigateForward(`/watch/${item.id}`);
   }
 
   /**
@@ -187,51 +188,51 @@ export class MyPage implements OnInit {
         }`;
     this.apollo.mutate({
       mutation: graphquery,
-      variables: { display_name: this.display_name }
-    }).subscribe(({ data }) => { })
+      variables: { display_name: this.display_name },
+    }).subscribe(({ data }) => { });
   }
 
   /**
    * My, お気に入りルート表示
-   * @param graphquery 
+   * @param graphquery
    */
   async getMyLikeRoute(graphquery) {
-    this.presentLoading()
+    this.presentLoading();
 
     this.apollo.query({
       query: graphquery,
       variables: {
         page: 1,
       },
-      fetchPolicy: 'no-cache'
+      fetchPolicy: 'no-cache',
     }).subscribe(({ data }) => {
-      this.dissmissLoading()
+      this.dissmissLoading();
 
-      const _res: any = data
-      const res: any = _res.privateSearch ? _res.privateSearch : _res.getLikeSesrch
+      const _res: any = data;
+      const res: any = _res.privateSearch ? _res.privateSearch : _res.getLikeSesrch;
 
       if (!res) {
         return;
       }
       for (let i = 0; i < res.length; i++) {
-        let r = new RouteModel();
+        const r = new RouteModel();
         r.setData(res[i]);
         this.items.push(r);
       }
 
       const response: any = res;
       return response;
-    })
+    });
   }
 
   private getThumbUrl(summary) {
-    let line = summary.slice(11, -1).split(',').map(pos => {
-      let p = pos.split(' ');
-      return p[1] + ',' + p[0];
+    const line = summary.slice(11, -1).split(',').map((pos) => {
+      const p = pos.split(' ');
+      return `${p[1]},${p[0]}`;
     }).join(',');
-    return environment.api.staticmap_url + '?appid=' + environment.api.thumbappid
-      + '&autoscale=on&scalebar=off&width=450&height=300&l=' + '0,0,255,105,4,' // rgb, a, weight
-      + line;
+    return `${environment.api.staticmap_url}?appid=${environment.api.thumbappid
+    }&autoscale=on&scalebar=off&width=450&height=300&l=` + `0,0,255,105,4,${ // rgb, a, weight
+      line}`;
   }
 
   logout() {
@@ -243,11 +244,12 @@ export class MyPage implements OnInit {
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({
       message: 'loading',
-      duration: 3000
+      duration: 3000,
     });
     // ローディング画面を表示
     await this.loading.present();
   }
+
   async dissmissLoading() {
     if (this.loading) {
       await this.loading.dismiss();
