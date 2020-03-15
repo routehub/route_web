@@ -22,6 +22,7 @@ import { RouteHubUser } from '../model/routehubuser';
 import { RouteModel } from '../model/routemodel';
 import 'firebase/auth';
 import { getRouteQuery } from '../gql/RouteQuery';
+import * as mapboxgl from 'mapbox-gl';
 
 
 @Component({
@@ -48,6 +49,7 @@ export class WatchPage implements OnInit {
   id: string;
 
   map: any;
+  // map: mapboxgl.Map;
 
   watch_location_subscribe: any;
 
@@ -60,25 +62,15 @@ export class WatchPage implements OnInit {
   elevation: any;
 
   route_geojson = {
-    type: 'FeatureCollection',
-    features: [
-      {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'LineString',
-          coordinates: [],
-        },
+    type: 'geojson',
+    data:
+    {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: [],
       },
-    ],
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round',
-    },
-    paint: {
-      'line-color': '#0000ff',
-      'line-width': 6,
-      'line-opacity': 0.7,
     },
   };
 
@@ -179,6 +171,7 @@ export class WatchPage implements OnInit {
 
       that.route_data = new RouteModel();
       that.route_data.setFullData(route);
+      console.log(that.route_data);
 
       // お気に入りの更新
       this.updateFavorite();
@@ -193,16 +186,64 @@ export class WatchPage implements OnInit {
       for (let i = 0; i < that.route_data.level.length; i++) {
         pos[i].push(that.route_data.level[i] * 1);
       }
-      that.route_geojson.features[0].geometry.coordinates = pos;
-      L.geoJson(that.route_geojson, {
-        color: '#0000ff',
-        width: 6,
-        opacity: 0.7,
-        onEachFeature: that.elevation.addData.bind(that.elevation),
-      }).addTo(that.map);
+      that.route_geojson.data.geometry.coordinates = pos;
+      // レイヤー追加
+      console.log(that.route_geojson);
 
-      const start = L.marker([pos[0][1], pos[0][0]], { icon: that.routemap.startIcon }).addTo(that.map);
-      const goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: that.routemap.goalIcon }).addTo(that.map);
+      const map = that.map as mapboxgl.Map;
+      map.on('load', () => {
+        if (map.getLayer('route') !== undefined) {
+          map.removeSource('route');
+          map.removeLayer('route');
+        }
+        that.map.addSource('route', that.route_geojson);
+        that.map.addLayer({
+          'id': 'route',
+          'type': 'line',
+          'source': 'route',
+          'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          'paint': {
+            'line-color': '#0000ff',
+            'line-width': 6,
+            'line-opacity': 0.7,
+          }
+        });
+
+        const startEl = document.createElement('div');
+        startEl.className = 'marker-start';
+        startEl.style.backgroundImage = `url(${that.routemap.startIcon.iconUrl})`;
+        startEl.style.width = that.routemap.startIcon.iconSize[0] + 'px';
+        startEl.style.height = that.routemap.startIcon.iconSize[1] + 'px';
+        // startEl.style.width = 213 + 'px';
+        // startEl.style.height = 115 + 'px';
+        new mapboxgl.Marker(startEl)
+          .setLngLat([pos[0][0], pos[0][1]])
+          .addTo(that.map);
+
+        const goalEl = document.createElement('div');
+        goalEl.className = 'marker-goal';
+        goalEl.style.backgroundImage = `url(${that.routemap.goalIcon.iconUrl})`;
+        goalEl.style.width = that.routemap.goalIcon.iconSize[0] + 'px';
+        goalEl.style.height = that.routemap.goalIcon.iconSize[1] + 'px';
+        // goalEl.style.width = 213 + 'px';
+        // goalEl.style.height = 115 + 'px';
+        new mapboxgl.Marker(goalEl)
+          .setLngLat([pos[pos.length - 1][0], pos[pos.length - 1][1]])
+          .addTo(that.map);
+
+        // 描画範囲をよろしくする
+        that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
+      });
+
+      // L.geoJson(that.route_geojson, {
+      //   color: '#0000ff',
+      //   width: 6,
+      //   opacity: 0.7,
+      //   onEachFeature: that.elevation.addData.bind(that.elevation),
+      // }).addTo(that.map);
 
       const kind_list = [];
       for (let i = 0; i < route.kind.length; i++) {
@@ -244,8 +285,6 @@ export class WatchPage implements OnInit {
         }
       }
 
-      // 描画範囲をよろしくする
-      that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
 
       // 再生モジュール追加
       that.animatedMarker = that._routemap.addAnimatedMarker(pos);

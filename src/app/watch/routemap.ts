@@ -4,6 +4,8 @@ import * as Hotline from 'leaflet-hotline';
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
 import * as mapboxgl from 'mapbox-gl';
+import * as AnimatedMarker from './animatedMarker.js';
+import { LngLatLike } from 'mapbox-gl';
 
 /** 
  * ルートModel
@@ -53,19 +55,19 @@ export class Routemap {
         popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
     });
 
-    startIcon = new L.icon({
+    startIcon = {
         iconUrl: '/assets/icon/start_icon.png',
         iconSize: [50, 27], // size of the icon
         iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-    });
+    };
 
-    goalIcon = new L.icon({
+    goalIcon = {
         iconUrl: '/assets/icon/goal_icon.png',
         iconSize: [50, 27], // size of the icon
         iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-    });
+    };
 
     commentIcon = new L.icon({
         iconUrl: '/assets/icon/comment_icon.png',
@@ -125,12 +127,16 @@ export class Routemap {
     }
 
     constructor() {
+        Elevation;
+        Hotline;
+        AnimatedMarker;
     }
 
     createMap(mapele) {
         Object.getOwnPropertyDescriptor(mapboxgl, "accessToken").set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2s3c2tzNndwMG12NjNrcDM2dm1xamQ3bSJ9.fHdfoSXDhbyboKWznJ53Cw');
 
         let center: any = [35.681, 139.767];
+        // const map = L.map(mapele, { center, zoom: 9, zoomControl: false });
         const styleId = 'ck7sl13lr2bgw1isx42telruq';
         const rasterUrl = `https://api.mapbox.com/styles/v1/routehub/${styleId}/tiles/{z}/{x}/{y}@2x?access_token=${mapboxgl.accessToken}`;
         const mapMb = new mapboxgl.Map({
@@ -160,7 +166,6 @@ export class Routemap {
             center: [center[1], center[0]], // starting position [lng, lat]
             zoom: 9 // starting zoom
         });
-        const map = L.map(mapele, { center, zoom: 9, zoomControl: false });
 
         const baselayers = {
             OSM: this.getOSMLayer(),
@@ -168,59 +173,59 @@ export class Routemap {
             Yahoo: this.getYahooLayer(),
             GSI: this.getGSILayer(),
         };
-        const overlays = {};
-        L.control.layers(baselayers, overlays).addTo(map);
-        baselayers.OSM.addTo(map);
+        // const overlays = {};
+        // L.control.layers(baselayers, overlays).addTo(map);
+        // baselayers.OSM.addTo(map);
 
         // スケールコントロールを追加（オプションはフィート単位を非表示）
         // TODO画面の設計を考えてじゃまにならないように配置したい
-        L.control.scale({ imperial: false }).addTo(map);
+        // L.control.scale({ imperial: false }).addTo(map);
 
-        // elevation
-        const elevation = L.control.elevation({
-            position: 'bottomright',
-            theme: 'steelblue-theme',
-            // TODO : ウィンドウサイズ変更イベントに対応する
-            width: window.innerWidth - 10,
-            height: 100,
-            margins: {
-                top: 0,
-                right: 5,
-                bottom: 0,
-                left: 0,
-            },
-            yAxisMin: 0,
-            useHeightIndicator: true,
-            isInnerLabel: true,
-            tooltips: true,
-            tooltipsLabel: {
-                dist: '距離',
-                elevation: '標高',
-                slope: '斜度',
-                distDiff: '距離差',
-                elevationDiff: '標高差',
-                slopeAverage: '平均斜度',
-            },
-            addSlope: true,
-        }).addTo(map);
+        // // elevation
+        // const elevation = L.control.elevation({
+        //     position: 'bottomright',
+        //     theme: 'steelblue-theme',
+        //     // TODO : ウィンドウサイズ変更イベントに対応する
+        //     width: window.innerWidth - 10,
+        //     height: 100,
+        //     margins: {
+        //         top: 0,
+        //         right: 5,
+        //         bottom: 0,
+        //         left: 0,
+        //     },
+        //     yAxisMin: 0,
+        //     useHeightIndicator: true,
+        //     isInnerLabel: true,
+        //     tooltips: true,
+        //     tooltipsLabel: {
+        //         dist: '距離',
+        //         elevation: '標高',
+        //         slope: '斜度',
+        //         distDiff: '距離差',
+        //         elevationDiff: '標高差',
+        //         slopeAverage: '平均斜度',
+        //     },
+        //     addSlope: true,
+        // }).addTo(map);
 
         return {
-            map,
-            elevation,
-            addAnimatedMarker: (line) => {
-                const latlnglist = line.map((l) => [l[1], l[0]]);
-                const animatedMarker = L.animatedMarker(latlnglist, { icon: this.gpsIcon });
-                map.addLayer(animatedMarker);
-                return animatedMarker;
-            },
-            addElevationHotlineLayer: (line) => {
-                const max_elev = Math.max(line.map((l) => l[2]));
-                const latlngelevlist = line.map((l) => [l[1], l[0], l[2] / max_elev]);
-                return L.hotline(latlngelevlist, {
-                    outlineWidth: 1,
-                    outlineColor: 'blue',
-                }).addTo(map);
-            },
+            map: mapMb,
+            // elevation,
+            // addAnimatedMarker: (line) => {
+            //     const latlnglist = line.map((l) => [l[1], l[0]]);
+            //     const animatedMarker = L.animatedMarker(latlnglist, { icon: this.gpsIcon });
+            //     map.addLayer(animatedMarker);
+            //     return animatedMarker;
+            // },
+            // addElevationHotlineLayer: (line) => {
+            //     const max_elev = Math.max(line.map((l) => l[2]));
+            //     const latlngelevlist = line.map((l) => [l[1], l[0], l[2] / max_elev]);
+            //     return L.hotline(latlngelevlist, {
+            //         outlineWidth: 1,
+            //         outlineColor: 'blue',
+            //     }).addTo(map);
+            // },
             addSlopeHotlineLayer: (line) => {
                 let prevPoint;
                 let prevElevation;
@@ -253,7 +258,7 @@ export class Routemap {
                     min: -20,
                     max: 20,
                     palette: { 0.0: 'blue', 0.4: '#6aff70', 1.0: 'red' },
-                }).addTo(map);
+                }).addTo(mapMb);
             },
         };
     }
@@ -263,9 +268,12 @@ export class Routemap {
         const bbox = turfbbox(line); // lonlat問題...
         const latplus = Math.abs(bbox[1] - bbox[3]) * 0.1;
         const lonplus = Math.abs(bbox[0] - bbox[2]) * 0.1;
-        return L.latLngBounds([ // いい感じの範囲にするために調整
-            [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
-            [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus],
-        ]);
+        const sw = [bbox[0] * 1 - lonplus, bbox[1] * 1 - latplus] as LngLatLike;
+        const ne = [bbox[2] * 1 + lonplus, bbox[3] * 1 + latplus] as LngLatLike;
+        return new mapboxgl.LngLatBounds(sw, ne);
+        // return L.latLngBounds([ // いい感じの範囲にするために調整
+        //     [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
+        //     [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus],
+        // ]);
     }
 }
