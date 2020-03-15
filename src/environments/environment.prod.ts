@@ -13,7 +13,7 @@ export const environment = {
   hostname: 'routehub.app',
 
   api: {
-    'host': 'https://api.routehub.app/route/1.0.0',
+    'host': 'https://api2.routehub.app/route/1.0.0',
     'search_path': '/search',
     'route_path': '/route',
     'route_delete_path': '/route_delete',
