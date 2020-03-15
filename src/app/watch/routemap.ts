@@ -4,6 +4,7 @@ import * as AnimatedMarker from './animatedMarker.js';
 import * as Hotline from 'leaflet-hotline';
 import turfbbox from '@turf/bbox';
 import * as turf from '@turf/helpers';
+import * as mapboxgl from 'mapbox-gl';
 /***
  * ルートModel
  * いろんなところで使いまわしたい
@@ -115,6 +116,8 @@ export class Routemap {
     }
 
     createMap(mapele) {
+        Object.getOwnPropertyDescriptor(mapboxgl, "accessToken").set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2s3c2tzNndwMG12NjNrcDM2dm1xamQ3bSJ9.fHdfoSXDhbyboKWznJ53Cw');
+
         let center: any = [35.681, 139.767];
         let map = L.map(mapele, { center: center, zoom: 9, zoomControl: false });
 
@@ -159,6 +162,34 @@ export class Routemap {
             },
             addSlope: true,
         }).addTo(map);
+
+        const mapMb = new mapboxgl.Map({
+            container: mapele, // container id
+            style: {
+                'version': 8,
+                'sources': {
+                    'default-tiles': {
+                        'type': 'raster',
+                        'tiles': [
+                            ''
+                        ],
+                        'tileSize': 256,
+                        'attribution': 'ウルトラソウル'
+                    }
+                },
+                'layers': [
+                    {
+                        'id': 'simple-tiles',
+                        'type': 'raster',
+                        'source': 'default-tiles',
+                        'minzoom': 0,
+                        'maxzoom': 22
+                    }
+                ]
+            },
+            center: [center[1], center[0]], // starting position [lng, lat]
+            zoom: 9 // starting zoom
+        });
 
         return {
             map: map,
