@@ -9,7 +9,6 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-
   ngOnInit() {
     this.login();
   }
@@ -27,9 +26,9 @@ export class LoginPage implements OnInit {
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
         firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
       ],
-      signInSuccessUrl: 'https://' + environment.hostname + '/migration'
+      signInSuccessUrl: `https://${environment.hostname}/migration`,
     };
     ui.start('#firebaseui-auth-container', uiCofig);
   }

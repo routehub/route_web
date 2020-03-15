@@ -6,16 +6,15 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 
-import { EditPage } from './edit.page';
-
 import { TagInputModule } from 'ngx-chips';
+import { EditPage } from './edit.page';
 
 
 const routes: Routes = [
   {
     path: '',
-    component: EditPage
-  }
+    component: EditPage,
+  },
 ];
 
 @NgModule({
@@ -26,8 +25,8 @@ const routes: Routes = [
     IonicModule,
     HttpClientModule,
     HttpClientJsonpModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [EditPage]
+  declarations: [EditPage],
 })
 export class EditPageModule { }

@@ -7,19 +7,19 @@ import { ModalController, NavParams } from '@ionic/angular';
   styleUrls: ['./layerselect.page.scss'],
 })
 export class LayerselectPage implements OnInit {
-
   constructor(
     private modalController: ModalController,
-    private navParams: NavParams
+    private navParams: NavParams,
   ) { }
 
   ngOnInit() {
   }
 
   changeLayer(index: number) {
-    var layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
+    const layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
     layerControlElement.getElementsByTagName('input')[index].click();
   }
+
   async closeModal() {
     await this.modalController.dismiss();
   }

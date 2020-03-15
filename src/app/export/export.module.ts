@@ -10,8 +10,8 @@ import { ExportPage } from './export.page';
 const routes: Routes = [
   {
     path: '',
-    component: ExportPage
-  }
+    component: ExportPage,
+  },
 ];
 
 @NgModule({
@@ -19,8 +19,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [ExportPage]
+  declarations: [ExportPage],
 })
 export class ExportPageModule {}
