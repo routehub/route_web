@@ -1,23 +1,27 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import {
+  Component, OnInit, ViewChild, ElementRef, HostListener,
+} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController, NavController, ToastController } from '@ionic/angular';
+import {
+  ModalController, NavController, ToastController, Platform, LoadingController,
+} from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
+import { Storage } from '@ionic/storage';
+import * as firebase from 'firebase/app';
+import gql from 'graphql-tag';
+import { Apollo } from 'apollo-angular';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { LayerselectPage } from '../layerselect/layerselect.page';
-import { Platform, LoadingController } from '@ionic/angular';
+
 import { Routemap } from './routemap';
-import { Storage } from '@ionic/storage';
 import { environment } from '../../environments/environment';
-import { RouteHubUser } from './../model/routehubuser';
+import { RouteHubUser } from '../model/routehubuser';
 import { RouteModel } from '../model/routemodel';
-import * as firebase from 'firebase/app';
 import 'firebase/auth';
-import { getRouteQuery } from '../gql/RouteQuery'
-import gql from 'graphql-tag';
-import { Apollo } from 'apollo-angular';
+import { getRouteQuery } from '../gql/RouteQuery';
 
 
 @Component({
@@ -32,56 +36,71 @@ export class WatchPage implements OnInit {
   loading = null
 
   user: RouteHubUser;
+
   route_data: RouteModel;
-  title = "";
-  author = "";
+
+  title = '';
+
+  author = '';
+
   noteData = [];
 
   id: string;
+
   map: any;
+
   watch_location_subscribe: any;
+
   watch: any;
+
   currenPossitionMarker: any;
+
   isWatchLocation = false;
+
   elevation: any;
+
   route_geojson = {
-    "type": "FeatureCollection",
-    "features": [
+    type: 'FeatureCollection',
+    features: [
       {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "type": "LineString",
-          "coordinates": [],
-        }
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: [],
+        },
       },
     ],
-    "layout": {
-      "line-join": "round",
-      "line-cap": "round"
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
     },
-    "paint": {
-      "line-color": "#0000ff",
-      "line-width": 6,
-      "line-opacity": 0.7,
-    }
+    paint: {
+      'line-color': '#0000ff',
+      'line-width': 6,
+      'line-opacity': 0.7,
+    },
   };
+
   private line: any;
 
   favoriteIcon = 'star-outline';
+
   isFavorite = false;
 
   private animatedMarker: any;
+
   isPlaying: boolean;
 
   private hotlineLayer: any;
+
   private isSlopeMode = false;
 
   private editMarkers: Array<any> = [];
 
 
-
   routemap: Routemap;
+
   _routemap: any;
 
   constructor(
@@ -118,9 +137,9 @@ export class WatchPage implements OnInit {
 
 
     // ログイン
-    let that = this;
+    const that = this;
     this.storage.get('user').then((json) => {
-      if (!json || json == "") {
+      if (!json || json == '') {
         return;
       }
       that.user = JSON.parse(json);
@@ -130,7 +149,7 @@ export class WatchPage implements OnInit {
   @HostListener('window:resize', ['$event'])
   sizeChange(event) {
     if (!this.elevation) {
-      return;
+
     }
     // todo
     // resizeしたあと1秒以上固定だったら標高グラフを削除して再描画
@@ -139,7 +158,7 @@ export class WatchPage implements OnInit {
   ionViewWillEnter() {
     this.presentLoading();
 
-    let routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
+    const routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
 
@@ -147,57 +166,57 @@ export class WatchPage implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     //    this.route_data.id = id;
 
-    var that = this;
+    const that = this;
 
     this.apollo.query({
       query: getRouteQuery(),
-      variables: { ids: [this.id] }
+      variables: { ids: [this.id] },
     }).subscribe(({ data }) => {
-      this.dissmissLoading()
+      this.dissmissLoading();
 
-      const _route: any = data
-      const route = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0])
+      const _route: any = data;
+      const route = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0]);
 
       that.route_data = new RouteModel();
       that.route_data.setFullData(route);
 
       // お気に入りの更新
-      this.updateFavorite()
+      this.updateFavorite();
 
       // タイトル変更
       that.title = that.route_data.title;
-      window.document.title = that.route_data.title + ' RouteHub(β)';
+      window.document.title = `${that.route_data.title} RouteHub(β)`;
       that.author = that.route_data.author;
 
       // 標高グラフ用のデータ作成
-      let pos = that.route_data.pos;
-      for (var i = 0; i < that.route_data.level.length; i++) {
+      const { pos } = that.route_data;
+      for (let i = 0; i < that.route_data.level.length; i++) {
         pos[i].push(that.route_data.level[i] * 1);
       }
       that.route_geojson.features[0].geometry.coordinates = pos;
       L.geoJson(that.route_geojson, {
-        "color": "#0000ff",
-        "width": 6,
-        "opacity": 0.7,
-        onEachFeature: that.elevation.addData.bind(that.elevation)
+        color: '#0000ff',
+        width: 6,
+        opacity: 0.7,
+        onEachFeature: that.elevation.addData.bind(that.elevation),
       }).addTo(that.map);
 
-      let start = L.marker([pos[0][1], pos[0][0]], { icon: that.routemap.startIcon }).addTo(that.map);
-      let goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: that.routemap.goalIcon }).addTo(that.map);
+      const start = L.marker([pos[0][1], pos[0][0]], { icon: that.routemap.startIcon }).addTo(that.map);
+      const goal = L.marker([pos[pos.length - 1][1], pos[pos.length - 1][0]], { icon: that.routemap.goalIcon }).addTo(that.map);
 
-      let kind_list = [];
+      const kind_list = [];
       for (let i = 0; i < route.kind.length; i++) {
         if (i === 0 || i === route.kind.length - 1) {
           // start, goalは除外
           continue;
         }
         if (route.kind[i] === '1') {
-          let j = i / 2;
+          const j = i / 2;
           if (pos[j]) {
             //            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
-            let kind_latlng = [pos[j][1], pos[j][0]];
+            const kind_latlng = [pos[j][1], pos[j][0]];
             that.editMarkers.push(
-              L.marker(kind_latlng, { icon: that.routemap.editIcon })
+              L.marker(kind_latlng, { icon: that.routemap.editIcon }),
             );
             kind_list.push(kind_latlng);
           } else {
@@ -206,21 +225,21 @@ export class WatchPage implements OnInit {
         }
       }
 
-      let note = JSON.parse(route.note);
+      const note = JSON.parse(route.note);
       if (note && note.length > 0) {
         for (let i = 0; i < note.length; i++) {
-          let noted_editablepos = note[i].pos * 1 - 1; // 配列的なアレで1つ減算
+          const noted_editablepos = note[i].pos * 1 - 1; // 配列的なアレで1つ減算
           if (!kind_list[noted_editablepos]) {
             continue;
           }
           that.noteData.push(
             {
               pos: kind_list[noted_editablepos],
-              cmt: note[i].img ? note[i].img.replace("\n", "<br>") : '',
-            }
+              cmt: note[i].img ? note[i].img.replace('\n', '<br>') : '',
+            },
           );
-          let editmarker = L.marker(kind_list[noted_editablepos], { icon: that.routemap.commentIcon }).addTo(that.map);
-          var comment = note[i].img ? note[i].img.replace("\n", "<br>") : ''; // APIのJSONにいれるやりかた間違えてるね          
+          const editmarker = L.marker(kind_list[noted_editablepos], { icon: that.routemap.commentIcon }).addTo(that.map);
+          const comment = note[i].img ? note[i].img.replace('\n', '<br>') : ''; // APIのJSONにいれるやりかた間違えてるね
           editmarker.bindPopup(comment);
         }
       }
@@ -238,12 +257,11 @@ export class WatchPage implements OnInit {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'none';
     }
-
   }
 
   updateFavorite() {
     if (!this.route_data.id || !this.user || !this.user.uid) {
-      return
+      return;
     }
 
     // お気に入りの反映
@@ -251,26 +269,26 @@ export class WatchPage implements OnInit {
     getLikeSesrch(search: { ids: $ids }) {
       id
     }
-    }`
+    }`;
     this.apollo.query({
       query: graphquery,
       variables: {
-        ids: [this.route_data.id]
-      }
+        ids: [this.route_data.id],
+      },
     }).subscribe(({ data }) => {
-      const _route: any = data
+      const _route: any = data;
       if (_route.getLikeSesrch.length > 0) {
-        this.isFavorite = true
-        this.favoriteIcon = 'star'
+        this.isFavorite = true;
+        this.favoriteIcon = 'star';
       }
-    })
+    });
   }
 
 
   toggleFavorite() {
     if (!this.user) {
       window.alert('ログイン・ユーザー登録をしてください');
-      return
+      return;
     }
 
     if (!this.isFavorite) {
@@ -282,11 +300,11 @@ export class WatchPage implements OnInit {
       }`;
       this.apollo.mutate({
         mutation: graphquery,
-        variables: { ids: [this.route_data.id] }
+        variables: { ids: [this.route_data.id] },
       }).subscribe(({ data }) => {
         this.isFavorite = true;
         this.favoriteIcon = 'star';
-      })
+      });
     } else {
       // いいねを削除する
       const graphquery = gql`mutation UnLikeRoute($ids: [String!]!) {
@@ -296,13 +314,12 @@ export class WatchPage implements OnInit {
       }`;
       this.apollo.mutate({
         mutation: graphquery,
-        variables: { ids: [this.route_data.id] }
+        variables: { ids: [this.route_data.id] },
       }).subscribe(({ data }) => {
         this.isFavorite = true;
         this.favoriteIcon = 'star-outline';
-      })
+      });
     }
-
   }
 
   toggleSlopeLayer(event) {
@@ -345,11 +362,11 @@ export class WatchPage implements OnInit {
         if (this.watch_location_subscribe.isStopped === true) {
           return;
         }
-        let latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude);
+        const latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude);
 
         if (!this.currenPossitionMarker) {
           this.currenPossitionMarker = new L.marker(latlng, { icon: this.routemap.gpsIcon }).addTo(this.map);
-          this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true }); //初回のみ移動
+          this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true }); // 初回のみ移動
         } else {
           this.currenPossitionMarker.setLatLng(latlng);
         }
@@ -371,11 +388,12 @@ export class WatchPage implements OnInit {
   edit(event) {
     event.stopPropagation();
     // 状態の管理ができないのでアプリケーションの初期化をする
-    //this.navCtrl.navigateForward('/edit/' + this.id);
-    window.document.location.href = '/edit/' + this.id;
+    // this.navCtrl.navigateForward('/edit/' + this.id);
+    window.document.location.href = `/edit/${this.id}`;
   }
 
   private playSpeedIndex = 0;
+
   fastPlay(event) {
     event.stopPropagation();
     if (!this.isPlaying) {
@@ -384,7 +402,7 @@ export class WatchPage implements OnInit {
       this.isPlaying = true;
       return;
     }
-    let intervalTable = [
+    const intervalTable = [
       [500, '約30km/h'],
       [250, '約80km/h'],
       [100, '約120km/h'],
@@ -395,10 +413,9 @@ export class WatchPage implements OnInit {
     } else {
       this.playSpeedIndex++;
     }
-    let speed = intervalTable[this.playSpeedIndex];
-    this.presentToast('現在' + speed[1] + 'で走行中');
+    const speed = intervalTable[this.playSpeedIndex];
+    this.presentToast(`現在${speed[1]}で走行中`);
     this.animatedMarker.setInterval(speed[0]);
-
   }
 
   back() {
@@ -408,40 +425,43 @@ export class WatchPage implements OnInit {
       this.navCtrl.back();
     }
   }
+
   moveAuthorList() {
-    this.navCtrl.navigateForward('/?mode=author&query=' + this.route_data.author);
+    this.navCtrl.navigateForward(`/?mode=author&query=${this.route_data.author}`);
   }
 
   async presentRouteInfoPage(event) {
     event.stopPropagation();
     const modal = await this.modalCtrl.create({
       component: RouteinfoPage,
-      componentProps: { route: this.route_data }
+      componentProps: { route: this.route_data },
     });
     return await modal.present();
   }
+
   async presentRouteExportPage(event) {
     event.stopPropagation();
     const modal = await this.modalCtrl.create({
       component: ExportPage,
-      componentProps: { route: this.route_data, noteData: this.noteData }
+      componentProps: { route: this.route_data, noteData: this.noteData },
     });
     return await modal.present();
   }
+
   async presentLayerSelect(event) {
     event.stopPropagation();
     const modal = await this.modalCtrl.create({
       component: LayerselectPage,
-      componentProps: { route: this.route_data }
+      componentProps: { route: this.route_data },
     });
     return await modal.present();
   }
 
   async presentToast(message) {
     const toast = await this.toastController.create({
-      message: message,
+      message,
       duration: 2000,
-      color: "primary",
+      color: 'primary',
     });
     toast.present();
   }
@@ -449,15 +469,15 @@ export class WatchPage implements OnInit {
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({
       message: 'loading',
-      duration: 3000
+      duration: 3000,
     });
     // ローディング画面を表示
     await this.loading.present();
   }
+
   async dissmissLoading() {
     if (this.loading) {
       await this.loading.dismiss();
     }
   }
-
 }

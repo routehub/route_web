@@ -25,5 +25,5 @@ export function getRouteQuery() {
         note
       }
     }
-    `
+    `;
 }

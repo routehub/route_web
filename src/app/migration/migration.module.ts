@@ -5,14 +5,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MigrationPage } from './migration.page';
 import { HttpClientModule } from '@angular/common/http';
+import { MigrationPage } from './migration.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: MigrationPage
-  }
+    component: MigrationPage,
+  },
 ];
 
 @NgModule({
@@ -21,8 +21,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     HttpClientModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [MigrationPage]
+  declarations: [MigrationPage],
 })
 export class MigrationPageModule { }

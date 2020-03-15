@@ -10,9 +10,10 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./export.page.scss'],
 })
 export class ExportPage implements OnInit {
-
   route: any;
+
   hostname = environment.hostname;
+
   noteData = [];
 
   constructor(
@@ -27,10 +28,10 @@ export class ExportPage implements OnInit {
   }
 
   async copy() {
-    let pastemaphtml = document.getElementById('pastemaphtml') as HTMLTextAreaElement;
+    const pastemaphtml = document.getElementById('pastemaphtml') as HTMLTextAreaElement;
     pastemaphtml.select();
     document.execCommand('copy');
-    await this.presentToast("クリップボードのコピーしました")
+    await this.presentToast('クリップボードのコピーしました');
   }
 
   async closeModal() {
@@ -39,7 +40,7 @@ export class ExportPage implements OnInit {
 
   exportGpx() {
     const { Metadata, Person, Point } = GarminBuilder.MODELS;
-    const route = this.route;
+    const { route } = this;
 
     const meta = new Metadata({
       name: route.title,
@@ -47,28 +48,29 @@ export class ExportPage implements OnInit {
         name: route.author,
       }),
       //      link
-    })
+    });
 
-    var points = [];
+    const points = [];
     for (let i = 0; i < route.pos.length; i++) {
-      let pos = route.pos[i];
+      const pos = route.pos[i];
       points.push(
         new Point(pos[1], pos[0], {
           ele: pos[2],
           // なにか追加したいデータあればする。
           // time: new Date('2018-06-10T17:29:35Z'),
           // hr: 120,
-        }));
+        }),
+      );
     }
     const gpxData = new GarminBuilder();
     gpxData.setMetadata(meta);
     gpxData.setSegmentPoints(points);
 
-    let wpts = [];
+    const wpts = [];
     for (let j = 0; j < this.noteData.length; j++) {
-      let n = this.noteData[j];
+      const n = this.noteData[j];
       wpts.push(
-        new Point(n.pos[0], n.pos[1], { name: n.cmd, cmt: n.cmt })
+        new Point(n.pos[0], n.pos[1], { name: n.cmd, cmt: n.cmt }),
       );
     }
     if (wpts.length > 0) {
@@ -76,11 +78,11 @@ export class ExportPage implements OnInit {
     }
     const gpxString = buildGPX(gpxData.toObject());
 
-    var blob = new Blob([gpxString], { "type": "application/gpx+xml" });
-    let link = document.createElement('a');
+    const blob = new Blob([gpxString], { type: 'application/gpx+xml' });
+    const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = route.title + '.gpx';
-    link.click()
+    link.download = `${route.title}.gpx`;
+    link.click();
   }
 
 
@@ -111,27 +113,27 @@ export class ExportPage implements OnInit {
 </kml>`;
 
   exportKml() {
-    const route = this.route;
-    var kmlString = ejs.render(this.kmlTemplate, {
+    const { route } = this;
+    const kmlString = ejs.render(this.kmlTemplate, {
       title: route.title,
       author: route.author,
       link: '',
       body: route.body,
-      coordinates: route.pos.map(p => { return p.join(','); }).join("\n"),
+      coordinates: route.pos.map((p) => p.join(',')).join('\n'),
     });
 
-    var blob = new Blob([kmlString], { "type": "application/vnd.google-earth.kml+xml" });
-    let link = document.createElement('a');
+    const blob = new Blob([kmlString], { type: 'application/vnd.google-earth.kml+xml' });
+    const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = route.title + '.kml';
-    link.click()
+    link.download = `${route.title}.kml`;
+    link.click();
   }
 
   async presentToast(message) {
     const toast = await this.toastController.create({
-      message: message,
+      message,
       duration: 2000,
-      color: "primary",
+      color: 'primary',
     });
     toast.present();
   }
