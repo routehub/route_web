@@ -163,6 +163,8 @@ export class Routemap {
             addSlope: true,
         }).addTo(map);
 
+        const styleId = 'ck7sl13lr2bgw1isx42telruq';
+        const rasterUrl = `https://api.mapbox.com/styles/v1/routehub/${styleId}/tiles/{z}/{x}/{y}@2x?access_token=${mapboxgl.accessToken}`;
         const mapMb = new mapboxgl.Map({
             container: mapele, // container id
             style: {
@@ -171,7 +173,7 @@ export class Routemap {
                     'default-tiles': {
                         'type': 'raster',
                         'tiles': [
-                            ''
+                            rasterUrl
                         ],
                         'tileSize': 256,
                         'attribution': 'ウルトラソウル'
@@ -192,7 +194,7 @@ export class Routemap {
         });
 
         return {
-            map: map,
+            map: mapMb,
             elevation: elevation,
             addAnimatedMarker: (line) => {
                 let latlnglist = line.map(l => { return [l[1], l[0]]; });
