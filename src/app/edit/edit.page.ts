@@ -176,7 +176,7 @@ export class EditPage implements OnInit {
       const routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
       this.map = routemap.map;
       L.control.zoom({ position: 'topleft' }).addTo(this.map);
-      this.elevation = routemap.elevation;
+      //this.elevation = routemap.elevation;
     }
 
     // デバッグ時にテンションを上げるためY!地図にする

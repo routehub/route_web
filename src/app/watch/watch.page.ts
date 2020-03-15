@@ -23,6 +23,7 @@ import { RouteModel } from '../model/routemodel';
 import 'firebase/auth';
 import { getRouteQuery } from '../gql/RouteQuery';
 import * as mapboxgl from 'mapbox-gl';
+import Chart from 'chart.js';
 
 
 @Component({
@@ -33,6 +34,7 @@ import * as mapboxgl from 'mapbox-gl';
 
 export class WatchPage implements OnInit {
   @ViewChild('map', { static: true }) map_elem: ElementRef;
+  @ViewChild('elevation', { static: true }) elev_elem: ElementRef;
 
   loading = null;
 
@@ -153,7 +155,7 @@ export class WatchPage implements OnInit {
 
     const routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
-    this.elevation = routemap.elevation;
+    //this.elevation = routemap.elevation;
 
 
     this.id = this.route.snapshot.paramMap.get('id');
@@ -302,6 +304,21 @@ export class WatchPage implements OnInit {
         that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
 
         // 標高グラフ表示
+        console.dir(that.route_data.level)
+        var myChart = new Chart(this.elev_elem.nativeElement, {
+          type: 'line',
+          data: {
+            labels: that.route_data.level,
+            datasets: [{
+              data: that.route_data.level,
+              backgroundColor: "pink",
+              strokeColor: "black",
+              borderDash: [8, 2],
+              pointRadius: 0,
+            }]
+          },
+        })
+
 
       });
       // L.geoJson(that.route_geojson, {
@@ -353,7 +370,7 @@ export class WatchPage implements OnInit {
 
 
       // 再生モジュール追加
-      that.animatedMarker = that._routemap.addAnimatedMarker(pos);
+      //that.animatedMarker = that._routemap.addAnimatedMarker(pos);
 
       that.line = pos;
     });
