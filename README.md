@@ -54,3 +54,11 @@ $ ionic serve -l
 <a href="https://jitensha-hoken.jp/blog/
 ">FRAME(フレイム)</a>  /  <a href="https://www.road-quest.bike/">Road Quest</a>
 
+
+
+
+
+
+----
+
+[利用規約](https://ctyo.github.io/route_web//terms.html) | [プライバシーポリシー](https://ctyo.github.io/route_web/privacypolicy.html) 
