@@ -63,6 +63,7 @@ export class WatchPage implements OnInit {
 
   route_geojson = {
     type: 'geojson',
+    lineMetrics: true,
     data:
     {
       type: 'Feature',
@@ -191,6 +192,58 @@ export class WatchPage implements OnInit {
       console.log(that.route_geojson);
 
       const map = that.map as mapboxgl.Map;
+
+
+      const getColor = (x) => {
+        return x < 20 ? 'blue' :
+          x < 40 ? 'royalblue' :
+            x < 60 ? 'cyan' :
+              x < 80 ? 'lime' :
+                x < 100 ? 'red' :
+                  'blue';
+      };
+
+      const func = (coordinates: Array<Array<number>>) => {
+        const length = coordinates.length;
+        const color = [];
+        coordinates.forEach((c, i) => {
+          const v = i / length;
+          color.push(v);
+          color.push(getColor(c[2]));
+        });
+
+        console.log(color);
+
+        return [
+          'interpolate',
+          ['linear'],
+          ['line-progress'],
+          ...color
+        ];
+      };
+
+
+
+      // const deduped = that.route_geojson.data.geometry.coordinates.map(p => {
+      //   console.log(p);
+      //   // return getColor(p[2]);
+      //   return 0.3;
+      // });
+
+
+      // const func = () => {
+      //   return gradient;
+      // };
+
+
+      // const gradient = Array.prototype.concat.apply([
+      //   'interpolate',
+      //   ['linear'],
+      //   ['line-progress'],
+      // ], deduped);
+
+
+
       map.on('load', () => {
         if (map.getLayer('route') !== undefined) {
           map.removeSource('route');
@@ -209,6 +262,18 @@ export class WatchPage implements OnInit {
             'line-color': '#0000ff',
             'line-width': 6,
             'line-opacity': 0.7,
+            'line-gradient': func(that.route_geojson.data.geometry.coordinates)
+            // 'line-gradient': [
+            //   'interpolate',
+            //   ['linear'],
+            //   ['line-progress'],
+            //   0, "blue",
+            //   0.1, "royalblue",
+            //   0.3, "cyan",
+            //   0.5, "lime",
+            //   0.7, "yellow",
+            //   1, "red"
+            // ]
           }
         });
 
@@ -235,6 +300,9 @@ export class WatchPage implements OnInit {
 
         // 描画範囲をよろしくする
         that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
+
+        // 標高グラフ表示
+
       });
       // L.geoJson(that.route_geojson, {
       //   color: '#0000ff',
