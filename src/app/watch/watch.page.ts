@@ -34,7 +34,7 @@ import * as mapboxgl from 'mapbox-gl';
 export class WatchPage implements OnInit {
   @ViewChild('map', { static: true }) map_elem: ElementRef;
 
-  loading = null
+  loading = null;
 
   user: RouteHubUser;
 
@@ -131,7 +131,7 @@ export class WatchPage implements OnInit {
     // ログイン
     const that = this;
     this.storage.get('user').then((json) => {
-      if (!json || json == '') {
+      if (!json || json === '') {
         return;
       }
       that.user = JSON.parse(json);
@@ -215,29 +215,27 @@ export class WatchPage implements OnInit {
         const startEl = document.createElement('div');
         startEl.className = 'marker-start';
         startEl.style.backgroundImage = `url(${that.routemap.startIcon.iconUrl})`;
+        startEl.style.backgroundSize = 'cover';
         startEl.style.width = that.routemap.startIcon.iconSize[0] + 'px';
         startEl.style.height = that.routemap.startIcon.iconSize[1] + 'px';
-        // startEl.style.width = 213 + 'px';
-        // startEl.style.height = 115 + 'px';
-        new mapboxgl.Marker(startEl)
+        new mapboxgl.Marker(startEl, { anchor: 'bottom-right' })
           .setLngLat([pos[0][0], pos[0][1]])
+          // .setOffset([-that.routemap.startIcon.iconAnchor[0], -that.routemap.startIcon.iconAnchor[1]])
           .addTo(that.map);
 
         const goalEl = document.createElement('div');
         goalEl.className = 'marker-goal';
         goalEl.style.backgroundImage = `url(${that.routemap.goalIcon.iconUrl})`;
+        goalEl.style.backgroundSize = 'cover';
         goalEl.style.width = that.routemap.goalIcon.iconSize[0] + 'px';
         goalEl.style.height = that.routemap.goalIcon.iconSize[1] + 'px';
-        // goalEl.style.width = 213 + 'px';
-        // goalEl.style.height = 115 + 'px';
-        new mapboxgl.Marker(goalEl)
+        new mapboxgl.Marker(goalEl, { anchor: 'bottom-left' })
           .setLngLat([pos[pos.length - 1][0], pos[pos.length - 1][1]])
           .addTo(that.map);
 
         // 描画範囲をよろしくする
         that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
       });
-
       // L.geoJson(that.route_geojson, {
       //   color: '#0000ff',
       //   width: 6,
