@@ -13,9 +13,6 @@ const routes: Routes = [
   { path: 'layerselect', loadChildren: () => import('./layerselect/layerselect.module').then(m => m.LayerselectPageModule) },
   { path: 'edit', loadChildren: () => import('./edit/edit.module').then(m => m.EditPageModule) },
   { path: 'edit/:id', loadChildren: () => import('./edit/edit.module').then(m => m.EditPageModule) },
-  { path: 'terms', loadChildren: () => import('./terms/terms.module').then(m => m.TermsPageModule) },
-  { path: 'privacypolicy', loadChildren: () => import('./privacypolicy/privacypolicy.module').then(m => m.PrivacypolicyPageModule) },
-
 ];
 
 @NgModule({
