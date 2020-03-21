@@ -24,7 +24,7 @@ import 'firebase/auth';
 import { getRouteQuery } from '../gql/RouteQuery';
 import * as mapboxgl from 'mapbox-gl';
 import Chart from 'chart.js';
-
+import chartjs_utils_elevation from 'chartjs-util-elevation'
 
 @Component({
   selector: 'app-watch',
@@ -304,21 +304,9 @@ export class WatchPage implements OnInit {
         that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
 
         // 標高グラフ表示
-        console.dir(that.route_data.level)
-        var myChart = new Chart(this.elev_elem.nativeElement, {
-          type: 'line',
-          data: {
-            labels: that.route_data.level,
-            datasets: [{
-              data: that.route_data.level,
-              backgroundColor: "pink",
-              strokeColor: "black",
-              borderDash: [8, 2],
-              pointRadius: 0,
-            }]
-          },
-        })
-
+        console.dir(that.route_data)
+        let elevation = chartjs_utils_elevation(this.elev_elem.nativeElement, that.route_data.pos, {})
+        console.dir(elevation)
 
       });
       // L.geoJson(that.route_geojson, {
