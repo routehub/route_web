@@ -1,30 +1,28 @@
+/* eslint-disable no-unused-vars */
 import {
-  Component, OnInit, ViewChild, ElementRef, HostListener,
+  Component, OnInit, ViewChild, ElementRef,
 } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+// import { ActivatedRoute } from '@angular/router';
 import {
   ModalController, NavController, ToastController, Platform, LoadingController,
 } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 import { Storage } from '@ionic/storage';
-import * as firebase from 'firebase/app';
 import gql from 'graphql-tag';
 import { Apollo } from 'apollo-angular';
 import { RouteinfoPage } from '../routeinfo/routeinfo.page';
 import { ExportPage } from '../export/export.page';
 import { LayerselectPage } from '../layerselect/layerselect.page';
 
-import { Routemap } from './routemap';
-import { environment } from '../../environments/environment';
+import Routemap from './routemap';
 import { RouteHubUser } from '../model/routehubuser';
 import { RouteModel } from '../model/routemodel';
 import 'firebase/auth';
 import { getRouteQuery } from '../gql/RouteQuery';
 import * as mapboxgl from 'mapbox-gl';
-import Chart from 'chart.js';
-import chartjs_utils_elevation from 'chartjs-util-elevation'
+import chartjs_utils_elevation from 'chartjs-util-elevation';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-watch',
@@ -33,6 +31,20 @@ import chartjs_utils_elevation from 'chartjs-util-elevation'
 })
 
 export class WatchPage implements OnInit {
+
+  constructor(
+    private route: ActivatedRoute,
+    private geolocation: Geolocation,
+    public modalCtrl: ModalController,
+    public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
+    public platform: Platform,
+    private storage: Storage,
+    public toastController: ToastController,
+    private apollo: Apollo,
+  ) {
+    this.routemap = new Routemap();
+  }
   @ViewChild('map', { static: true }) map_elem: ElementRef;
   @ViewChild('elevation', { static: true }) elev_elem: ElementRef;
 
@@ -98,21 +110,7 @@ export class WatchPage implements OnInit {
 
   _routemap: any;
 
-  constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute,
-    private geolocation: Geolocation,
-    public modalCtrl: ModalController,
-    public navCtrl: NavController,
-    public loadingCtrl: LoadingController,
-    public platform: Platform,
-    private storage: Storage,
-    public toastController: ToastController,
-    private apollo: Apollo,
-
-  ) {
-    this.routemap = new Routemap();
-  }
+  private playSpeedIndex = 0;
 
   ionViewWillLeave() {
     if (this.platform.is('mobile')) {
@@ -141,14 +139,14 @@ export class WatchPage implements OnInit {
     });
   }
 
-  @HostListener('window:resize', ['$event'])
-  sizeChange(event) {
-    if (!this.elevation) {
+  // @HostListener('window:resize', ['$event'])
+  // sizeChange(event) {
+  //   if (!this.elevation) {
 
-    }
-    // todo
-    // resizeしたあと1秒以上固定だったら標高グラフを削除して再描画
-  }
+  //   }
+  //   // todo
+  //   // resizeしたあと1秒以上固定だったら標高グラフを削除して再描画
+  // }
 
   ionViewWillEnter() {
     this.presentLoading();
@@ -304,9 +302,9 @@ export class WatchPage implements OnInit {
         that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
 
         // 標高グラフ表示
-        console.dir(that.route_data)
-        let elevation = chartjs_utils_elevation(this.elev_elem.nativeElement, that.route_data.pos, {})
-        console.dir(elevation)
+        console.dir(that.route_data);
+        let elevation = chartjs_utils_elevation(this.elev_elem.nativeElement, that.route_data.pos, {});
+        console.dir(elevation);
 
       });
       // L.geoJson(that.route_geojson, {
@@ -411,7 +409,7 @@ export class WatchPage implements OnInit {
       this.apollo.mutate({
         mutation: graphquery,
         variables: { ids: [this.route_data.id] },
-      }).subscribe(({ data }) => {
+      }).subscribe(() => {
         this.isFavorite = true;
         this.favoriteIcon = 'star';
       });
@@ -425,7 +423,7 @@ export class WatchPage implements OnInit {
       this.apollo.mutate({
         mutation: graphquery,
         variables: { ids: [this.route_data.id] },
-      }).subscribe(({ data }) => {
+      }).subscribe(() => {
         this.isFavorite = true;
         this.favoriteIcon = 'star-outline';
       });
@@ -467,7 +465,7 @@ export class WatchPage implements OnInit {
     // 有効化
     this.presentToast('GPS on');
     this.isWatchLocation = true;
-    this.watch_location_subscribe = this.watch.subscribe((pos) => {
+    this.watch_location_subscribe = this.watch.subscribe(() => {
       this.watch.subscribe((pos) => {
         if (this.watch_location_subscribe.isStopped === true) {
           return;
@@ -501,8 +499,6 @@ export class WatchPage implements OnInit {
     // this.navCtrl.navigateForward('/edit/' + this.id);
     window.document.location.href = `/edit/${this.id}`;
   }
-
-  private playSpeedIndex = 0;
 
   fastPlay(event) {
     event.stopPropagation();

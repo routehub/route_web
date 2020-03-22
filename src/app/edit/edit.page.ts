@@ -18,7 +18,7 @@ import { getRouteQuery } from '../gql/RouteQuery';
 import { RouteHubUser } from '../model/routehubuser';
 import { LayerselectPage } from '../layerselect/layerselect.page';
 import { environment } from '../../environments/environment';
-import { Routemap } from '../watch/routemap';
+import Routemap from '../watch/routemap';
 
 @Component({
   selector: 'app-edit',
