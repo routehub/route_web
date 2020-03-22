@@ -210,8 +210,9 @@ export class ListPage implements OnInit {
 
       query: graphquery,
       variables: {
-        query: (this.query != '' && !this.authorSelected) ? this.query : null,
-        author: (this.query != '' && this.authorSelected)  ? this.query : null,
+        query: (this.query != '' && this.query_type === 'keyword') ? this.query : null,
+        author: (this.query != '' && this.query_type === 'author')  ? this.query : null,
+        tag: (this.query != '' && this.query_type === 'tag') ? this.query : null,
 
 
       
