@@ -16,10 +16,10 @@
 データの保管、リリースはルートハブが行いますが、開発やバグレポートにはどなたでも参加することができます。
 
 
-## 貢献の仕方
+## 開発への参加の仕方
 Issues にあるいろいろな修正にご協力いただけると嬉しいです。
 
-詳しくは[貢献の仕方](./CONTRIBUTING.md)を御覧ください。
+詳しくは[開発への参加の仕方](./CONTRIBUTING.md)を御覧ください。
 
 
 ## 開発者向け情報
@@ -61,4 +61,4 @@ $ ionic serve -l
 
 ----
 
-[利用規約](https://ctyo.github.io/route_web//terms.html) | [プライバシーポリシー](https://ctyo.github.io/route_web/privacypolicy.html) 
+[利用規約](https://ctyo.github.io/route_web/terms.html) | [プライバシーポリシー](https://ctyo.github.io/route_web/privacypolicy.html) 
