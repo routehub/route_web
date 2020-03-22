@@ -191,8 +191,8 @@ export class ListPage implements OnInit {
   }
 
   search() {
-    const graphquery = gql`query PublicSearch($query: String, $author: String, $tag: String, $page: Float) {
-      publicSearch(search: { query: $query, author: $author, tag: $tag, page: $page}) {
+    const graphquery = gql`query PublicSearch($query: String, $author: String, $tag: String, $dist_from:Float, $dist_to: Float, $page: Float) {
+      publicSearch(search: { query: $query, author: $author, tag: $tag, dist_from: $dist_from, dist_to: $dist_to, page: $page}) {
         id
         title
         body
@@ -213,13 +213,14 @@ export class ListPage implements OnInit {
         query: (this.query != '' && this.query_type === 'keyword') ? this.query : null,
         author: (this.query != '' && this.query_type === 'author')  ? this.query : null,
         tag: (this.query != '' && this.query_type === 'tag') ? this.query : null,
-
-
       
+        dist_from: this.dist_opt.match(/\d+:\d+/) ? parseFloat(this.dist_opt.split(':')[0]) : null,
+        dist_to: this.dist_opt.match(/\d+:\d+/) ? parseFloat(this.dist_opt.split(':')[1]) : null,
+
+
         /*
         sort: this.q(this.sort_type),
         order: this.q(this.order_type),
-        dist_opt: this.q(this.dist_opt),
         elev_opt: this.q(this.elev_opt),
         per_page: this.q(this.per_page),
         */
