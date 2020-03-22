@@ -189,12 +189,15 @@ export default class Routemap {
       .addTo(map);
 
     const goalEl = document.createElement('div');
+    goalEl.id = 'goal';
     goalEl.className = 'marker-goal';
     goalEl.style.backgroundImage = `url(${this.goalIcon.iconUrl})`;
     goalEl.style.backgroundSize = 'cover';
     goalEl.style.width = this.goalIcon.iconSize[0] + 'px';
     goalEl.style.height = this.goalIcon.iconSize[1] + 'px';
-    new mapboxgl.Marker(goalEl, { anchor: 'bottom-left' })
+    // goalEl.style.height = this.goalIcon.iconSize[1] + 'px';
+    // goalEl.style.height = this.goalIcon.iconSize[1] + 'px';
+    new mapboxgl.Marker(goalEl, { anchor: 'bottom-left', offset: [0, -27] }) //TODO: offsetなしにしたい
       .setLngLat([coordinates[coordinates.length - 1][0], coordinates[coordinates.length - 1][1]])
       .addTo(map);
 

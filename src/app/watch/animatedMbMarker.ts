@@ -7,6 +7,7 @@ export interface Options {
 export default class MapboxAnimatedMarker {
   private tid: number | null = null;
   private currentMarker: mapboxgl.Marker | null = null;
+  private i = 0;
 
   constructor(private map: mapboxgl.Map, private linePoints: mapboxgl.LngLat[], private options?: Options) {
   }
@@ -23,17 +24,19 @@ export default class MapboxAnimatedMarker {
     }
   }
 
+  public reset() {
+    stop();
+    this.i = 0;
+  }
+
   private animate() {
     // setup the viewport
     this.map.jumpTo({ 'center': this.linePoints[0], 'zoom': 14 });
 
-    // on a regular basis, add more coordinates from the saved list and update the map
-    let i = 0;
-
     this.tid = window.setInterval(() => {
-      if (i < this.linePoints.length) {
-        console.log(this.linePoints[i]);
-        const point = this.linePoints[i];
+      if (this.i < this.linePoints.length) {
+        console.log(this.linePoints[this.i]);
+        const point = this.linePoints[this.i];
 
         if (this.currentMarker) {
           this.currentMarker.remove();
@@ -42,15 +45,22 @@ export default class MapboxAnimatedMarker {
         if (this.options !== undefined && this.options.marker) {
           this.currentMarker = this.options.marker;
         } else {
-          this.currentMarker = new mapboxgl.Marker();
+          // 経路再生
+          const moveEl = document.createElement('div');
+          moveEl.className = 'marker-gps';
+          moveEl.style.backgroundImage = `url(${'/assets/icon/gps_icon.png'})`;
+          moveEl.style.backgroundSize = 'cover';
+          moveEl.style.width = '20px';
+          moveEl.style.height = '20px';
+          this.currentMarker = new mapboxgl.Marker(moveEl)
+            .setLngLat(point).addTo(this.map);
         }
-        this.currentMarker.setLngLat(point).addTo(this.map);
         this.map.panTo(point);
 
-        i++;
+        this.i++;
       } else {
         window.clearInterval(this.tid);
       }
-    }, 500);
+    }, 1000);
   }
 }
