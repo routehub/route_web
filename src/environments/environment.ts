@@ -20,5 +20,6 @@ export const environment = {
     'graphql_host': 'http://localhost:4000/',
     'staticmap_url': 'https://map.yahooapis.jp/map/V1/static',
     'thumbappid': "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-",
-  }
+  },
+  routingapi: 'https://routing.routehub.app/route/1.0.0/routing'
 };
