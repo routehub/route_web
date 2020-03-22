@@ -19,8 +19,10 @@
         </ion-avatar>
         <ion-button *ngIf="!user" class="login-button" expand="block" fill="outline" (click)="toLoginPage()"> ログイン・登録
         </ion-button>
-
       </ion-tab-button>
+
+      <a *ngIf="platform.is('desktop')" target="_blank" href="https://github.com/ctyo/route_web"><img
+          style="height:40px; filter: invert(1);" src="./assets/GitHub-Mark-120px-plus.png"></a>
 
     </ion-tab-bar>
 
