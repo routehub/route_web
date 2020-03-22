@@ -191,8 +191,8 @@ export class ListPage implements OnInit {
   }
 
   search() {
-    const graphquery = gql`query PublicSearch($query: String, $page: Float) {
-      publicSearch(search: { query: $query, page: $page}) {
+    const graphquery = gql`query PublicSearch($query: String, $author: String, $tag: String, $page: Float) {
+      publicSearch(search: { query: $query, author: $author, tag: $tag, page: $page}) {
         id
         title
         body
@@ -210,7 +210,11 @@ export class ListPage implements OnInit {
 
       query: graphquery,
       variables: {
-        query: this.query == '' ? null : this.query,
+        query: (this.query != '' && !this.authorSelected) ? this.query : null,
+        author: (this.query != '' && this.authorSelected)  ? this.query : null,
+
+
+      
         /*
         sort: this.q(this.sort_type),
         order: this.q(this.order_type),
