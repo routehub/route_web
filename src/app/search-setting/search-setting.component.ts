@@ -12,8 +12,8 @@ enum SearchSortType {
   created_at = 'created_at',
 }
 enum SearchSortOrder {
-  asc = 'asc',
-  desc = 'desc',
+  asc = 'ASC',
+  desc = 'DESC',
 }
 @Component({
   selector: 'app-search-setting',
@@ -31,12 +31,12 @@ export class SearchSettingComponent implements OnInit {
   queryType;
 
   sortTypes = [
-    { id: 'total_dist/desc', kana: '距離順(降順)' },
-    { id: 'total_dist/asc', kana: '距離順(昇順) ' },
-    { id: 'total_elevation/desc', kana: '獲得標高順(降順)' },
-    { id: 'total_elevation/asc', kana: '獲得標高順(昇順)' },
-    { id: 'created_at/desc', kana: '作成日(降順)' },
-    { id: 'created_at/asc', kana: '作成日(昇順)' },
+    { id: 'total_dist/DESC', kana: '距離順(降順)' },
+    { id: 'total_dist/ASC', kana: '距離順(昇順) ' },
+    { id: 'total_elevation/DESC', kana: '獲得標高順(降順)' },
+    { id: 'total_elevation/ASC', kana: '獲得標高順(昇順)' },
+    { id: 'created_at/DESC', kana: '作成日(降順)' },
+    { id: 'created_at/ASC', kana: '作成日(昇順)' },
   ];
 
   sortType;
