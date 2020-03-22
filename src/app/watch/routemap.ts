@@ -7,12 +7,12 @@ import * as mapboxgl from 'mapbox-gl';
 import { LngLatLike } from 'mapbox-gl';
 
 export default class Routemap {
-  gpsIcon = new L.icon({
+  gpsIcon = {
     iconUrl: '/assets/icon/gps_icon.png',
     iconSize: [20, 20], // size of the icon
     iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
     popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  });
+  };
 
   startIcon = {
     iconUrl: '/assets/icon/start_icon.png',
@@ -131,5 +131,85 @@ export default class Routemap {
     //     [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
     //     [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus],
     // ]);
+  }
+
+  func(coordinates: Array<Array<number>>): mapboxgl.Expression {
+    const length = coordinates.length;
+    const color = [];
+    coordinates.forEach((c, i) => {
+      const v = i / length;
+      color.push(v);
+      color.push(this.getColor(c[2]));
+    });
+
+
+    return [
+      'interpolate',
+      ['linear'],
+      ['line-progress'],
+      ...color
+    ];
+  }
+
+  renderRouteLayer(map: mapboxgl.Map, lineGeoJSON: mapboxgl.GeoJSONSourceRaw) {
+    if (map.getLayer('route') !== undefined) {
+      map.removeSource('route');
+      map.removeLayer('route');
+    }
+    map.addSource('route', lineGeoJSON);
+
+    const feature = lineGeoJSON.data as any;
+    const coordinates = feature.geometry.coordinates;
+    console.log(feature);
+    console.log(coordinates);
+    map.addLayer({
+      'id': 'route',
+      'type': 'line',
+      'source': 'route',
+      'layout': {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      'paint': {
+        'line-color': '#0000ff',
+        'line-width': 6,
+        'line-opacity': 0.7,
+        'line-gradient': this.func(coordinates)
+      }
+    });
+
+    const startEl = document.createElement('div');
+    startEl.className = 'marker-start';
+    startEl.style.backgroundImage = `url(${this.startIcon.iconUrl})`;
+    startEl.style.backgroundSize = 'cover';
+    startEl.style.width = this.startIcon.iconSize[0] + 'px';
+    startEl.style.height = this.startIcon.iconSize[1] + 'px';
+    new mapboxgl.Marker(startEl, { anchor: 'bottom-right' })
+      .setLngLat([coordinates[0][0], coordinates[0][1]])
+      .addTo(map);
+
+    const goalEl = document.createElement('div');
+    goalEl.className = 'marker-goal';
+    goalEl.style.backgroundImage = `url(${this.goalIcon.iconUrl})`;
+    goalEl.style.backgroundSize = 'cover';
+    goalEl.style.width = this.goalIcon.iconSize[0] + 'px';
+    goalEl.style.height = this.goalIcon.iconSize[1] + 'px';
+    new mapboxgl.Marker(goalEl, { anchor: 'bottom-left' })
+      .setLngLat([coordinates[coordinates.length - 1][0], coordinates[coordinates.length - 1][1]])
+      .addTo(map);
+
+    // 描画範囲をよろしくする
+    map.fitBounds(this.posToLatLngBounds(coordinates));
+
+  }
+
+
+  getColor(x) {
+    return x < 20 ? 'blue' :
+      x < 40 ? 'royalblue' :
+        x < 60 ? 'cyan' :
+          x < 80 ? 'lime' :
+            x < 100 ? 'red' :
+              'blue';
   }
 }

@@ -23,6 +23,7 @@ import { getRouteQuery } from '../gql/RouteQuery';
 import * as mapboxgl from 'mapbox-gl';
 import chartjs_utils_elevation from 'chartjs-util-elevation';
 import { ActivatedRoute } from '@angular/router';
+import MapboxAnimatedMarker from './animatedMbMarker';
 
 @Component({
   selector: 'app-watch',
@@ -112,6 +113,8 @@ export class WatchPage implements OnInit {
 
   private playSpeedIndex = 0;
 
+  private mbAnimatedMarker: MapboxAnimatedMarker | null;
+
   ionViewWillLeave() {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
@@ -153,212 +156,102 @@ export class WatchPage implements OnInit {
 
     const routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
-    //this.elevation = routemap.elevation;
 
+    this.map.on('load', () => {
+      this.id = this.route.snapshot.paramMap.get('id');
+      //    this.route_data.id = id;
+      const that = this;
+      this.apollo.query({
+        query: getRouteQuery(),
+        variables: { ids: [this.id] },
+      }).subscribe(({ data }) => {
+        this.dissmissLoading();
+        const _route: any = data;
+        const route = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0]);
 
-    this.id = this.route.snapshot.paramMap.get('id');
-    //    this.route_data.id = id;
+        that.route_data = new RouteModel();
+        that.route_data.setFullData(route);
+        console.log(that.route_data);
 
-    const that = this;
+        // お気に入りの更新
+        this.updateFavorite();
 
-    this.apollo.query({
-      query: getRouteQuery(),
-      variables: { ids: [this.id] },
-    }).subscribe(({ data }) => {
-      this.dissmissLoading();
+        // タイトル変更
+        that.title = that.route_data.title;
+        window.document.title = `${that.route_data.title} RouteHub(β)`;
+        that.author = that.route_data.author;
 
-      const _route: any = data;
-      const route = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0]);
-
-      that.route_data = new RouteModel();
-      that.route_data.setFullData(route);
-      console.log(that.route_data);
-
-      // お気に入りの更新
-      this.updateFavorite();
-
-      // タイトル変更
-      that.title = that.route_data.title;
-      window.document.title = `${that.route_data.title} RouteHub(β)`;
-      that.author = that.route_data.author;
-
-      // 標高グラフ用のデータ作成
-      const { pos } = that.route_data;
-      for (let i = 0; i < that.route_data.level.length; i++) {
-        pos[i].push(that.route_data.level[i] * 1);
-      }
-      that.route_geojson.data.geometry.coordinates = pos;
-      // レイヤー追加
-      console.log(that.route_geojson);
-
-      const map = that.map as mapboxgl.Map;
-
-
-      const getColor = (x) => {
-        return x < 20 ? 'blue' :
-          x < 40 ? 'royalblue' :
-            x < 60 ? 'cyan' :
-              x < 80 ? 'lime' :
-                x < 100 ? 'red' :
-                  'blue';
-      };
-
-      const func = (coordinates: Array<Array<number>>) => {
-        const length = coordinates.length;
-        const color = [];
-        coordinates.forEach((c, i) => {
-          const v = i / length;
-          color.push(v);
-          color.push(getColor(c[2]));
-        });
-
-        console.log(color);
-
-        return [
-          'interpolate',
-          ['linear'],
-          ['line-progress'],
-          ...color
-        ];
-      };
-
-
-
-      // const deduped = that.route_geojson.data.geometry.coordinates.map(p => {
-      //   console.log(p);
-      //   // return getColor(p[2]);
-      //   return 0.3;
-      // });
-
-
-      // const func = () => {
-      //   return gradient;
-      // };
-
-
-      // const gradient = Array.prototype.concat.apply([
-      //   'interpolate',
-      //   ['linear'],
-      //   ['line-progress'],
-      // ], deduped);
-
-
-
-      map.on('load', () => {
-        if (map.getLayer('route') !== undefined) {
-          map.removeSource('route');
-          map.removeLayer('route');
+        // 標高グラフ用のデータ作成
+        const { pos } = that.route_data;
+        for (let i = 0; i < that.route_data.level.length; i++) {
+          pos[i].push(that.route_data.level[i] * 1);
         }
-        that.map.addSource('route', that.route_geojson);
-        that.map.addLayer({
-          'id': 'route',
-          'type': 'line',
-          'source': 'route',
-          'layout': {
-            'line-join': 'round',
-            'line-cap': 'round'
-          },
-          'paint': {
-            'line-color': '#0000ff',
-            'line-width': 6,
-            'line-opacity': 0.7,
-            'line-gradient': func(that.route_geojson.data.geometry.coordinates)
-            // 'line-gradient': [
-            //   'interpolate',
-            //   ['linear'],
-            //   ['line-progress'],
-            //   0, "blue",
-            //   0.1, "royalblue",
-            //   0.3, "cyan",
-            //   0.5, "lime",
-            //   0.7, "yellow",
-            //   1, "red"
-            // ]
-          }
-        });
-
-        const startEl = document.createElement('div');
-        startEl.className = 'marker-start';
-        startEl.style.backgroundImage = `url(${that.routemap.startIcon.iconUrl})`;
-        startEl.style.backgroundSize = 'cover';
-        startEl.style.width = that.routemap.startIcon.iconSize[0] + 'px';
-        startEl.style.height = that.routemap.startIcon.iconSize[1] + 'px';
-        new mapboxgl.Marker(startEl, { anchor: 'bottom-right' })
-          .setLngLat([pos[0][0], pos[0][1]])
-          // .setOffset([-that.routemap.startIcon.iconAnchor[0], -that.routemap.startIcon.iconAnchor[1]])
-          .addTo(that.map);
-
-        const goalEl = document.createElement('div');
-        goalEl.className = 'marker-goal';
-        goalEl.style.backgroundImage = `url(${that.routemap.goalIcon.iconUrl})`;
-        goalEl.style.backgroundSize = 'cover';
-        goalEl.style.width = that.routemap.goalIcon.iconSize[0] + 'px';
-        goalEl.style.height = that.routemap.goalIcon.iconSize[1] + 'px';
-        new mapboxgl.Marker(goalEl, { anchor: 'bottom-left' })
-          .setLngLat([pos[pos.length - 1][0], pos[pos.length - 1][1]])
-          .addTo(that.map);
-
-        // 描画範囲をよろしくする
-        that.map.fitBounds(that.routemap.posToLatLngBounds(pos));
+        that.route_geojson.data.geometry.coordinates = pos;
+        // レイヤー追加
+        console.log(that.route_geojson);
+        this.routemap.renderRouteLayer(that.map, that.route_geojson as any);
 
         // 標高グラフ表示
         console.dir(that.route_data);
         let elevation = chartjs_utils_elevation(this.elev_elem.nativeElement, that.route_data.pos, {});
         console.dir(elevation);
 
-      });
-      // L.geoJson(that.route_geojson, {
-      //   color: '#0000ff',
-      //   width: 6,
-      //   opacity: 0.7,
-      //   onEachFeature: that.elevation.addData.bind(that.elevation),
-      // }).addTo(that.map);
+        const lnglats = that.route_geojson.data.geometry.coordinates.map(p => {
+          return new mapboxgl.LngLat(p[0], p[1]);
+        });
 
-      const kind_list = [];
-      for (let i = 0; i < route.kind.length; i++) {
-        if (i === 0 || i === route.kind.length - 1) {
-          // start, goalは除外
-          continue;
-        }
-        if (route.kind[i] === '1') {
-          const j = i / 2;
-          if (pos[j]) {
-            //            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
-            const kind_latlng = [pos[j][1], pos[j][0]];
-            that.editMarkers.push(
-              L.marker(kind_latlng, { icon: that.routemap.editIcon }),
-            );
-            kind_list.push(kind_latlng);
-          } else {
-            //            console.log(j, pos.length);
-          }
-        }
-      }
+        // 経路再生
+        const moveEl = document.createElement('div');
+        moveEl.className = 'marker-gps';
+        moveEl.style.backgroundImage = `url(${that.routemap.gpsIcon.iconUrl})`;
+        moveEl.style.backgroundSize = 'cover';
+        moveEl.style.width = that.routemap.gpsIcon.iconSize[0] + 'px';
+        moveEl.style.height = that.routemap.gpsIcon.iconSize[1] + 'px';
+        const moveMarker = new mapboxgl.Marker(moveEl);
+        // 再生モジュール追加
+        this.mbAnimatedMarker = new MapboxAnimatedMarker(that.map, lnglats);
 
-      const note = JSON.parse(route.note);
-      if (note && note.length > 0) {
-        for (let i = 0; i < note.length; i++) {
-          const noted_editablepos = note[i].pos * 1 - 1; // 配列的なアレで1つ減算
-          if (!kind_list[noted_editablepos]) {
+        const kind_list = [];
+        for (let i = 0; i < route.kind.length; i++) {
+          if (i === 0 || i === route.kind.length - 1) {
+            // start, goalは除外
             continue;
           }
-          that.noteData.push(
-            {
-              pos: kind_list[noted_editablepos],
-              cmt: note[i].img ? note[i].img.replace('\n', '<br>') : '',
-            },
-          );
-          const editmarker = L.marker(kind_list[noted_editablepos], { icon: that.routemap.commentIcon }).addTo(that.map);
-          const comment = note[i].img ? note[i].img.replace('\n', '<br>') : ''; // APIのJSONにいれるやりかた間違えてるね
-          editmarker.bindPopup(comment);
+          if (route.kind[i] === '1') {
+            const j = i / 2;
+            if (pos[j]) {
+              //            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
+              const kind_latlng = [pos[j][1], pos[j][0]];
+              that.editMarkers.push(
+                L.marker(kind_latlng, { icon: that.routemap.editIcon }),
+              );
+              kind_list.push(kind_latlng);
+            } else {
+              //            console.log(j, pos.length);
+            }
+          }
         }
-      }
 
-
-      // 再生モジュール追加
-      //that.animatedMarker = that._routemap.addAnimatedMarker(pos);
-
-      that.line = pos;
+        const note = JSON.parse(route.note);
+        if (note && note.length > 0) {
+          for (let i = 0; i < note.length; i++) {
+            const noted_editablepos = note[i].pos * 1 - 1; // 配列的なアレで1つ減算
+            if (!kind_list[noted_editablepos]) {
+              continue;
+            }
+            that.noteData.push(
+              {
+                pos: kind_list[noted_editablepos],
+                cmt: note[i].img ? note[i].img.replace('\n', '<br>') : '',
+              },
+            );
+            const editmarker = L.marker(kind_list[noted_editablepos], { icon: that.routemap.commentIcon }).addTo(that.map);
+            const comment = note[i].img ? note[i].img.replace('\n', '<br>') : ''; // APIのJSONにいれるやりかた間違えてるね
+            editmarker.bindPopup(comment);
+          }
+        }
+        that.line = pos;
+      });
     });
 
     // UIの調整
@@ -485,10 +378,10 @@ export class WatchPage implements OnInit {
   togglePlay(event) {
     event.stopPropagation();
     if (this.isPlaying) {
-      this.animatedMarker.stop();
+      this.mbAnimatedMarker.stop();
       this.isPlaying = false;
     } else {
-      this.animatedMarker.start();
+      this.mbAnimatedMarker.start();
       this.isPlaying = true;
     }
   }
@@ -504,7 +397,7 @@ export class WatchPage implements OnInit {
     event.stopPropagation();
     if (!this.isPlaying) {
       // 動いていないときには再生をする
-      this.animatedMarker.start();
+      this.mbAnimatedMarker.start();
       this.isPlaying = true;
       return;
     }
