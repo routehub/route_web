@@ -33,7 +33,7 @@ export class ListPage implements OnInit {
 
   private sort_type = 'created_at';
 
-  private order_type = 'desc';
+  private order_type = 'DESC';
 
   private dist_opt = '';
 
@@ -94,7 +94,7 @@ export class ListPage implements OnInit {
     if (this.sort_type && this.sort_type !== 'created_at') {
       param += `sort_type=${this.sort_type}&`;
     }
-    if (this.order_type && this.order_type !== 'desc') {
+    if (this.order_type && this.order_type !== 'DESC') {
       param += `order_type=${this.order_type}&`;
     }
     if (this.dist_opt && this.dist_opt !== '') {
@@ -191,8 +191,8 @@ export class ListPage implements OnInit {
   }
 
   search() {
-    const graphquery = gql`query PublicSearch($query: String, $page: Float) {
-      publicSearch(search: { query: $query, page: $page}) {
+    const graphquery = gql`query PublicSearch($query: String, $author: String, $tag: String, $dist_from:Float, $dist_to: Float, $elevation_from: Float, $elevation_to: Float, $sort_key: String, $sort_order: String$page: Float) {
+      publicSearch(search: { query: $query, author: $author, tag: $tag, dist_from: $dist_from, dist_to: $dist_to, elevation_from: $elevation_from, elevation_to : $elevation_to, sort_key: $sort_key, sort_order: $sort_order,  page: $page}) {
         id
         title
         body
@@ -210,14 +210,18 @@ export class ListPage implements OnInit {
 
       query: graphquery,
       variables: {
-        query: this.query == '' ? null : this.query,
-        /*
-        sort: this.q(this.sort_type),
-        order: this.q(this.order_type),
-        dist_opt: this.q(this.dist_opt),
-        elev_opt: this.q(this.elev_opt),
-        per_page: this.q(this.per_page),
-        */
+        query: (this.query != '' && this.query_type === 'keyword') ? this.query : null,
+        author: (this.query != '' && this.query_type === 'author')  ? this.query : null,
+        tag: (this.query != '' && this.query_type === 'tag') ? this.query : null,
+      
+        dist_from: (this.dist_opt != null && this.dist_opt.match(/\d+:\d+/)) ? parseFloat(this.dist_opt.split(':')[0]) : null,
+        dist_to: (this.dist_opt != null && this.dist_opt.match(/\d+:\d+/)) ? parseFloat(this.dist_opt.split(':')[1]) : null,
+
+        elevation_from: (this.elev_opt != null && this.elev_opt.match(/\d+:\d+/)) ? parseFloat(this.elev_opt.split(':')[0]) : null,
+        elevation_to: (this.elev_opt != null && this.elev_opt.match(/\d+:\d+/)) ? parseFloat(this.elev_opt.split(':')[1]) : null,
+
+        sort_key: this.sort_type,
+        sort_order: this.order_type,
         page: this.page,
       },
     }).subscribe(({ data }) => {
