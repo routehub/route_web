@@ -96,7 +96,7 @@ export class WatchPage implements OnInit {
 
   isFavorite = false;
 
-  private animatedMarker: any;
+  private animatedMarker: MapboxAnimatedMarker;
 
   isPlaying: boolean;
 
@@ -159,7 +159,6 @@ export class WatchPage implements OnInit {
 
     this.map.on('load', () => {
       this.id = this.route.snapshot.paramMap.get('id');
-      //    this.route_data.id = id;
       const that = this;
       this.apollo.query({
         query: getRouteQuery(),
@@ -187,8 +186,7 @@ export class WatchPage implements OnInit {
           pos[i].push(that.route_data.level[i] * 1);
         }
         that.route_geojson.data.geometry.coordinates = pos;
-        // レイヤー追加
-        console.log(that.route_geojson);
+        // ルート表示
         this.routemap.renderRouteLayer(that.map, that.route_geojson as any);
 
         // 標高グラフ表示
@@ -200,15 +198,7 @@ export class WatchPage implements OnInit {
           return new mapboxgl.LngLat(p[0], p[1]);
         });
 
-        // 経路再生
-        const moveEl = document.createElement('div');
-        moveEl.className = 'marker-gps';
-        moveEl.style.backgroundImage = `url(${that.routemap.gpsIcon.iconUrl})`;
-        moveEl.style.backgroundSize = 'cover';
-        moveEl.style.width = that.routemap.gpsIcon.iconSize[0] + 'px';
-        moveEl.style.height = that.routemap.gpsIcon.iconSize[1] + 'px';
-        const moveMarker = new mapboxgl.Marker(moveEl);
-        // 再生モジュール追加
+        // アニメーション機能初期化
         this.mbAnimatedMarker = new MapboxAnimatedMarker(that.map, lnglats);
 
         const kind_list = [];
@@ -284,7 +274,6 @@ export class WatchPage implements OnInit {
       }
     });
   }
-
 
   toggleFavorite() {
     if (!this.user) {
@@ -414,7 +403,7 @@ export class WatchPage implements OnInit {
     }
     const speed = intervalTable[this.playSpeedIndex];
     this.presentToast(`現在${speed[1]}で走行中`);
-    this.animatedMarker.setInterval(speed[0]);
+    this.animatedMarker.setInterval(speed[0] as number);
   }
 
   back() {
