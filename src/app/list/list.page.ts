@@ -191,8 +191,8 @@ export class ListPage implements OnInit {
   }
 
   search() {
-    const graphquery = gql`query PublicSearch($query: String, $author: String, $tag: String, $dist_from:Float, $dist_to: Float, $page: Float) {
-      publicSearch(search: { query: $query, author: $author, tag: $tag, dist_from: $dist_from, dist_to: $dist_to, page: $page}) {
+    const graphquery = gql`query PublicSearch($query: String, $author: String, $tag: String, $dist_from:Float, $dist_to: Float, $elevation_from: Float, $elevation_to: Float, $page: Float) {
+      publicSearch(search: { query: $query, author: $author, tag: $tag, dist_from: $dist_from, dist_to: $dist_to, elevation_from: $elevation_from, elevation_to : $elevation_to, page: $page}) {
         id
         title
         body
@@ -214,8 +214,11 @@ export class ListPage implements OnInit {
         author: (this.query != '' && this.query_type === 'author')  ? this.query : null,
         tag: (this.query != '' && this.query_type === 'tag') ? this.query : null,
       
-        dist_from: this.dist_opt.match(/\d+:\d+/) ? parseFloat(this.dist_opt.split(':')[0]) : null,
-        dist_to: this.dist_opt.match(/\d+:\d+/) ? parseFloat(this.dist_opt.split(':')[1]) : null,
+        dist_from: (this.dist_opt != null && this.dist_opt.match(/\d+:\d+/)) ? parseFloat(this.dist_opt.split(':')[0]) : null,
+        dist_to: (this.dist_opt != null && this.dist_opt.match(/\d+:\d+/)) ? parseFloat(this.dist_opt.split(':')[1]) : null,
+
+        elevation_from: (this.elev_opt != null && this.elev_opt.match(/\d+:\d+/)) ? parseFloat(this.elev_opt.split(':')[0]) : null,
+        elevation_to: (this.elev_opt != null && this.elev_opt.match(/\d+:\d+/)) ? parseFloat(this.elev_opt.split(':')[1]) : null,
 
 
         /*
