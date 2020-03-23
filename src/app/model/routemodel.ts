@@ -56,7 +56,7 @@ export class RouteModel {
     this.author = r.author || '';
     this.tag = r.tag ? r.tag.split(' ') : [];
     this.display_name = r.display_name || '';
-    // this.thumburl = this.getThumbUrl(r.summary);
+    //this.thumburl = this.getThumbUrl(r.summary);
     this.created_at = r.created_at.slice(0, -14).replace(/-/g, '/');
     this.total_dist = r.total_dist;
     this.total_elevation = r.total_elevation;
@@ -83,7 +83,7 @@ export class RouteModel {
     this.author = r.author || '';
     this.tag = r.tag ? r.tag.split(' ') : [];
     this.display_name = r.display_name || '';
-    this.thumburl = this.getThumbUrl(polyline.decode(r.summary));
+    this.thumburl = this.getThumbUrl(r.summary);
     this.created_at = r.created_at.slice(0, -14).replace(/-/g, '/');
     this.total_dist = r.total_dist;
     this.total_elevation = r.total_elevation;
@@ -112,9 +112,32 @@ export class RouteModel {
     if (!summary) {
       return '';
     }
+    summary = polyline.decode(summary)
     const line = summary.map((pos) => pos.join(',')).join(',');
     return `${this.staticmap_url}?appid=${this.thumbappid
       }&autoscale=on&scalebar=off&width=600&height=300&l=` + `0,0,255,105,4,${ // rgb, a, weight
       line}`;
   }
+
+  public static getSummary(pos): String {
+    var pos100 = [];
+    if (pos.length <= 100) {
+      for (let i = 0; i < pos.length; i++) {
+        pos100.push(pos[i].join(' '));
+      }
+    } else {
+      let ratio = pos.length / 100;
+      for (let i = 0; i < 100; i++) {
+        let ir = Math.floor(i * ratio);
+        if (!pos[ir]) {
+          continue;
+        }
+        pos100.push(
+          pos[ir].join(' ')
+        );
+      }
+    }
+    return pos100.join(',');
+  }
+
 }

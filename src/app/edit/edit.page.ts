@@ -726,7 +726,7 @@ export class EditPage implements OnInit {
       is_private: !this.isNotPrivate ? 'true' : 'false',
       is_gps: 'false', // TODO
       pos: this.line.map((p) => `${p[0]} ${p[1]}`).join(','),
-      time: '', // TODO
+      //      time: '', // TODO
       level: this.line.map((p) => p[2]).join(','),
       kind: getKind().join(','),
       note: JSON.stringify([
@@ -736,30 +736,30 @@ export class EditPage implements OnInit {
     };
 
     // ルートをpost    
-    const graphquery = gql`mutation SaveRoute($id: String, $author: String, $title: String, $body:String, $summary: String, $tag:String, $total_dist:Float, $total_elevation: Float, $max_elevation: Float, $max_slope:Float, $avg_slope:Float, $start_point: String, $goal_point: String, $is_private:Boolean, $pos: String, $level:String, $kind: String, $note:String) {
-        saveRoute(route : {id: $id, author: $author, title:$title, body:$body, summary:$summary, tag:$tag, total_dist:$total_dist, total_elevation:$total_elevation, max_elevation:$max_elevation, max_slope:$max_slope, avg_slope:$avg_slope, start_point: $start_point, goal_point:$goal_point, is_private:$is_private, pos:$pos, leval:$leval, kind:$kind, note:$note} ) { 
-          id,
-          titke
+    const graphquery = gql`mutation SaveRoute($id: String, $author: String!, $title: String!, $body:String, $summary: String!, $tag:String, $total_dist:Float!, $total_elevation: Float!, $max_elevation: Float!, $max_slope:Float!, $avg_slope:Float!, $start_point: String!, $goal_point: String!, $is_private:Boolean, $pos: String!, $level:String!, $kind: String, $note:String) {
+        saveRoute(route : {id: $id, author: $author, title:$title, body:$body, summary:$summary, tag:$tag, total_dist:$total_dist, total_elevation:$total_elevation, max_elevation:$max_elevation, max_slope:$max_slope, avg_slope:$avg_slope, start_point: $start_point, goal_point:$goal_point, is_private:$is_private, pos:$pos, level:$level, kind:$kind, note:$note} ) { 
+          id
         } 
       }`;
+
     this.apollo.mutate({
       mutation: graphquery,
       variables: {
-        id: this.route_id || '',
+        id: this.route_id || null,
         author: this.author,
         title: `${this.title.replace('\n', '')}`,
         body: this.body,
-        summary: null, // TODO
+        summary: RouteModel.getSummary(this.line.map((p) => [p[1], p[0]])),
         tag: this.tags.map((t) => ((typeof t === 'object') ? t.value : t)).join(' '),
-        total_dist: `${Math.round(this.distance * 10) / 10}`,
-        total_elevation: `${Math.round(this.height_gain * 10) / 10}`,
-        max_elevation: `${Math.round(this.height_max * 10) / 10}`,
+        total_dist: Math.round(this.distance * 10) / 10,
+        total_elevation: Math.round(this.height_gain * 10) / 10,
+        max_elevation: Math.round(this.height_max * 10) / 10,
         max_slope: 0, // TODO
         avg_slope: 0, // TODO
         start_point: start_point_name,
         goal_point: goal_point_name,
         is_private: !this.isNotPrivate,
-        pos: polyline.encode(this.line),
+        pos: polyline.encode(this.line.map((p) => [p[1], p[0]])),
         level: this.line.map((p) => p[2]).join(','),
         kind: getKind().join(','),
         note: JSON.stringify([
