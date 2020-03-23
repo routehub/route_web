@@ -19,6 +19,9 @@ import { RouteHubUser } from '../model/routehubuser';
 import { LayerselectPage } from '../layerselect/layerselect.page';
 import { environment } from '../../environments/environment';
 import { Routemap } from '../watch/routemap';
+import gql from 'graphql-tag';
+import polyline from '@mapbox/polyline';
+
 
 @Component({
   selector: 'app-edit',
@@ -732,32 +735,56 @@ export class EditPage implements OnInit {
       firebase_id_token: `${this.user.token}`,
     };
 
-    // ルートをpost
-    const url = `${environment.api.host}/route`;
-    // DBから削除
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }),
-    };
+    // ルートをpost    
+    const graphquery = gql`mutation SaveRoute($id: String, $author: String, $title: String, $body:String, $summary: String, $tag:String, $total_dist:Float, $total_elevation: Float, $max_elevation: Float, $max_slope:Float, $avg_slope:Float, $start_point: String, $goal_point: String, $is_private:Boolean, $pos: String, $level:String, $kind: String, $note:String) {
+        saveRoute(route : {id: $id, author: $author, title:$title, body:$body, summary:$summary, tag:$tag, total_dist:$total_dist, total_elevation:$total_elevation, max_elevation:$max_elevation, max_slope:$max_slope, avg_slope:$avg_slope, start_point: $start_point, goal_point:$goal_point, is_private:$is_private, pos:$pos, leval:$leval, kind:$kind, note:$note} ) { 
+          id,
+          titke
+        } 
+      }`;
+    this.apollo.mutate({
+      mutation: graphquery,
+      variables: {
+        id: this.route_id || '',
+        author: this.author,
+        title: `${this.title.replace('\n', '')}`,
+        body: this.body,
+        summary: null, // TODO
+        tag: this.tags.map((t) => ((typeof t === 'object') ? t.value : t)).join(' '),
+        total_dist: `${Math.round(this.distance * 10) / 10}`,
+        total_elevation: `${Math.round(this.height_gain * 10) / 10}`,
+        max_elevation: `${Math.round(this.height_max * 10) / 10}`,
+        max_slope: 0, // TODO
+        avg_slope: 0, // TODO
+        start_point: start_point_name,
+        goal_point: goal_point_name,
+        is_private: !this.isNotPrivate,
+        pos: polyline.encode(this.line),
+        level: this.line.map((p) => p[2]).join(','),
+        kind: getKind().join(','),
+        note: JSON.stringify([
+          //        { pos: 1, txt: 'hogehoge' },
+        ]),
+      },
+    }).subscribe(({ data }) => {
+      const ret: any = data
 
-    const params = new HttpParams({ fromObject: route });
-    this.route_id = await this.http.post(url, params, httpOptions).toPromise().then((res: any) => res.id);
+      this.route_id = ret.saveRoute.id;
 
-    if (!this.route_id) {
-      alert('ルートの保存に失敗しました。ごめんなさい＞＜');
-    }
+      if (!this.route_id) {
+        alert('ルートの保存に失敗しました。ごめんなさい＞＜');
+      }
 
-    window.document.getElementById('share_link_row').style.display = 'block';
-    window.document.getElementById('share_link').innerText = `http://routehub.app/watch/${this.route_id}`;
-    window.document.getElementById('share_link').setAttribute('href', `http://routehub.app/watch/${this.route_id}`);
-
-    // 閲覧ページへのリンクを提示
-    if (window.confirm('ルートを保存しました。編集を終了しますか?')) {
-      // 状態をリセットするため、画面を再構築
-      // this.navCtrl.navigateForward('/watch/' + this.route_id);
-      window.document.location.href = `/watch/${this.route_id}`;
-    }
+      window.document.getElementById('share_link_row').style.display = 'block';
+      window.document.getElementById('share_link').innerText = `http://routehub.app/watch/${this.route_id}`;
+      window.document.getElementById('share_link').setAttribute('href', `http://routehub.app/watch/${this.route_id}`);
+      // 閲覧ページへのリンクを提示
+      if (window.confirm('ルートを保存しました。編集を終了しますか?')) {
+        // 状態をリセットするため、画面を再構築
+        // this.navCtrl.navigateForward('/watch/' + this.route_id);
+        window.document.location.href = `/watch/${this.route_id}`;
+      }
+    });
   }
 
   moveTop(event) {
