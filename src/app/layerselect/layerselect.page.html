@@ -6,18 +6,13 @@
 
 <ion-content>
   <ion-list>
-    <ion-item (click)="changeLayer(0)" style="cursor: pointer;">
+    <ion-item (tap)="changeLayer(0)" (click)="changeLayer(0)" style="cursor: pointer;">
       <ion-label>OpenStreetMap</ion-label>
     </ion-item>
-    <ion-item (click)="changeLayer(1)" style="cursor: pointer;">
+    <ion-item (tap)="changeLayer(1)" (click)="changeLayer(1)" style="cursor: pointer;">
       <ion-label>OpenCycleMap</ion-label>
     </ion-item>
-    <!--
-    <ion-item (click)="changeLayer(2)" style="cursor: pointer;">
-      <ion-label>ヤフー地図</ion-label>
-    </ion-item>
-     -->
-    <ion-item (click)="changeLayer(3)" style="cursor: pointer;">
+    <ion-item (tap)="changeLayer(3)" (click)="changeLayer(3)" style="cursor: pointer;">
       <ion-label>国土地理院地図</ion-label>
     </ion-item>
   </ion-list>
