@@ -61,4 +61,4 @@ $ ionic serve -l
 
 ----
 
-[利用規約](https://ctyo.github.io/route_web/terms.html) | [プライバシーポリシー](https://ctyo.github.io/route_web/privacypolicy.html) 
+[利用規約](https://routehub.github.io/route_web/terms.html) | [プライバシーポリシー](https://routehub.github.io/route_web/privacypolicy.html) 
