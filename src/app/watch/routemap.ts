@@ -185,7 +185,7 @@ export class Routemap {
           return animatedMarker;
         },
         addElevationHotlineLayer: (line) => {
-          const max_elev = Math.max(line.map((l) => l[2]));
+          const max_elev = Math.max.apply(null, line.map((l) => l[2]));
           const latlngelevlist = line.map((l) => [l[1], l[0], l[2] / max_elev]);
           return L.hotline(latlngelevlist, {
             outlineWidth: 1,
