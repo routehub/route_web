@@ -25,7 +25,7 @@ Issues にあるいろいろな修正にご協力いただけると嬉しいで�
 ## 開発者向け情報
 
 ### 構成図
-以下のうち`route_web`, `route_api`のソースコードを公開しています。
+以下のうち現在は`route_web`のソースコードを公開しています。
 
 <a href="https://docs.google.com/drawings/d/1-j1wY3Atx18dsJyJvMHZBh-WWlkrLOEM1ZdZeNwHAmQ/edit?usp=sharing"><img src="https://docs.google.com/drawings/d/e/2PACX-1vRTYinMNdPkRYAo9ZMHG3BEYChmmlkCbC6XerniVrXw_tdCU2OEdZ849JUznfzyDQ60tq8GwMY4upkG/pub?w=890&amp;h=485" width="50%"></a>
 
