@@ -17,7 +17,7 @@ export const environment = {
     'routing_path': '/routing',
     'migrate_path': '/migrate',
     'expand_url_path': '/expand_shorturl',
-    'graphql_host': 'http://localhost:4000/',
+    'graphql_host': 'https://routehub-api.herokuapp.com/',
     'staticmap_url': 'https://map.yahooapis.jp/map/V1/static',
     'thumbappid': "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-",
   },

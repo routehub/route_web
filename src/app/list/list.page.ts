@@ -88,8 +88,12 @@ export class ListPage implements OnInit {
 
 
     let that = this;
-    this.logoutButton.el.style.display = 'none';
-    this.loginButton.el.style.display = 'block';
+    if (this.logoutButton) {
+      this.logoutButton.el.style.display = 'none';
+    }
+    if (this.loginButton) {
+      this.loginButton.el.style.display = 'block';
+    }
 
     this.storage.get('user').then((json) => {
       if (!json || json == "") {
@@ -97,10 +101,14 @@ export class ListPage implements OnInit {
       }
       let user = JSON.parse(json);
       that.photoURL = user.photo_url;
-      this.loginButton.el.style.display = 'none';
-      that.logoutButton.el.style.display = 'block';
-      that.logoutButton.el.style.color = '#ffffff9c';
-      that.logoutButton.el.style.background = '#ffffffa6';
+      if (that.loginButton) {
+        that.loginButton.el.style.display = 'none';
+      }
+      if (that.logoutButton) {
+        that.logoutButton.el.style.display = 'block';
+        that.logoutButton.el.style.color = '#ffffff9c';
+        that.logoutButton.el.style.background = '#ffffffa6';
+      }
     });
   }
 
