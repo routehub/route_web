@@ -1,14 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {
-  IonInfiniteScroll, NavController, PopoverController, LoadingController,
-} from '@ionic/angular';
+import { IonInfiniteScroll, NavController, PopoverController, LoadingController, Platform, IonHeader } from '@ionic/angular';
 import { Location } from '@angular/common';
 import gql from 'graphql-tag';
 import { Apollo } from 'apollo-angular';
 import { SearchSettingComponent } from '../search-setting/search-setting.component';
 import { environment } from '../../environments/environment';
 import { RouteModel } from '../model/routemodel';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-list',
@@ -16,9 +14,15 @@ import { RouteModel } from '../model/routemodel';
   styleUrls: ['list.page.scss'],
 })
 export class ListPage implements OnInit {
-  @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
 
+  @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
+  @ViewChild('logoutButton', { static: false }) logoutButton: any;
+  @ViewChild('loginButton', { static: false }) loginButton: any;
+
+  showSearchHeader: boolean = false;
+  showTitlePane: boolean = true;
   loading = null
+  photoURL
 
   /**
    * 検索用パラメーター
@@ -47,10 +51,11 @@ export class ListPage implements OnInit {
 
 
   constructor(
-    private http: HttpClient,
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
     public popoverController: PopoverController,
+    public platform: Platform,
+    private storage: Storage,
     private location: Location,
     private apollo: Apollo,
   ) {
@@ -80,6 +85,31 @@ export class ListPage implements OnInit {
     this.elev_opt = param.get('elev_opt');
 
     this.search();
+
+
+    let that = this;
+    if (this.logoutButton) {
+      this.logoutButton.el.style.display = 'none';
+    }
+    if (this.loginButton) {
+      this.loginButton.el.style.display = 'block';
+    }
+
+    this.storage.get('user').then((json) => {
+      if (!json || json == "") {
+        return;
+      }
+      let user = JSON.parse(json);
+      that.photoURL = user.photo_url;
+      if (that.loginButton) {
+        that.loginButton.el.style.display = 'none';
+      }
+      if (that.logoutButton) {
+        that.logoutButton.el.style.display = 'block';
+        that.logoutButton.el.style.color = '#ffffff9c';
+        that.logoutButton.el.style.background = '#ffffffa6';
+      }
+    });
   }
 
   changeURL() {
@@ -211,9 +241,9 @@ export class ListPage implements OnInit {
       query: graphquery,
       variables: {
         query: (this.query != '' && this.query_type === 'keyword') ? this.query : null,
-        author: (this.query != '' && this.query_type === 'author')  ? this.query : null,
+        author: (this.query != '' && this.query_type === 'author') ? this.query : null,
         tag: (this.query != '' && this.query_type === 'tag') ? this.query : null,
-      
+
         dist_from: (this.dist_opt != null && this.dist_opt.match(/\d+:\d+/)) ? parseFloat(this.dist_opt.split(':')[0]) : null,
         dist_to: (this.dist_opt != null && this.dist_opt.match(/\d+:\d+/)) ? parseFloat(this.dist_opt.split(':')[1]) : null,
 
@@ -225,6 +255,14 @@ export class ListPage implements OnInit {
         page: this.page,
       },
     }).subscribe(({ data }) => {
+
+      // タイトルの表示表示切り替え
+      this.showTitlePane = this.query == '' ? true : false
+      if (!this.showTitlePane) {
+        this.showSearchHeader = true
+      }
+
+
       this.dissmissLoading();
 
       const res: any = data;
@@ -267,6 +305,18 @@ export class ListPage implements OnInit {
   async dissmissLoading() {
     if (this.loading) {
       await this.loading.dismiss();
+    }
+  }
+
+  logScrolling(event) {
+    if (!this.showTitlePane) {
+      this.showSearchHeader = true
+      return
+    }
+    if (event.detail.scrollTop > 300) {
+      this.showSearchHeader = true
+    } else {
+      this.showSearchHeader = false
     }
   }
 }
