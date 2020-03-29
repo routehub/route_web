@@ -316,7 +316,7 @@ export class WatchPage implements OnInit {
         mutation: graphquery,
         variables: { ids: [this.route_data.id] },
       }).subscribe(({ data }) => {
-        this.isFavorite = true;
+        this.isFavorite = false;
         this.favoriteIcon = 'star-outline';
       });
     }
