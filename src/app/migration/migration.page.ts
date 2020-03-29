@@ -1,10 +1,12 @@
-import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
+import {
+  Component, OnInit, ElementRef, ViewChild, HostListener,
+} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavController, Platform } from '@ionic/angular';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
-import { RouteHubUser } from './../model/routehubuser';
 import { Storage } from '@ionic/storage';
+import { RouteHubUser } from '../model/routehubuser';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -13,12 +15,16 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./migration.page.scss'],
 })
 export class MigrationPage implements OnInit {
-  @ViewChild('importarea', { static: false }) importarea: ElementRef;
+  @ViewChild('importarea') importarea: ElementRef;
 
   user: RouteHubUser;
+
   public routeurl: string;
+
   public items: Array<{ id: string, title: string; author: string; icon: string; color: string; }> = [];
+
   private migrate_url = environment.api.host + environment.api.migrate_path;
+
   private parse_shorturl_url = environment.api.host + environment.api.expand_url_path;
 
   constructor(
@@ -30,9 +36,9 @@ export class MigrationPage implements OnInit {
 
   ngOnInit() {
     // ログイン
-    let that = this;
+    const that = this;
     this.storage.get('user').then((json) => {
-      if (!json || json == "") {
+      if (!json || json == '') {
         return;
       }
       that.user = JSON.parse(json);
@@ -40,28 +46,28 @@ export class MigrationPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    window.document.title = 'ルートを取り込み RouteHub(β)'
+    window.document.title = 'ルートを取り込み RouteHub(β)';
   }
 
   async onPaste(event) {
     event.preventDefault();
     //    if (window.clipboardData && window.clipboardData.getData) { // IE pollyfillされるかな...
     //      var pastedText = window.clipboardData.getData('Text');
-    //    } else 
+    //    } else
     if (!event.clipboardData || !event.clipboardData.getData) {
       return;
     }
 
-    let pastedText: string = event.clipboardData.getData('text/html');
-    let m = pastedText.match(/watch\?id=(.*?)"/g);
+    const pastedText: string = event.clipboardData.getData('text/html');
+    const m = pastedText.match(/watch\?id=(.*?)"/g);
 
     if (!m || m.length <= 0) {
       console.log('pasted, but clipboard empty url.');
       return;
     }
-    var ids = [];
+    const ids = [];
     for (let i = 0; i < m.length; i++) {
-      let id_m = m[i].match(/watch\?id=(.+?)"/);
+      const id_m = m[i].match(/watch\?id=(.+?)"/);
       if (!ids.includes(id_m[1])) {
         ids.push(id_m[1]);
       }
@@ -86,7 +92,7 @@ export class MigrationPage implements OnInit {
     let m = this.routeurl.match(/watch\?id=(.*?)$/);
 
     if (!m) {
-      let ret = await this.parseShorUrl(this.routeurl);
+      const ret = await this.parseShorUrl(this.routeurl);
       console.dir(ret);
       m = String(ret).match(/watch\?id=(.*?)$/);
       if (!m) {
@@ -106,18 +112,18 @@ export class MigrationPage implements OnInit {
 
   async checkque() {
     for (let i = 0; i < this.items.length; i++) {
-      let item = this.items[i];
+      const item = this.items[i];
       if (item.color !== '') {
         return;
       }
 
       try {
         // オブジェクトだとBE側のBodyのkeyに全部入りしてたのでとりあえずJSONで
-        const paramString = 'id=' + item.id + '&' + 'firebase_id_token=' + this.user.token
+        const paramString = `id=${item.id}&` + `firebase_id_token=${this.user.token}`;
         const httpOptions = {
           headers: new HttpHeaders(
-            'Content-Type:application/x-www-form-urlencoded'
-          )
+            'Content-Type:application/x-www-form-urlencoded',
+          ),
         };
 
         const res: any = await this.http.post(this.migrate_url, paramString, httpOptions).toPromise();
@@ -138,13 +144,10 @@ export class MigrationPage implements OnInit {
   }
 
   async parseShorUrl(url) {
-    return await this.http.get(this.parse_shorturl_url + '?url=' + url).toPromise().then((res: any) => {
-      return res.url;
-    });
+    return await this.http.get(`${this.parse_shorturl_url}?url=${url}`).toPromise().then((res: any) => res.url);
   }
 
   pageSelected(item) {
-    this.navCtrl.navigateForward('/watch/' + item.id);
+    this.navCtrl.navigateForward(`/watch/${item.id}`);
   }
-
 }

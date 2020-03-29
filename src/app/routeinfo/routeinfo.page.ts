@@ -8,26 +8,26 @@ import { RouteModel } from '../model/routemodel';
   styleUrls: ['./routeinfo.page.scss'],
 })
 export class RouteinfoPage implements OnInit {
-
   route: RouteModel;
 
   constructor(
     private modalController: ModalController,
-    private navParams: NavParams
+    private navParams: NavParams,
   ) { }
 
   ngOnInit() {
     this.route = this.navParams.get('route');
-    this.route.body = this.route.body.replace(/\n/g, "<br>");
+    this.route.body = this.route.body.replace(/\n/g, '<br>');
   }
+
   async closeModal() {
     await this.modalController.dismiss();
   }
 
   goLLL() {
-    let link = document.createElement('a');
-    link.href = "https://latlonglab.yahoo.co.jp/route/watch?id=" + this.route.id;
-    link.target = "_blank";
+    const link = document.createElement('a');
+    link.href = `https://latlonglab.yahoo.co.jp/route/watch?id=${this.route.id}`;
+    link.target = '_blank';
     link.click();
   }
 }

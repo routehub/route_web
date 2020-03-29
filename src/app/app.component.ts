@@ -1,52 +1,46 @@
 import { Component, OnInit } from '@angular/core';
-import { Platform, Events } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { User } from 'firebase';
-import { NavController } from '@ionic/angular';
+
 import { Storage } from '@ionic/storage';
-import { RouteHubUser } from './model/routehubuser';
+import gql from 'graphql-tag';
+
+import { Apollo, ApolloModule } from 'apollo-angular';
+import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { Events } from './Events';
 import { environment } from '../environments/environment';
+import { RouteHubUser } from './model/routehubuser';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
 })
 export class AppComponent implements OnInit {
   public appPages = [
     {
-      title: 'トップ',
-      icon: 'home',
-      route: () => {
-        this.navCtrl.navigateForward('/');
-      }
+      title: '検索',
+      icon: 'search',
+      route: () => { this.navCtrl.navigateForward('/'); },
     },
     {
-      title: 'ルートラボから取込',
-      icon: 'md-add', // 'cloud-download'
-      route: () => {
-        this.navCtrl.navigateForward(this.isLogin() ? '/migration' : '/login');
-      }
+      title: 'ルートラボ移行',
+      icon: 'cloud-upload-outline',
+      route: () => { this.navCtrl.navigateForward(this.isLogin() ? '/migration' : '/login'); },
     },
     {
-      title: 'ルートを作成',
-      icon: 'md-create',
-      route: () => {
-        this.navCtrl.navigateForward('/edit');
-      }
+      title: '作成',
+      icon: 'create-outline',
+      route: () => { this.navCtrl.navigateForward('/edit'); },
     },
-    {
-      title: 'ルートを検索',
-      icon: 'md-search',
-      route: () => {
-        this.navCtrl.navigateForward('/list');
-      }
-    }
   ];
 
   public tabslot = 'top';
+
   public user: User;
 
   constructor(
@@ -57,7 +51,7 @@ export class AppComponent implements OnInit {
     private navCtrl: NavController,
     public events: Events,
     private storage: Storage,
-    private http: HttpClient,
+    private apollo: Apollo,
   ) {
     this.initializeApp();
     this.initializeAuth();
@@ -88,39 +82,55 @@ export class AppComponent implements OnInit {
     });
   }
 
-  initializeAuth() {
+  async initializeAuth() {
     // 現在のログイン状態を確認
     this.user = this.auth.auth.currentUser;
 
-    this.auth.authState.subscribe(async (user) => {
-      if (user) {
-        let token = await user.getIdToken();
-        const url = environment.api.host + environment.api.user_path;
-        let nickname = await this.http.get(url + '?firebase_id_token=' + token).toPromise()
-          .then((res: any) => {
-            if (!res || !res[0] || res[0].display_name) {
-              return "";
-            }
-            return res[0].display_name;
-          });
-
-        this.user = user;
-        let rhuser = new RouteHubUser(
-          user.uid,
-          nickname + "",
-          user.displayName,
-          user.photoURL,
-          user.providerData[0].providerId,
-          token,
-        );
-
-        this.storage.set('user', JSON.stringify(rhuser));
-        // TODO : 画像が設定されていない場合はデフォ画像を入れたい
-        // TODO : ログインのexpireをstorageに入れるべきでは?
-      } else {
+    // ログイン済みでヘッダをつけてクライアントを作成
+    this.auth.authState.subscribe(async (_user) => {
+      if (!_user) {
         this.user = null;
         this.storage.remove('user');
+        return;
       }
+
+      this.user = _user;
+      const rhuser = new RouteHubUser(
+        _user.uid,
+        '',
+        _user.displayName,
+        _user.photoURL,
+        _user.providerData[0].providerId,
+        '',
+      );
+      this.storage.set('user', JSON.stringify(rhuser));
+
+      // clientにヘッダーをつける作業&表示名取得
+      const token = await _user.getIdToken();
+      // apollo client 更新
+      this.apollo.removeClient();
+      this.apollo.create({
+        link: createHttpLink({
+          uri: environment.api.graphql_host,
+          headers: { token },
+        }),
+        cache: new InMemoryCache(),
+      });
+      const graphquery = gql`{ getUser{ display_name  } }`;
+      this.apollo.query({
+        query: graphquery,
+      }).subscribe(({ data }) => {
+        const nickname: any = data;
+        const rhuser = new RouteHubUser(
+          _user.uid,
+          nickname,
+          _user.displayName,
+          _user.photoURL,
+          _user.providerData[0].providerId,
+          token,
+        );
+        this.storage.set('user', JSON.stringify(rhuser));
+      });
     });
   }
 

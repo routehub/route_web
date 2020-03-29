@@ -5,15 +5,15 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { WatchPage } from './watch.page';
 import { HttpClientModule } from '@angular/common/http';
+import { WatchPage } from './watch.page';
 
 
 const routes: Routes = [
   {
     path: '',
-    component: WatchPage
-  }
+    component: WatchPage,
+  },
 ];
 
 @NgModule({
@@ -22,8 +22,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     HttpClientModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [WatchPage]
+  declarations: [WatchPage],
 })
 export class WatchPageModule { }

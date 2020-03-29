@@ -34,7 +34,7 @@
           <ion-item>
             <ion-label position="stacked">表示名</ion-label>
             <ion-input size="40" maxlength="40" placeholder="RouteHub上で表示される名前を設定できます" [(ngModel)]="display_name"
-              (ionChange)="displayNameChanged()" debounce="500"></ion-input>
+              (ionChange)="displayNameChanged()" debounce="1000"></ion-input>
           </ion-item>
         </ion-row>
         <!--
@@ -87,7 +87,7 @@
                 </ion-col>
               -->
                 <ion-chip *ngIf="isMyRoute" (click)="toggle_private(item)" layout="end">
-                  <ion-icon [name]="item.is_private ? 'md-eye-off' : 'md-eye'"></ion-icon>
+                  <ion-icon [name]="item.is_private ? 'eye-off' : 'eye'"></ion-icon>
                   <ion-label>{{item.is_private_ja}}</ion-label>
                 </ion-chip>
                 <ion-chip *ngIf="isMyRoute" (click)="delete(item)">

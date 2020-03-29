@@ -10,8 +10,8 @@ import { LayerselectPage } from './layerselect.page';
 const routes: Routes = [
   {
     path: '',
-    component: LayerselectPage
-  }
+    component: LayerselectPage,
+  },
 ];
 
 @NgModule({
@@ -19,8 +19,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [LayerselectPage]
+  declarations: [LayerselectPage],
 })
-export class LayerselectPageModule {}
+export class LayerselectPageModule { }

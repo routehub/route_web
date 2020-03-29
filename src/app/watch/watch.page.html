@@ -19,17 +19,17 @@
 
   <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button>
-      <ion-icon name="md-apps"></ion-icon>
+      <ion-icon name="apps"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="start">
       <ion-fab-button (click)="fastPlay($event)">
-        <ion-icon color="primary" name="fastforward"></ion-icon>
+        <ion-icon color="primary" name="chevron-forward-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="togglePlay($event)">
-        <ion-icon color="primary" [name]="isPlaying ? 'md-pause' : 'md-play'"> </ion-icon>
+        <ion-icon color="primary" [name]="isPlaying ? 'pause' : 'play'"> </ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="edit($event)">
-        <ion-icon color="primary" name="md-create"></ion-icon>
+        <ion-icon color="primary" name="create"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
 
@@ -38,11 +38,11 @@
         <ion-icon color="primary" class="route-info" name="information"></ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="presentRouteExportPage($event)">
-        <ion-icon color="primary" class="route-info" name="md-download"></ion-icon>
+        <ion-icon color="primary" class="route-info" name="download"></ion-icon>
       </ion-fab-button>
 
       <ion-fab-button (click)="presentLayerSelect($event)">
-        <ion-icon color="primary" name="md-albums"></ion-icon>
+        <ion-icon color="primary" name="albums"></ion-icon>
       </ion-fab-button>
 
       <ion-fab-button (click)="toggleSlopeLayer($event)">
@@ -50,7 +50,7 @@
       </ion-fab-button>
 
       <ion-fab-button (click)="toggleLocation($event)">
-        <ion-icon [color]="isWatchLocation ? 'primary' : ''" name="md-locate"> </ion-icon>
+        <ion-icon [color]="isWatchLocation ? 'primary' : ''" name="locate"> </ion-icon>
       </ion-fab-button>
 
     </ion-fab-list>

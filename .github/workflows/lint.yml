@@ -1,0 +1,22 @@
+name: eslint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  eslint:
+    name: eslint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v10
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10
+    - name: npm install
+      run: npm install
+    - name: eslint
+      uses: icrawl/action-eslint@v1
+      with:
+        custom-glob: src/app

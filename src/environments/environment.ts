@@ -9,23 +9,16 @@ export const environment = {
     messagingSenderId: '1000468098052'
   },
 
-  hostname: 'dev.routehub.app',
+  hostname: 'http://localhost:8100',
 
   api: {
-    'host': 'https://dev-api.routelabo.com/route/1.0.0',
-    'search_path': '/search',
-    'route_path': '/route',
-    'route_delete_path': '/route_delete',
+    'host': 'https://api.routehub.app/route/1.0.0',
     'routing_path': '/routing',
-    'my_path': '/my',
-    'like_path': '/like',
-    'like_delete_path': '/like_delete',
-    'user_path': '/user',
     'migrate_path': '/migrate',
     'expand_url_path': '/expand_shorturl',
-    'route_change_private_path': '/private',
+    'graphql_host': 'https://routehub-api.herokuapp.com/',
     'staticmap_url': 'https://map.yahooapis.jp/map/V1/static',
     'thumbappid': "dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-",
-
-  }
+  },
+  routingapi: 'https://routing.routehub.app/route/1.0.0/routing'
 };
