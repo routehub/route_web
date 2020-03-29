@@ -1,6 +1,5 @@
 export const environment = {
   production: false,
-  // TODO ファイルを分けて隠蔽する
   firebase: {
     apiKey: 'AIzaSyB0msydnFuVba0qJGT5geWMNqiYjzvN35M',
     authDomain: 'route-lab-63f4a.firebaseapp.com',
