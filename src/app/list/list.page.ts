@@ -78,7 +78,7 @@ export class ListPage implements OnInit {
     // URLのパラメーター処理
     const param = new URLSearchParams((new URL(window.location.href)).search);
     this.query = param.get('query') || '';
-    this.query_type = param.get('mode');
+    this.query_type = param.get('mode') || 'keyword';
     this.sort_type = param.get('sort_type');
     this.order_type = param.get('order_type');
     this.dist_opt = param.get('dist_opt');
@@ -236,6 +236,7 @@ export class ListPage implements OnInit {
         summary
       }
     }`;
+
     this.apollo.query({
 
       query: graphquery,
