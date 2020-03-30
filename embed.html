@@ -242,7 +242,7 @@
     map.on('load', function () {
       var params = (new URL(document.location)).searchParams;
       var id = params.get('id');
-      $.get('https://api.routehub.app/route/1.0.0/route?id=' + id, {})
+      $.get('https://api2.routehub.app/route/1.0.0/route?id=' + id, {})
         .done(function (data) {
           $('.loading').css('top', '-' + window.innerHeight + 'px');
           setRouteMap(data);
