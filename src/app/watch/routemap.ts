@@ -85,7 +85,7 @@ export class Routemap {
     private getOSMLayer() {
         let url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         let url2 = 'https://www.toolserver.org/tiles/hikebike/{z}/{x}/{y}.png';
-        let url3 = 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png';
+        let url3 = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         let url4 = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
         let layer = L.tileLayer(url3, {
             attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
