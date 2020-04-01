@@ -28,12 +28,12 @@ export class AppComponent implements OnInit {
       route: () => { this.navCtrl.navigateForward('/'); },
     },
     {
-      title: 'ルートラボ移行',
+      title: 'gpxアップロード',
       icon: 'cloud-upload-outline',
-      route: () => { this.navCtrl.navigateForward(this.isLogin() ? '/migration' : '/login'); },
+      route: () => { alert('ルートラボ移行は終了しました。\n一括アップロード機能を開発予定です。'); return false; },
     },
     {
-      title: '作成',
+      title: 'ルート作成',
       icon: 'create-outline',
       route: () => { this.navCtrl.navigateForward('/edit'); },
     },
