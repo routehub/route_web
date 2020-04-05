@@ -7,7 +7,24 @@
       本サービス内ではログインもとの登録名は表示されず、ログイン後設定された名前が表示されます。
     </p>
   </ion-row>
-  <div id="firebaseui-auth-container"></div>
+
+  <ion-row class="wrapper-helper" style="max-width:500px; text-align: center;">
+    <ion-col>
+      <ion-button expand="block" (click)="authService.signupWithGoogle()">Googleでログイン</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button expand="block" (click)="authService.signupWithTwitter()">Twitterでログイン</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button expand="block" (click)="authService.signupWithFacebook()">Facebookでログイン</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button expand="block" (click)="authService.signupWithEmail()">Emailでログイン</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button expand="block" (click)="authService.logout()">ログアウト</ion-button>
+    </ion-col>
+  </ion-row>
 
   <footer>
     routehub.app © 2020&nbsp;&nbsp;

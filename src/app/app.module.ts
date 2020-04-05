@@ -14,7 +14,6 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
 import { AppComponent } from './app.component';
@@ -24,6 +23,7 @@ import { ExportPageModule } from './export/export.module';
 
 import { environment } from '../environments/environment';
 import { LayerselectPageModule } from './layerselect/layerselect.module';
+import { AuthService } from './auth.service'
 
 @Injectable()
 export class IonicGestureConfig extends HammerGestureConfig {
@@ -52,9 +52,9 @@ export class IonicGestureConfig extends HammerGestureConfig {
     LazyLoadImageModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    IonicStorageModule.forRoot(),
   ],
   providers: [
+    AuthService,
     StatusBar,
     SplashScreen,
     Geolocation,

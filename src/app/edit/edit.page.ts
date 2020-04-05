@@ -11,17 +11,15 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as firebase from 'firebase/app';
 import * as Hammer from 'hammerjs';
 import 'firebase/auth';
-import { Storage } from '@ionic/storage';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { getRouteQuery } from '../gql/RouteQuery';
-import { RouteHubUser } from '../model/routehubuser';
 import { LayerselectPage } from '../layerselect/layerselect.page';
 import { environment } from '../../environments/environment';
 import { Routemap } from '../watch/routemap';
 import gql from 'graphql-tag';
 import polyline from '@mapbox/polyline';
-
+import { AuthService } from '../auth.service'
 
 @Component({
   selector: 'app-edit',
@@ -46,10 +44,9 @@ export class EditPage implements OnInit {
 
   @ViewChild('close_editbar', { static: true }) close_editbar_elem: ElementRef;
 
+  user: firebase.User
 
   loading = null;
-
-  user: RouteHubUser;
 
   route_id: string = null;
 
@@ -137,11 +134,11 @@ export class EditPage implements OnInit {
     public platform: Platform,
     public modalCtrl: ModalController,
     private geolocation: Geolocation,
-    private storage: Storage,
     public navCtrl: NavController,
     private ngRoute: ActivatedRoute,
     public loadingCtrl: LoadingController,
     private apollo: Apollo,
+    public authService: AuthService,
   ) {
     this.routemap = new Routemap();
     this.line = [];
@@ -149,19 +146,12 @@ export class EditPage implements OnInit {
 
   ngOnInit() {
     this.watch = this.geolocation.watchPosition();
-
-    // ログイン
-    const that = this;
-    this.storage.get('user').then((json) => {
-      if (!json || json == '') {
-        alert('ログインしていない場合は保存ができません。\nログインされることをおすすめします。');
-        return;
-      }
-      that.user = JSON.parse(json);
-    });
   }
 
   ionViewWillEnter() {
+    // ログインユーザーを取得
+    this.user = this.authService.currentLoginUser
+
     const that = this;
     // ルートidが指定されているときは読み込み
     this.route_id = this.ngRoute.snapshot.paramMap.get('id');
@@ -672,7 +662,7 @@ export class EditPage implements OnInit {
     event.stopPropagation();
 
     // TODO ログインしていないときはローカルストレージに入れて一時保存させてあげたいなぁ
-    if (!this.user || !this.user.token || this.user.token === '') {
+    if (!this.user) {
       alert('ログインしてから作成してください');
       return;
     }
@@ -710,6 +700,7 @@ export class EditPage implements OnInit {
     const start_point_name = await this.getAddressName(this.line[0]).then((address) => address);
     const goal_point_name = await this.getAddressName(this.line[this.line.length - 1]).then((address) => address);
 
+    const token = await this.user.getIdToken()
     const route = {
       id: this.route_id || '',
       title: `${this.title.replace('\n', '')}`,
@@ -732,8 +723,8 @@ export class EditPage implements OnInit {
       note: JSON.stringify([
         //        { pos: 1, txt: 'hogehoge' },
       ]),
-      firebase_id_token: `${this.user.token}`,
-    };
+      firebase_id_token: `${token}`,
+    }
 
     // ルートをpost    
     const graphquery = gql`mutation SaveRoute($id: String, $author: String!, $title: String!, $body:String, $summary: String!, $tag:String, $total_dist:Float!, $total_elevation: Float!, $max_elevation: Float!, $max_slope:Float!, $avg_slope:Float!, $start_point: String!, $goal_point: String!, $is_private:Boolean, $pos: String!, $level:String!, $kind: String, $note:String) {

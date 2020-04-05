@@ -6,7 +6,7 @@ import { Apollo } from 'apollo-angular';
 import { SearchSettingComponent } from '../search-setting/search-setting.component';
 import { environment } from '../../environments/environment';
 import { RouteModel } from '../model/routemodel';
-import { Storage } from '@ionic/storage';
+import { AuthService } from '../auth.service'
 
 @Component({
   selector: 'app-list',
@@ -22,7 +22,7 @@ export class ListPage implements OnInit {
   showSearchHeader: boolean = false;
   showTitlePane: boolean = true;
   loading = null
-  photoURL
+  user: firebase.User
 
   /**
    * 検索用パラメーター
@@ -55,9 +55,9 @@ export class ListPage implements OnInit {
     public loadingCtrl: LoadingController,
     public popoverController: PopoverController,
     public platform: Platform,
-    private storage: Storage,
     private location: Location,
     private apollo: Apollo,
+    private authService: AuthService,
   ) {
   }
 
@@ -86,30 +86,17 @@ export class ListPage implements OnInit {
 
     this.search();
 
-
-    let that = this;
-    if (this.logoutButton) {
-      this.logoutButton.el.style.display = 'none';
+    // ログインユーザーを取得
+    this.user = this.authService.currentLoginUser
+    if (this.platform.is('mobile')) {
+      if (!this.user) {
+        this.loginButton.el.style.display = 'none';
+      } else {
+        this.logoutButton.el.style.display = 'block';
+        this.logoutButton.el.style.color = '#ffffff9c';
+        this.logoutButton.el.style.background = '#ffffffa6';
+      }
     }
-    if (this.loginButton) {
-      this.loginButton.el.style.display = 'block';
-    }
-
-    this.storage.get('user').then((json) => {
-      if (!json || json == "") {
-        return;
-      }
-      let user = JSON.parse(json);
-      that.photoURL = user.photo_url;
-      if (that.loginButton) {
-        that.loginButton.el.style.display = 'none';
-      }
-      if (that.logoutButton) {
-        that.logoutButton.el.style.display = 'block';
-        that.logoutButton.el.style.color = '#ffffff9c';
-        that.logoutButton.el.style.background = '#ffffffa6';
-      }
-    });
   }
 
   changeURL() {

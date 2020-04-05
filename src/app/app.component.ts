@@ -6,7 +6,6 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { User } from 'firebase';
 
-import { Storage } from '@ionic/storage';
 import gql from 'graphql-tag';
 
 import { Apollo, ApolloModule } from 'apollo-angular';
@@ -15,6 +14,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { Events } from './Events';
 import { environment } from '../environments/environment';
 import { RouteHubUser } from './model/routehubuser';
+import { AuthService } from './auth.service'
 
 @Component({
   selector: 'app-root',
@@ -50,8 +50,8 @@ export class AppComponent implements OnInit {
     public auth: AngularFireAuth,
     private navCtrl: NavController,
     public events: Events,
-    private storage: Storage,
     private apollo: Apollo,
+    private authService: AuthService,
   ) {
     this.initializeApp();
     this.initializeAuth();
@@ -83,27 +83,15 @@ export class AppComponent implements OnInit {
   }
 
   async initializeAuth() {
-    // 現在のログイン状態を確認
-    this.user = this.auth.auth.currentUser;
+    this.authService.user.subscribe(async (_user) => {
 
-    // ログイン済みでヘッダをつけてクライアントを作成
-    this.auth.authState.subscribe(async (_user) => {
+      // ログイン済みでヘッダをつけてクライアントを作成
       if (!_user) {
         this.user = null;
-        this.storage.remove('user');
         return;
       }
 
       this.user = _user;
-      const rhuser = new RouteHubUser(
-        _user.uid,
-        '',
-        _user.displayName,
-        _user.photoURL,
-        _user.providerData[0].providerId,
-        '',
-      );
-      this.storage.set('user', JSON.stringify(rhuser));
 
       // clientにヘッダーをつける作業&表示名取得
       const token = await _user.getIdToken();
@@ -116,21 +104,6 @@ export class AppComponent implements OnInit {
         }),
         cache: new InMemoryCache(),
       });
-      const graphquery = gql`{ getUser{ display_name  } }`;
-      this.apollo.query({
-        query: graphquery,
-      }).subscribe(({ data }) => {
-        const nickname: any = data;
-        const rhuser = new RouteHubUser(
-          _user.uid,
-          nickname,
-          _user.displayName,
-          _user.photoURL,
-          _user.providerData[0].providerId,
-          token,
-        );
-        this.storage.set('user', JSON.stringify(rhuser));
-      });
     });
   }
 
@@ -139,7 +112,7 @@ export class AppComponent implements OnInit {
   }
 
   routing() {
-    return this.isLogin() ? '/migration' : '/login';
+    return this.isLogin() ? '/my' : '/login';
   }
 
   toLoginPage() {

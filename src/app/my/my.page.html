@@ -11,20 +11,20 @@
     <ion-row align-items-center *ngIf="user">
       <ion-col size=3 *ngIf="platform.is('mobile')">
         <ion-avatar class="ion-avatar">
-          <img src="{{user.photo_url}}">
+          <img src="{{user.photoURL}}">
         </ion-avatar>
       </ion-col>
 
       <ion-col size-md *ngIf="platform.is('desktop')">
         <ion-avatar class="ion-avatar">
-          <img src="{{user.photo_url}}">
+          <img src="{{user.photoURL}}">
         </ion-avatar>
       </ion-col>
       <ion-col size-lg>
         <ion-row>
           <ion-col>
-            <ion-label style="font-size:50%;color:gray">認証元 : {{user.provider}}</ion-label><br />
-            <ion-label style="font-size:50%;color:gray">認証元ID :{{user.firebase_display_name}}</ion-label>
+            <ion-label style="font-size:50%;color:gray">認証元 : {{user.providerData[0].providerId}}</ion-label><br />
+            <ion-label style="font-size:50%;color:gray">認証元ID :{{user.providerData[0].displayName}}</ion-label>
           </ion-col>
           <ion-col>
             <ion-button color="light" (click)="logout()">ログアウト</ion-button>

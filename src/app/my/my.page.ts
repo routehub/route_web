@@ -1,6 +1,5 @@
 import { RouteHubUser } from '../model/routehubuser';
 import { Component, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { Platform, NavController, LoadingController } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
@@ -10,6 +9,7 @@ import { Apollo } from 'apollo-angular';
 import { RouteModel } from '../model/routemodel';
 import { environment } from '../../environments/environment';
 import { Events } from '../Events';
+import { AuthService } from '../auth.service'
 
 @Component({
   selector: 'app-my',
@@ -19,7 +19,7 @@ import { Events } from '../Events';
 export class MyPage implements OnInit {
   loading = null
 
-  user: RouteHubUser;
+  user: firebase.User
 
   display_name: string;
 
@@ -30,23 +30,13 @@ export class MyPage implements OnInit {
   constructor(
     private navCtrl: NavController,
     public loadingCtrl: LoadingController,
-    private storage: Storage,
-    private http: HttpClient,
+    private authService: AuthService,
     public events: Events,
     public platform: Platform,
     private apollo: Apollo,
   ) { }
 
-  ngOnInit() {
-    // ログイン
-    const that = this;
-    this.storage.get('user').then((json) => {
-      if (!json || json == '') {
-        return;
-      }
-      that.user = JSON.parse(json);
-    });
-  }
+  ngOnInit() { }
 
   /**
    * 公開非公開切り替えのイベントハンドラ
@@ -155,6 +145,9 @@ export class MyPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    // ログイン状態を取得
+    this.user = this.authService.currentLoginUser
+
     window.document.title = 'マイページ RouteHub(β)';
 
     // 表示用ユーザー名を取得
@@ -231,7 +224,7 @@ export class MyPage implements OnInit {
       return `${p[1]},${p[0]}`;
     }).join(',');
     return `${environment.api.staticmap_url}?appid=${environment.api.thumbappid
-    }&autoscale=on&scalebar=off&width=450&height=300&l=` + `0,0,255,105,4,${ // rgb, a, weight
+      }&autoscale=on&scalebar=off&width=450&height=300&l=` + `0,0,255,105,4,${ // rgb, a, weight
       line}`;
   }
 

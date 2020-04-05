@@ -8,7 +8,6 @@ import {
 } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
-import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase/app';
 import gql from 'graphql-tag';
 import { Apollo } from 'apollo-angular';
@@ -22,6 +21,7 @@ import { RouteHubUser } from '../model/routehubuser';
 import { RouteModel } from '../model/routemodel';
 import 'firebase/auth';
 import { getRouteQuery } from '../gql/RouteQuery';
+import { AuthService } from '../auth.service'
 
 
 @Component({
@@ -35,7 +35,7 @@ export class WatchPage implements OnInit {
 
   loading = null
 
-  user: RouteHubUser;
+  user: firebase.User
 
   route_data: RouteModel;
 
@@ -111,10 +111,9 @@ export class WatchPage implements OnInit {
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
     public platform: Platform,
-    private storage: Storage,
     public toastController: ToastController,
     private apollo: Apollo,
-
+    private authService: AuthService,
   ) {
     this.routemap = new Routemap();
   }
@@ -134,16 +133,6 @@ export class WatchPage implements OnInit {
     window.dispatchEvent(new Event('resize'));
     this.watch = this.geolocation.watchPosition();
     window.document.title = 'ルートを見る RouteHub(β)';
-
-
-    // ログイン
-    const that = this;
-    this.storage.get('user').then((json) => {
-      if (!json || json == '') {
-        return;
-      }
-      that.user = JSON.parse(json);
-    });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -156,15 +145,16 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    // ログインユーザーを取得
+    this.user = this.authService.currentLoginUser
+
     this.presentLoading();
 
     const routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
     this.map = routemap.map;
     this.elevation = routemap.elevation;
 
-
     this.id = this.route.snapshot.paramMap.get('id');
-    //    this.route_data.id = id;
 
     const that = this;
 
@@ -260,7 +250,7 @@ export class WatchPage implements OnInit {
   }
 
   updateFavorite() {
-    if (!this.route_data.id || !this.user || !this.user.uid) {
+    if (!this.route_data.id || !this.user) {
       return;
     }
 
