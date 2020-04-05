@@ -1,7 +1,5 @@
-import { RouteHubUser } from '../model/routehubuser';
 import { Component, OnInit } from '@angular/core';
 import { Platform, NavController, LoadingController } from '@ionic/angular';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import gql from 'graphql-tag';
