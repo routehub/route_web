@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as firebaseui from 'firebaseui';
-import * as firebase from 'firebase/app';
-import { environment } from '../../environments/environment';
 import { AuthService } from '../auth.service'
 
 

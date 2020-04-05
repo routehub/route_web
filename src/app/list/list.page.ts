@@ -4,7 +4,6 @@ import { Location } from '@angular/common';
 import gql from 'graphql-tag';
 import { Apollo } from 'apollo-angular';
 import { SearchSettingComponent } from '../search-setting/search-setting.component';
-import { environment } from '../../environments/environment';
 import { RouteModel } from '../model/routemodel';
 import { AuthService } from '../auth.service'
 

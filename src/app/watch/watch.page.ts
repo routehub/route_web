@@ -1,7 +1,6 @@
 import {
   Component, OnInit, ViewChild, ElementRef, HostListener,
 } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import {
   ModalController, NavController, ToastController, Platform, LoadingController,
@@ -17,7 +16,6 @@ import { LayerselectPage } from '../layerselect/layerselect.page';
 
 import { Routemap } from './routemap';
 import { environment } from '../../environments/environment';
-import { RouteHubUser } from '../model/routehubuser';
 import { RouteModel } from '../model/routemodel';
 import 'firebase/auth';
 import { getRouteQuery } from '../gql/RouteQuery';
@@ -104,7 +102,6 @@ export class WatchPage implements OnInit {
   _routemap: any;
 
   constructor(
-    private http: HttpClient,
     private route: ActivatedRoute,
     private geolocation: Geolocation,
     public modalCtrl: ModalController,

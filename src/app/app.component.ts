@@ -13,7 +13,6 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { Events } from './Events';
 import { environment } from '../environments/environment';
-import { RouteHubUser } from './model/routehubuser';
 import { AuthService } from './auth.service'
 
 @Component({
