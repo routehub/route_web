@@ -1,5 +1,5 @@
 
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
 
 export function getRouteQuery() {
@@ -25,5 +25,5 @@ export function getRouteQuery() {
         note
       }
     }
-    `;
+    `
 }

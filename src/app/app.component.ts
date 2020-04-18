@@ -1,18 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Platform, NavController } from '@ionic/angular';
-import { HttpClient } from '@angular/common/http';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { User } from 'firebase';
-
-import gql from 'graphql-tag';
-
-import { Apollo, ApolloModule } from 'apollo-angular';
-import { createHttpLink } from 'apollo-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { Events } from './Events';
-import { environment } from '../environments/environment';
+import { Component, OnInit } from '@angular/core'
+import { Platform, NavController } from '@ionic/angular'
+import { SplashScreen } from '@ionic-native/splash-screen/ngx'
+import { StatusBar } from '@ionic-native/status-bar/ngx'
+import { AngularFireAuth } from 'angularfire2/auth'
+import { User } from 'firebase'
+import { Apollo } from 'apollo-angular'
+import { createHttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { Events } from './Events'
+import { environment } from '../environments/environment'
 import { AuthService } from './auth.service'
 
 @Component({
@@ -24,17 +20,17 @@ export class AppComponent implements OnInit {
     {
       title: '検索',
       icon: 'search',
-      route: () => { this.navCtrl.navigateForward('/'); },
+      route: () => { this.navCtrl.navigateForward('/') },
     },
     {
       title: 'gpxアップロード',
       icon: 'cloud-upload-outline',
-      route: () => { alert('ルートラボ移行は終了しました。\n一括アップロード機能を開発予定です。'); return false; },
+      route: () => { alert('ルートラボ移行は終了しました。\n一括アップロード機能を開発予定です。'); return false }, // eslint-disable-line
     },
     {
       title: 'ルート作成',
       icon: 'create-outline',
-      route: () => { this.navCtrl.navigateForward('/edit'); },
+      route: () => { this.navCtrl.navigateForward('/edit') },
     },
   ];
 
@@ -52,8 +48,8 @@ export class AppComponent implements OnInit {
     private apollo: Apollo,
     private authService: AuthService,
   ) {
-    this.initializeApp();
-    this.initializeAuth();
+    this.initializeApp()
+    this.initializeAuth()
   }
 
   ngOnInit() {
@@ -61,68 +57,67 @@ export class AppComponent implements OnInit {
      * 共通化するイベントの登録
      */
     this.events.subscribe('user:toLoginPage', () => {
-      this.toLoginPage();
-    });
+      this.toLoginPage()
+    })
     this.events.subscribe('user:logout', () => {
-      this.logout();
-    });
+      this.logout()
+    })
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      this.statusBar.styleDefault()
+      this.splashScreen.hide()
 
       // モバイル出ないときのデザイン調整
       if (!this.platform.is('mobile')) {
-        this.tabslot = 'top';
-        this.appPages.shift();
+        this.tabslot = 'top'
+        this.appPages.shift()
       }
-    });
+    })
   }
 
   async initializeAuth() {
     this.authService.user.subscribe(async (_user) => {
-
       // ログイン済みでヘッダをつけてクライアントを作成
       if (!_user) {
-        this.user = null;
-        return;
+        this.user = null
+        return
       }
 
-      this.user = _user;
+      this.user = _user
 
       // clientにヘッダーをつける作業&表示名取得
-      const token = await _user.getIdToken();
+      const token = await _user.getIdToken()
       // apollo client 更新
-      this.apollo.removeClient();
+      this.apollo.removeClient()
       this.apollo.create({
         link: createHttpLink({
           uri: environment.api.graphql_host,
           headers: { token },
         }),
         cache: new InMemoryCache(),
-      });
-    });
+      })
+    })
   }
 
   isLogin() {
-    return this.user !== null;
+    return this.user !== null
   }
 
   routing() {
-    return this.isLogin() ? '/my' : '/login';
+    return this.isLogin() ? '/my' : '/login'
   }
 
   toLoginPage() {
-    this.navCtrl.navigateForward('/login');
+    this.navCtrl.navigateForward('/login')
   }
 
   logout() {
-    this.auth.auth.signOut();
+    this.auth.auth.signOut()
   }
 
   getUser() {
-    return this.user;
+    return this.user
   }
 }

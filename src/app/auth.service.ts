@@ -1,13 +1,12 @@
-import { Injectable } from '@angular/core';
-import { AngularFireAuth } from 'angularfire2/auth';
-import * as firebase from 'firebase/app';
-import { Observable } from 'rxjs/Observable';
+import { Injectable } from '@angular/core'
+import { AngularFireAuth } from 'angularfire2/auth'
+import * as firebase from 'firebase/app'
+import { Observable } from 'rxjs/Observable'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   currentLoginUser: firebase.User // 簡易的にログイン状態を保持
 
   user: Observable<firebase.User>
@@ -15,9 +14,9 @@ export class AuthService {
   constructor(private angularFireAuth: AngularFireAuth) {
     this.user = angularFireAuth.authState
 
-    this.user.subscribe(u => {
-      //console.log('subcribe')
-      //console.dir(u)
+    this.user.subscribe((u) => {
+      // console.log('subcribe')
+      // console.dir(u)
 
       this.currentLoginUser = u
     })
@@ -42,5 +41,4 @@ export class AuthService {
   public logout() {
     this.angularFireAuth.auth.signOut()
   }
-
 }

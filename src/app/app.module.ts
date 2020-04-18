@@ -23,7 +23,7 @@ import { ExportPageModule } from './export/export.module';
 
 import { environment } from '../environments/environment';
 import { LayerselectPageModule } from './layerselect/layerselect.module';
-import { AuthService } from './auth.service'
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class IonicGestureConfig extends HammerGestureConfig {

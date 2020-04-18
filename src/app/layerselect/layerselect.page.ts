@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core'
+import { ModalController } from '@ionic/angular'
 
 @Component({
   selector: 'app-layerselect',
@@ -9,18 +9,17 @@ import { ModalController, NavParams } from '@ionic/angular';
 export class LayerselectPage implements OnInit {
   constructor(
     private modalController: ModalController,
-    private navParams: NavParams,
   ) { }
 
   ngOnInit() {
   }
 
   changeLayer(index: number) {
-    const layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0];
-    layerControlElement.getElementsByTagName('input')[index].click();
+    const layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0]
+    layerControlElement.getElementsByTagName('input')[index].click()
   }
 
   async closeModal() {
-    await this.modalController.dismiss();
+    await this.modalController.dismiss()
   }
 }

@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Platform, NavController, LoadingController } from '@ionic/angular';
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
-import gql from 'graphql-tag';
-import { Apollo } from 'apollo-angular';
-import { RouteModel } from '../model/routemodel';
-import { environment } from '../../environments/environment';
-import { Events } from '../Events';
+import { Component, OnInit } from '@angular/core'
+import { Platform, NavController, LoadingController } from '@ionic/angular'
+import * as firebase from 'firebase/app'
+import 'firebase/auth'
+import gql from 'graphql-tag'
+import { Apollo } from 'apollo-angular'
+import { RouteModel } from '../model/routemodel'
+import { environment } from '../../environments/environment'
+import { Events } from '../Events'
 import { AuthService } from '../auth.service'
 
 @Component({
@@ -19,7 +19,7 @@ export class MyPage implements OnInit {
 
   user: firebase.User
 
-  display_name: string;
+  displayName: string;
 
   isMyRoute: Boolean;
 
@@ -40,24 +40,24 @@ export class MyPage implements OnInit {
    * 公開非公開切り替えのイベントハンドラ
    * @param item
    */
-  toggle_private(item) {
+  togglePrivate(item) {
     // UI変更
-    item.is_private = !item.is_private;
-    item.is_private_ja = item.is_private ? '非公開' : '公開';
+    item.isPrivate = !item.isPrivate // eslint-disable-line
+    item.isPrivateJa = item.isPrivate ? '非公開' : '公開' // eslint-disable-line
 
     const graphquery = gql`mutation ChangePrivateStatus($id: String!, $is_private: Boolean!) {
         changePrivateStatus(id: $id, is_private : $is_private) { 
           id,
           is_private
         } 
-    }`;
+    }`
     this.apollo.mutate({
       mutation: graphquery,
       variables: {
         id: item.id,
         is_private: item.is_private,
       },
-    }).subscribe(({ data }) => { });
+    }).subscribe(({ data }) => { }) // eslint-disable-line
   }
 
   /**
@@ -65,16 +65,16 @@ export class MyPage implements OnInit {
    * @param item
    */
   delete(item) {
-    if (!window.confirm('もとに戻せません。本当に削除しますか？')) {
-      return;
+    if (!window.confirm('もとに戻せません。本当に削除しますか？')) { // eslint-disable-line
+      return
     }
 
     for (let i = 0; i < this.items.length; i++) {
       if (this.items[i].id === item.id) {
         // UIから削除
-        this.items.splice(i, 1);
+        this.items.splice(i, 1)
         // DBから削除
-        this.deleteRoute(item.id);
+        this.deleteRoute(item.id)
       }
     }
   }
@@ -88,18 +88,18 @@ export class MyPage implements OnInit {
         deleteRoute(ids: $ids) { 
           id
         } 
-        }`;
+        }`
     this.apollo.mutate({
       mutation: graphquery,
       variables: { ids: [id] },
     }).subscribe(({ data }) => {
-      console.dir(data);
-    });
+      console.dir(data) // eslint-disable-line
+    })
   }
 
   showMyRoute() {
-    this.isMyRoute = true;
-    this.items = [];
+    this.isMyRoute = true
+    this.items = []
     // update順ではなくcreate順
     const graphquery = gql`query PrivateSearch($page: Float) {
       privateSearch(search: { page: $page, sort_key: "created_at"}) {
@@ -116,13 +116,13 @@ export class MyPage implements OnInit {
         summary
         is_private
       }
-    }`;
-    this.getMyLikeRoute(graphquery);
+    }`
+    this.getMyLikeRoute(graphquery)
   }
 
   showLikeRoute() {
-    this.isMyRoute = false;
-    this.items = [];
+    this.isMyRoute = false
+    this.items = []
     const graphquery = gql`query GetLikeSesrch($page: Float) {
       getLikeSesrch(search: { page: $page}) {
         id
@@ -138,34 +138,34 @@ export class MyPage implements OnInit {
         summary
         is_private
       }
-    }`;
-    this.getMyLikeRoute(graphquery);
+    }`
+    this.getMyLikeRoute(graphquery)
   }
 
   ionViewWillEnter() {
     // ログイン状態を取得
     this.user = this.authService.currentLoginUser
 
-    window.document.title = 'マイページ RouteHub(β)';
+    window.document.title = 'マイページ RouteHub(β)'
 
     // 表示用ユーザー名を取得
     const graphquery = gql`{
       getUser { 
         display_name
       } 
-    }`;
+    }`
     this.apollo.query({
       query: graphquery,
     }).subscribe(({ data }) => {
-      const _d: any = data;
-      this.display_name = _d.getUser.display_name;
+      const loginData: any = data
+      this.displayName = loginData.getUser.display_name
 
-      this.showMyRoute();
-    });
+      this.showMyRoute()
+    })
   }
 
   pageSelected(item) {
-    this.navCtrl.navigateForward(`/watch/${item.id}`);
+    this.navCtrl.navigateForward(`/watch/${item.id}`)
   }
 
   /**
@@ -176,11 +176,11 @@ export class MyPage implements OnInit {
         saveUser(display_name: $display_name) { 
           display_name
         } 
-        }`;
+        }`
     this.apollo.mutate({
       mutation: graphquery,
-      variables: { display_name: this.display_name },
-    }).subscribe(({ data }) => { });
+      variables: { display_name: this.displayName },
+    }).subscribe(({ data }) => { }) // eslint-disable-line
   }
 
   /**
@@ -188,7 +188,7 @@ export class MyPage implements OnInit {
    * @param graphquery
    */
   async getMyLikeRoute(graphquery) {
-    this.presentLoading();
+    this.presentLoading()
 
     this.apollo.query({
       query: graphquery,
@@ -197,38 +197,36 @@ export class MyPage implements OnInit {
       },
       fetchPolicy: 'no-cache',
     }).subscribe(({ data }) => {
-      this.dissmissLoading();
+      this.dissmissLoading()
 
-      const _res: any = data;
-      const res: any = _res.privateSearch ? _res.privateSearch : _res.getLikeSesrch;
+      const likeData: any = data
+      const res: any = likeData.privateSearch ? likeData.privateSearch : likeData.getLikeSesrch
 
       if (!res) {
-        return;
+        return
       }
       for (let i = 0; i < res.length; i++) {
-        const r = new RouteModel();
-        r.setData(res[i]);
-        this.items.push(r);
+        const r = new RouteModel()
+        r.setData(res[i])
+        this.items.push(r)
       }
 
-      const response: any = res;
-      return response;
-    });
+      const response: any = res
+      return response
+    })
   }
 
   private getThumbUrl(summary) {
     const line = summary.slice(11, -1).split(',').map((pos) => {
-      const p = pos.split(' ');
-      return `${p[1]},${p[0]}`;
-    }).join(',');
-    return `${environment.api.staticmap_url}?appid=${environment.api.thumbappid
-      }&autoscale=on&scalebar=off&width=450&height=300&l=` + `0,0,255,105,4,${ // rgb, a, weight
-      line}`;
+      const p = pos.split(' ')
+      return `${p[1]},${p[0]}`
+    }).join(',')
+    return `${environment.api.staticmap_url}?appid=${environment.api.thumbappid}&autoscale=on&scalebar=off&width=450&height=300&l=` + `0,0,255,105,4,${line}` // eslint-disable-line
   }
 
   logout() {
-    this.events.publish('user:logout', {});
-    this.navCtrl.navigateForward('/login');
+    this.events.publish('user:logout', {})
+    this.navCtrl.navigateForward('/login')
   }
 
 
@@ -236,14 +234,14 @@ export class MyPage implements OnInit {
     this.loading = await this.loadingCtrl.create({
       message: 'loading',
       duration: 3000,
-    });
+    })
     // ローディング画面を表示
-    await this.loading.present();
+    await this.loading.present()
   }
 
   async dissmissLoading() {
     if (this.loading) {
-      await this.loading.dismiss();
+      await this.loading.dismiss()
     }
   }
 }

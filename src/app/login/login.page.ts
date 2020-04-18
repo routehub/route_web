@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 import { AuthService } from '../auth.service'
 
 
@@ -8,7 +8,6 @@ import { AuthService } from '../auth.service'
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-
   constructor(
     public authService: AuthService,
   ) { }
@@ -16,6 +15,6 @@ export class LoginPage implements OnInit {
   ngOnInit() { }
 
   ionViewDidEnter() {
-    window.document.title = 'ログイン RouteHub(β)';
+    window.document.title = 'ログイン RouteHub(β)'
   }
 }

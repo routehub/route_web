@@ -1,10 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonInfiniteScroll, NavController, PopoverController, LoadingController, Platform, IonHeader } from '@ionic/angular';
-import { Location } from '@angular/common';
-import gql from 'graphql-tag';
-import { Apollo } from 'apollo-angular';
-import { SearchSettingComponent } from '../search-setting/search-setting.component';
-import { RouteModel } from '../model/routemodel';
+import { Component, OnInit, ViewChild } from '@angular/core'
+import {
+  IonInfiniteScroll, NavController, PopoverController, LoadingController, Platform,
+} from '@ionic/angular'
+import { Location } from '@angular/common'
+import gql from 'graphql-tag'
+import { Apollo } from 'apollo-angular'
+import { SearchSettingComponent } from '../search-setting/search-setting.component'
+import { RouteModel } from '../model/routemodel'
 import { AuthService } from '../auth.service'
 
 @Component({
@@ -13,14 +15,18 @@ import { AuthService } from '../auth.service'
   styleUrls: ['list.page.scss'],
 })
 export class ListPage implements OnInit {
-
   @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
+
   @ViewChild('logoutButton', { static: false }) logoutButton: any;
+
   @ViewChild('loginButton', { static: false }) loginButton: any;
 
   showSearchHeader: boolean = false;
+
   showTitlePane: boolean = true;
+
   loading = null
+
   user: firebase.User
 
   /**
@@ -28,19 +34,19 @@ export class ListPage implements OnInit {
    */
   private page = 1;
 
-  private per_page = 6;
+  // private per_page = 6;
 
   public query = ''; // viewとも共通
 
-  private query_type = 'keyword';
+  private queryType = 'keyword';
 
-  private sort_type = 'created_at';
+  private sortType = 'created_at';
 
-  private order_type = 'DESC';
+  private orderType = 'DESC';
 
-  private dist_opt = '';
+  private distOpt = '';
 
-  private elev_opt = '';
+  private elevOpt = '';
 
 
   /**
@@ -65,64 +71,64 @@ export class ListPage implements OnInit {
 
   changeTitle() {
     if (this.query !== '') {
-      window.document.title = `"${this.query}"で検索 RouteHub`;
+      window.document.title = `"${this.query}"で検索 RouteHub`
     } else {
-      window.document.title = '検索 RouteHub(β)';
+      window.document.title = '検索 RouteHub(β)'
     }
   }
 
   ionViewWillEnter() {
-    this.presentLoading();
+    this.presentLoading()
 
     // URLのパラメーター処理
-    const param = new URLSearchParams((new URL(window.location.href)).search);
-    this.query = param.get('query') || '';
-    this.query_type = param.get('mode') || 'keyword';
-    this.sort_type = param.get('sort_type');
-    this.order_type = param.get('order_type');
-    this.dist_opt = param.get('dist_opt');
-    this.elev_opt = param.get('elev_opt');
+    const param = new URLSearchParams((new URL(window.location.href)).search)
+    this.query = param.get('query') || ''
+    this.queryType = param.get('mode') || 'keyword'
+    this.sortType = param.get('sort_type')
+    this.orderType = param.get('order_type')
+    this.distOpt = param.get('dist_opt')
+    this.elevOpt = param.get('elev_opt')
 
-    this.search();
+    this.search()
 
     // ログインユーザーを取得
     this.user = this.authService.currentLoginUser
     if (this.platform.is('mobile')) {
       if (!this.user) {
-        this.loginButton.el.style.display = 'none';
+        this.loginButton.el.style.display = 'none'
       } else {
-        this.logoutButton.el.style.display = 'block';
-        this.logoutButton.el.style.color = '#ffffff9c';
-        this.logoutButton.el.style.background = '#ffffffa6';
+        this.logoutButton.el.style.display = 'block'
+        this.logoutButton.el.style.color = '#ffffff9c'
+        this.logoutButton.el.style.background = '#ffffffa6'
       }
     }
   }
 
   changeURL() {
     // メンバ変数からURLパラメーターを積んで動的に変更する
-    let param = '';
+    let param = ''
     if (this.query && this.query !== '') {
-      param += `query=${this.query}&`;
+      param += `query=${this.query}&`
     }
-    if (this.query_type && this.query_type !== 'keyword') {
-      param += `mode=${this.query_type}&`;
+    if (this.queryType && this.queryType !== 'keyword') {
+      param += `mode=${this.queryType}&`
     }
-    if (this.sort_type && this.sort_type !== 'created_at') {
-      param += `sort_type=${this.sort_type}&`;
+    if (this.sortType && this.sortType !== 'created_at') {
+      param += `sort_type=${this.sortType}&`
     }
-    if (this.order_type && this.order_type !== 'DESC') {
-      param += `order_type=${this.order_type}&`;
+    if (this.orderType && this.orderType !== 'DESC') {
+      param += `order_type=${this.orderType}&`
     }
-    if (this.dist_opt && this.dist_opt !== '') {
-      param += `dist_opt=${this.dist_opt}&`;
+    if (this.distOpt && this.distOpt !== '') {
+      param += `dist_opt=${this.distOpt}&`
     }
-    if (this.elev_opt && this.elev_opt !== '') {
-      param += `elev_opt=${this.elev_opt}&`;
+    if (this.elevOpt && this.elevOpt !== '') {
+      param += `elev_opt=${this.elevOpt}&`
     }
     // console.log(param);
-    this.location.replaceState('/', param);
+    this.location.replaceState('/', param)
 
-    this.changeTitle();
+    this.changeTitle()
   }
 
   /** *
@@ -133,79 +139,80 @@ export class ListPage implements OnInit {
       component: SearchSettingComponent,
       componentProps: {
         query: this.query,
-        query_type: this.query_type,
-        sort_type: this.sort_type,
-        order_type: this.order_type,
-        dist_opt: this.dist_opt,
-        elev_opt: this.elev_opt,
+        query_type: this.queryType,
+        sort_type: this.sortType,
+        order_type: this.orderType,
+        dist_opt: this.distOpt,
+        elev_opt: this.elevOpt,
       },
       event: ev,
       translucent: true,
       cssClass: 'search-settingmenu',
       mode: 'md',
-    });
-    await popover.present();
-    popover.onDidDismiss().then((search_opt) => {
-      if (!search_opt.data) {
-        return;
+    })
+    await popover.present()
+    popover.onDidDismiss().then((searchOpt) => {
+      if (!searchOpt.data) {
+        return
       }
 
       // 検索オプションデバッグはこれよ
-      console.dir(search_opt);
+      // console.dir(searchOpt)
 
-      this.query = search_opt.data.query;
-      this.query_type = search_opt.data.query_type;
-      this.sort_type = search_opt.data.sort_type;
-      this.order_type = search_opt.data.order_type;
+      this.query = searchOpt.data.query
+      this.queryType = searchOpt.data.query_type
+      this.sortType = searchOpt.data.sort_type
+      this.orderType = searchOpt.data.order_type
 
-      if (!search_opt.data.isDistDisabled) {
-        this.dist_opt = `${search_opt.data.kmrange.lower}:${search_opt.data.kmrange.upper}`;
+      if (!searchOpt.data.isDistDisabled) {
+        this.distOpt = `${searchOpt.data.kmrange.lower}:${searchOpt.data.kmrange.upper}`
       } else {
-        this.dist_opt = '';
+        this.distOpt = ''
       }
 
-      if (!search_opt.data.isElevDisabled) {
-        this.elev_opt = `${search_opt.data.elevrange.lower}:${search_opt.data.elevrange.upper}`;
+      if (!searchOpt.data.isElevDisabled) {
+        this.elevOpt = `${searchOpt.data.elevrange.lower}:${searchOpt.data.elevrange.upper}`
       } else {
-        this.elev_opt = '';
+        this.elevOpt = ''
       }
 
-      this.page = 1;
-      this.items = [];
-      this.search();
-    });
+      this.page = 1
+      this.items = []
+      this.search()
+    })
   }
 
   wordChanged() {
-    this.page = 1;
-    this.items = [];
-    this.search();
-    this.infiniteScroll.disabled = false;
+    this.page = 1
+    this.items = []
+    this.search()
+    this.infiniteScroll.disabled = false
   }
 
-  doInfinite(event) {
-    this.page++;
-    this.search();
+  doInfinite(event) { // eslint-disable-line
+    this.page++
+    this.search()
   }
 
   pageSelected(item) {
-    this.navCtrl.navigateForward(`/watch/${item.id}`);
+    this.navCtrl.navigateForward(`/watch/${item.id}`)
   }
 
   authorSelected(item) {
-    this.wordChanged();
-    this.query = item.author;
-    this.query_type = 'author';
-    this.search();
+    this.wordChanged()
+    this.query = item.author
+    this.queryType = 'author'
+    this.search()
   }
 
-  private q(query) {
-    if (!query) {
-      return '';
+  /*
+    private q(query) {
+      if (!query) {
+        return ''
+      }
+      return query
     }
-    return query;
-  }
-
+  */
   search() {
     const graphquery = gql`query PublicSearch($query: String, $author: String, $tag: String, $dist_from:Float, $dist_to: Float, $elevation_from: Float, $elevation_to: Float, $sort_key: String, $sort_order: String$page: Float) {
       publicSearch(search: { query: $query, author: $author, tag: $tag, dist_from: $dist_from, dist_to: $dist_to, elevation_from: $elevation_from, elevation_to : $elevation_to, sort_key: $sort_key, sort_order: $sort_order,  page: $page}) {
@@ -221,77 +228,76 @@ export class ListPage implements OnInit {
         goal_point
         summary
       }
-    }`;
+    }`
 
     this.apollo.query({
 
       query: graphquery,
       variables: {
-        query: (this.query != '' && this.query_type === 'keyword') ? this.query : null,
-        author: (this.query != '' && this.query_type === 'author') ? this.query : null,
-        tag: (this.query != '' && this.query_type === 'tag') ? this.query : null,
+        query: (this.query !== '' && this.queryType === 'keyword') ? this.query : null,
+        author: (this.query !== '' && this.queryType === 'author') ? this.query : null,
+        tag: (this.query !== '' && this.queryType === 'tag') ? this.query : null,
 
-        dist_from: (this.dist_opt != null && this.dist_opt.match(/\d+:\d+/)) ? parseFloat(this.dist_opt.split(':')[0]) : null,
-        dist_to: (this.dist_opt != null && this.dist_opt.match(/\d+:\d+/)) ? parseFloat(this.dist_opt.split(':')[1]) : null,
+        dist_from: (this.distOpt != null && this.distOpt.match(/\d+:\d+/)) ? parseFloat(this.distOpt.split(':')[0]) : null,
+        dist_to: (this.distOpt != null && this.distOpt.match(/\d+:\d+/)) ? parseFloat(this.distOpt.split(':')[1]) : null,
 
-        elevation_from: (this.elev_opt != null && this.elev_opt.match(/\d+:\d+/)) ? parseFloat(this.elev_opt.split(':')[0]) : null,
-        elevation_to: (this.elev_opt != null && this.elev_opt.match(/\d+:\d+/)) ? parseFloat(this.elev_opt.split(':')[1]) : null,
+        elevation_from: (this.elevOpt != null && this.elevOpt.match(/\d+:\d+/)) ? parseFloat(this.elevOpt.split(':')[0]) : null,
+        elevation_to: (this.elevOpt != null && this.elevOpt.match(/\d+:\d+/)) ? parseFloat(this.elevOpt.split(':')[1]) : null,
 
-        sort_key: this.sort_type,
-        sort_order: this.order_type,
+        sort_key: this.sortType,
+        sort_order: this.orderType,
         page: this.page,
       },
     }).subscribe(({ data }) => {
-
       // タイトルの表示表示切り替え
-      this.showTitlePane = this.query == '' ? true : false
+      this.showTitlePane = this.query === ''
       if (!this.showTitlePane) {
         this.showSearchHeader = true
       }
 
 
-      this.dissmissLoading();
+      this.dissmissLoading()
 
-      const res: any = data;
+      const res: any = data
 
-      this.changeURL();
+      this.changeURL()
 
       if (!res.publicSearch) {
-        return;
+        return
       }
 
       if (res.publicSearch.length === 0) {
-        this.infiniteScroll.disabled = true;
+        this.infiniteScroll.disabled = true
       }
 
       for (let i = 0; i < res.publicSearch.length; i++) {
-        const r = new RouteModel();
-        r.setData(res.publicSearch[i]);
-        this.items.push(r);
+        const r = new RouteModel()
+        r.setData(res.publicSearch[i])
+        this.items.push(r)
 
-        this.infiniteScroll.complete();
+        this.infiniteScroll.complete()
       }
 
-      const response: any = res.publicSearch;
-      return response;
-    });
+      const response: any = res.publicSearch
+      return response
+    })
   }
 
   async presentLoading() {
     if (this.loading) {
-      return;
+      return
     }
     this.loading = await this.loadingCtrl.create({
       message: 'loading',
       duration: 3000,
-    });
+    })
     // ローディング画面を表示
-    await this.loading.present();
+    await this.loading.present()
   }
 
   async dissmissLoading() {
     if (this.loading) {
-      await this.loading.dismiss();
+      await this.loading.dismiss()
     }
   }
 
