@@ -16,8 +16,8 @@ export class AuthService {
     this.user = angularFireAuth.authState
 
     this.user.subscribe(u => {
-      console.log('subcribe')
-      console.dir(u)
+      //console.log('subcribe')
+      //console.dir(u)
 
       this.currentLoginUser = u
     })

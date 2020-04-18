@@ -204,7 +204,7 @@ export class EditPage implements OnInit {
 
 
     // ファイルアップロード関連の処理
-    const parse_gpx = function (xml_string) {
+    const parse_gpx = (xml_string) => {
       const route = [];
       const parser = new DOMParser();
       const xmldoc = parser.parseFromString(xml_string, 'text/xml');
@@ -228,7 +228,7 @@ export class EditPage implements OnInit {
       const filename = (<HTMLInputElement>e.target).files[0];
 
       const reader = new FileReader();
-      reader.onloadend = function (loadEvent) {
+      reader.onloadend = (loadEvent) => {
         parse_gpx((<FileReaderEventTarget>loadEvent.target).result);
       };
       reader.readAsText(filename);
@@ -955,7 +955,7 @@ class MarkerData {
     // ポイント削除ポップアップ
     const content = document.createElement('popup');
     content.innerHTML = "<a href='javascript:void(0);'>ポイント削除</a>";
-    content.onclick = function (e) {
+    content.onclick = (e) => {
       that.remove_marker();
     };
     const popup_remove = L.popup().setContent(content);
