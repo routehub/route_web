@@ -5,7 +5,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { HttpClientModule } from '@angular/common/http';
 import { WatchPage } from './watch.page';
 
 
@@ -21,7 +20,6 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    HttpClientModule,
     RouterModule.forChild(routes),
   ],
   declarations: [WatchPage],

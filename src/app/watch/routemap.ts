@@ -1,32 +1,74 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable new-cap */
-import * as L from 'leaflet';
-import turfbbox from '@turf/bbox';
-import * as turf from '@turf/helpers';
-import * as mapboxgl from 'mapbox-gl';
-import { LngLatLike } from 'mapbox-gl';
+import * as L from 'leaflet'
+import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js'
+import * as Hotline from 'leaflet-hotline'
+import turfbbox from '@turf/bbox'
+import * as turf from '@turf/helpers'
+import * as AnimatedMarker from './animatedMarker.js'
+import * as mapboxgl from 'mapbox-gl'
+import { LngLatLike } from 'mapbox-gl'
+/** *
+ * ルートModel
+ * いろんなところで使いまわしたい
+ */
+export class Route {
+  id: string;
 
-export default class Routemap {
-  gpsIcon = {
+  title: string;
+
+  body: string;
+
+  tag: string;
+
+  author: string;
+
+  summary: string;
+
+  thumburl: string;
+
+  isGps: boolean;
+
+  isPrivate: boolean;
+
+  createdAt: string;
+
+  /*
+  private staticmap_url = 'https://map.yahooapis.jp/map/V1/static';
+
+  private thumbappid = 'dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-';
+
+  private getThumbUrl(summary) {
+    const line = summary.slice(11, -1).split(',').map((pos) => {
+      const p = pos.split(' ')
+      return `${p[1]},${p[0]}`
+    }).join(',')
+    return `${this.staticmap_url}?appid=${this.thumbappid
+    }&autoscale=on&scalebar=off&width=450&height=300&l=` + `0,0,255,105,4,${ // rgb, a, weight
+      line}`
+  }
+  */
+}
+
+export class Routemap {
+  gpsIcon = new L.icon({
     iconUrl: '/assets/icon/gps_icon.png',
     iconSize: [20, 20], // size of the icon
     iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
     popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  };
+  });
 
-  startIcon = {
+  startIcon = new L.icon({
     iconUrl: '/assets/icon/start_icon.png',
     iconSize: [50, 27], // size of the icon
     iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
     popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  };
+  });
 
-  goalIcon = {
+  goalIcon = new L.icon({
     iconUrl: '/assets/icon/goal_icon.png',
     iconSize: [50, 27], // size of the icon
     iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
     popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  };
+  });
 
   commentIcon = new L.icon({
     iconUrl: '/assets/icon/comment_icon.png',
@@ -44,36 +86,39 @@ export default class Routemap {
   });
 
   private getYahooLayer() {
-    const attrString = '<a href="https://map.yahoo.co.jp/maps?hlat=35.66572&amp;lat=35.66572&amp;hlon=139.731&amp;lon=139.731&amp;z=18&amp;datum=wgs&amp;mode=map&amp;.f=jsapilogo" target="_blank" id="yolp-logo-link" class= "yolp-logo" style="z-index: 10; position: absolute; margin: 0px; padding: 0px; right: 3px; bottom: 3px;" > <img src="https://s.yimg.jp/images/maps/logo/yj_logo.png" alt = "" border="0" > </a>';
+    const attrString = '<a href="https://map.yahoo.co.jp/maps?hlat=35.66572&amp;lat=35.66572&amp;hlon=139.731&amp;lon=139.731&amp;z=18&amp;datum=wgs&amp;mode=map&amp;.f=jsapilogo" target="_blank" id="yolp-logo-link" class= "yolp-logo" style="z-index: 10; position: absolute; margin: 0px; padding: 0px; right: 3px; bottom: 3px;" > <img src="https://s.yimg.jp/images/maps/logo/yj_logo.png" alt = "" border="0" > </a>'
     const layer = new L.tileLayer('https://map.c.yimg.jp/m?x={x}&y={y}&z={z}&r=1&style=base:standard&size=512', {
       attribution: attrString,
       maxZoom: 19,
-    });
+    })
     layer.getTileUrl = function (coord) {
-      const z = coord.z + 1;
-      const { x } = coord;
-      const y = Math.pow(2, coord.z - 1) - coord.y - 1;
-      return `https://map.c.yimg.jp/m?x=${x}&y=${y}&z=${z}&r=1&style=base:standard&size=512`;
-    };
-    return layer;
+      const z = coord.z + 1
+      const { x } = coord
+      const y = Math.pow(2, coord.z - 1) - coord.y - 1
+      return `https://map.c.yimg.jp/m?x=${x}&y=${y}&z=${z}&r=1&style=base:standard&size=512`
+    }
+    return layer
   }
 
   private getOSMLayer() {
-    const url3 = 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png';
+    // const url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    // const url2 = 'https://www.toolserver.org/tiles/hikebike/{z}/{x}/{y}.png'
+    const url3 = 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png'
+    // const url4 = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
     const layer = L.tileLayer(url3, {
       attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
       maxZoom: 19,
-    });
-    return layer;
+    })
+    return layer
   }
 
   private getOSMCycleLayer() {
-    const url = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=8ff577dddcc24dbd945e80ef152bf1e5';
+    const url = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=8ff577dddcc24dbd945e80ef152bf1e5'
     const layer = L.tileLayer(url, {
       attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
       maxZoom: 19,
-    });
-    return layer;
+    })
+    return layer
   }
 
   private getGSILayer() {

@@ -1,29 +1,29 @@
 /* eslint-disable no-unused-vars */
 import {
   Component, OnInit, ViewChild, ElementRef,
-} from '@angular/core';
+} from '@angular/core'
 // import { ActivatedRoute } from '@angular/router';
 import {
   ModalController, NavController, ToastController, Platform, LoadingController,
-} from '@ionic/angular';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
-import * as L from 'leaflet';
-import { Storage } from '@ionic/storage';
-import gql from 'graphql-tag';
-import { Apollo } from 'apollo-angular';
-import { RouteinfoPage } from '../routeinfo/routeinfo.page';
-import { ExportPage } from '../export/export.page';
-import { LayerselectPage } from '../layerselect/layerselect.page';
+} from '@ionic/angular'
+import { Geolocation } from '@ionic-native/geolocation/ngx'
+import * as L from 'leaflet'
+import { Storage } from '@ionic/storage'
+import gql from 'graphql-tag'
+import { Apollo } from 'apollo-angular'
+import * as mapboxgl from 'mapbox-gl'
+import chartjsUtilsElevation from 'chartjs-util-elevation'
+import { ActivatedRoute } from '@angular/router'
+import { RouteinfoPage } from '../routeinfo/routeinfo.page'
+import { ExportPage } from '../export/export.page'
+import { LayerselectPage } from '../layerselect/layerselect.page'
 
-import Routemap from './routemap';
-import { RouteHubUser } from '../model/routehubuser';
-import { RouteModel } from '../model/routemodel';
-import 'firebase/auth';
-import { getRouteQuery } from '../gql/RouteQuery';
-import * as mapboxgl from 'mapbox-gl';
-import chartjs_utils_elevation from 'chartjs-util-elevation';
-import { ActivatedRoute } from '@angular/router';
-import MapboxAnimatedMarker from './animatedMbMarker';
+import { Routemap } from './routemap'
+import { RouteHubUser } from '../model/routehubuser'
+import { RouteModel } from '../model/routemodel'
+import 'firebase/auth'
+import { getRouteQuery } from '../gql/RouteQuery'
+import MapboxAnimatedMarker from './animatedMbMarker'
 
 @Component({
   selector: 'app-watch',
@@ -32,7 +32,6 @@ import MapboxAnimatedMarker from './animatedMbMarker';
 })
 
 export class WatchPage implements OnInit {
-
   constructor(
     private route: ActivatedRoute,
     private geolocation: Geolocation,
@@ -44,16 +43,18 @@ export class WatchPage implements OnInit {
     public toastController: ToastController,
     private apollo: Apollo,
   ) {
-    this.routemap = new Routemap();
+    this.routemap = new Routemap()
   }
-  @ViewChild('map', { static: true }) map_elem: ElementRef;
-  @ViewChild('elevation', { static: true }) elev_elem: ElementRef;
+
+  @ViewChild('map', { static: true }) mapElem: ElementRef;
+
+  @ViewChild('elevation', { static: true }) elevElem: ElementRef;
 
   loading = null;
 
   user: RouteHubUser;
 
-  route_data: RouteModel;
+  routeData: RouteModel;
 
   title = '';
 
@@ -66,7 +67,7 @@ export class WatchPage implements OnInit {
   map: any;
   // map: mapboxgl.Map;
 
-  watch_location_subscribe: any;
+  watchLocationSubscribe: any;
 
   watch: any;
 
@@ -76,7 +77,7 @@ export class WatchPage implements OnInit {
 
   elevation: any;
 
-  route_geojson = {
+  routeGeojson = {
     type: 'geojson',
     lineMetrics: true,
     data:
@@ -109,7 +110,7 @@ export class WatchPage implements OnInit {
 
   routemap: Routemap;
 
-  _routemap: any;
+  createdRoutemap: any;
 
   private playSpeedIndex = 0;
 
@@ -117,29 +118,29 @@ export class WatchPage implements OnInit {
 
   ionViewWillLeave() {
     if (this.platform.is('mobile')) {
-      window.document.querySelector('ion-tab-bar').style.display = 'inline-flex';
+      window.document.querySelector('ion-tab-bar').style.display = 'inline-flex'
     }
 
     if (this.hotlineLayer) {
-      this.map.removeLayer(this.hotlineLayer);
-      this.hotlineLayer = null;
+      this.map.removeLayer(this.hotlineLayer)
+      this.hotlineLayer = null
     }
   }
 
   ngOnInit() {
-    window.dispatchEvent(new Event('resize'));
-    this.watch = this.geolocation.watchPosition();
-    window.document.title = 'ルートを見る RouteHub(β)';
+    window.dispatchEvent(new Event('resize'))
+    this.watch = this.geolocation.watchPosition()
+    window.document.title = 'ルートを見る RouteHub(β)'
 
 
     // ログイン
-    const that = this;
+    const that = this
     this.storage.get('user').then((json) => {
       if (!json || json === '') {
-        return;
+        return
       }
-      that.user = JSON.parse(json);
-    });
+      that.user = JSON.parse(json)
+    })
   }
 
   // @HostListener('window:resize', ['$event'])
@@ -152,107 +153,109 @@ export class WatchPage implements OnInit {
   // }
 
   ionViewWillEnter() {
-    this.presentLoading();
+    this.presentLoading()
 
-    const routemap = this._routemap = this.routemap.createMap(this.map_elem.nativeElement);
-    this.map = routemap.map;
+    const routemap = this.createdRoutemap = this.routemap.createMap(this.mapElem.nativeElement)
+    this.map = routemap.map
 
     this.map.on('load', () => {
-      this.id = this.route.snapshot.paramMap.get('id');
-      const that = this;
+      this.id = this.route.snapshot.paramMap.get('id')
+      const that = this
       this.apollo.query({
         query: getRouteQuery(),
         variables: { ids: [this.id] },
       }).subscribe(({ data }) => {
-        this.dissmissLoading();
-        const _route: any = data;
-        const route = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0]);
+        this.dissmissLoading()
+        const routeData: any = data
+        const route = Object.assign(routeData.getPublicRoutes[0], routeData.publicSearch[0])
 
-        that.route_data = new RouteModel();
-        that.route_data.setFullData(route);
-        console.log(that.route_data);
+        that.routeData = new RouteModel()
+        that.routeData.setFullData(route)
+        console.log(that.routeData)
 
         // お気に入りの更新
-        this.updateFavorite();
+        this.updateFavorite()
 
         // タイトル変更
-        that.title = that.route_data.title;
-        window.document.title = `${that.route_data.title} RouteHub(β)`;
-        that.author = that.route_data.author;
+        that.title = that.routeData.title
+        window.document.title = `${that.routeData.title} RouteHub(β)`
+        that.author = that.routeData.author
 
         // 標高グラフ用のデータ作成
-        const { pos } = that.route_data;
-        for (let i = 0; i < that.route_data.level.length; i++) {
-          pos[i].push(that.route_data.level[i] * 1);
+        const { pos } = that.routeData
+        for (let i = 0; i < that.routeData.level.length; i++) {
+          pos[i].push(that.routeData.level[i] * 1)
         }
-        that.route_geojson.data.geometry.coordinates = pos;
+        that.routeGeojson.data.geometry.coordinates = pos
         // ルート表示
-        this.routemap.renderRouteLayer(that.map, that.route_geojson as any);
+        this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
 
         // 標高グラフ表示
-        console.dir(that.route_data);
-        let elevation = chartjs_utils_elevation(this.elev_elem.nativeElement, that.route_data.pos, {});
-        console.dir(elevation);
+        console.dir(that.routeData)
+        const elevation = chartjsUtilsElevation(this.elevElem.nativeElement, that.routeData.pos, {})
+        console.dir(elevation)
 
-        const lnglats = that.route_geojson.data.geometry.coordinates.map(p => {
-          return new mapboxgl.LngLat(p[0], p[1]);
-        });
+        const lnglats = that.routeGeojson.data.geometry.coordinates
+          .map((p) => new mapboxgl.LngLat(p[0], p[1]))
 
         // アニメーション機能初期化
-        this.mbAnimatedMarker = new MapboxAnimatedMarker(that.map, lnglats);
+        this.mbAnimatedMarker = new MapboxAnimatedMarker(that.map, lnglats)
 
-        const kind_list = [];
+        const kindList = []
         for (let i = 0; i < route.kind.length; i++) {
           if (i === 0 || i === route.kind.length - 1) {
             // start, goalは除外
-            continue;
+            continue
           }
           if (route.kind[i] === '1') {
-            const j = i / 2;
+            const j = i / 2
             if (pos[j]) {
-              //            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
-              const kind_latlng = [pos[j][1], pos[j][0]];
+              // let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon })
+              //  .addTo(that.map);
+              const kindLatlng = [pos[j][1], pos[j][0]]
               that.editMarkers.push(
-                L.marker(kind_latlng, { icon: that.routemap.editIcon }),
-              );
-              kind_list.push(kind_latlng);
+                L.marker(kindLatlng, { icon: that.routemap.editIcon }),
+              )
+              kindList.push(kindLatlng)
             } else {
-              //            console.log(j, pos.length);
+              // console.log(j, pos.length);
             }
           }
         }
 
-        const note = JSON.parse(route.note);
+        const note = JSON.parse(route.note)
         if (note && note.length > 0) {
           for (let i = 0; i < note.length; i++) {
-            const noted_editablepos = note[i].pos * 1 - 1; // 配列的なアレで1つ減算
-            if (!kind_list[noted_editablepos]) {
-              continue;
+            const notedEditablepos = note[i].pos * 1 - 1 // 配列的なアレで1つ減算
+            if (!kindList[notedEditablepos]) {
+              continue
             }
             that.noteData.push(
               {
-                pos: kind_list[noted_editablepos],
+                pos: kindList[notedEditablepos],
                 cmt: note[i].img ? note[i].img.replace('\n', '<br>') : '',
               },
-            );
-            const editmarker = L.marker(kind_list[noted_editablepos], { icon: that.routemap.commentIcon }).addTo(that.map);
-            const comment = note[i].img ? note[i].img.replace('\n', '<br>') : ''; // APIのJSONにいれるやりかた間違えてるね
-            editmarker.bindPopup(comment);
+            )
+            const editmarker = L.marker(kindList[notedEditablepos],
+              { icon: that.routemap.commentIcon })
+              .addTo(that.map)
+            const comment = note[i].img ? note[i].img.replace('\n', '<br>') : '' // APIのJSONにいれるやりかた間違えてるね
+            editmarker.bindPopup(comment)
           }
         }
-        that.line = pos;
-      });
-    });
+        that.line = pos
+      })
+    })
 
     // UIの調整
     if (this.platform.is('mobile')) {
-      window.document.querySelector('ion-tab-bar').style.display = 'none';
+      window.document.querySelector('ion-tab-bar').style.display = 'none'
     }
   }
 
   updateFavorite() {
-    if (!this.route_data.id || !this.user || !this.user.uid) {
-      return;
+    if (!this.routeData.id || !this.user || !this.user.uid) {
+      return
     }
 
     // お気に入りの反映
@@ -260,25 +263,25 @@ export class WatchPage implements OnInit {
     getLikeSesrch(search: { ids: $ids }) {
       id
     }
-    }`;
+    }`
     this.apollo.query({
       query: graphquery,
       variables: {
-        ids: [this.route_data.id],
+        ids: [this.routeData.id],
       },
     }).subscribe(({ data }) => {
-      const _route: any = data;
-      if (_route.getLikeSesrch.length > 0) {
-        this.isFavorite = true;
-        this.favoriteIcon = 'star';
+      const routeData: any = data
+      if (routeData.getLikeSesrch.length > 0) {
+        this.isFavorite = true
+        this.favoriteIcon = 'star'
       }
-    });
+    })
   }
 
   toggleFavorite() {
     if (!this.user) {
-      window.alert('ログイン・ユーザー登録をしてください');
-      return;
+      window.alert('ログイン・ユーザー登録をしてください')
+      return
     }
 
     if (!this.isFavorite) {
@@ -287,162 +290,168 @@ export class WatchPage implements OnInit {
         likeRoute(ids: $ids) { 
           id
         } 
-      }`;
+      }`
       this.apollo.mutate({
         mutation: graphquery,
-        variables: { ids: [this.route_data.id] },
+        variables: { ids: [this.routeData.id] },
       }).subscribe(() => {
-        this.isFavorite = true;
-        this.favoriteIcon = 'star';
-      });
+        this.isFavorite = true
+        this.favoriteIcon = 'star'
+      })
     } else {
       // いいねを削除する
       const graphquery = gql`mutation UnLikeRoute($ids: [String!]!) {
         unLikeRoute(ids: $ids) { 
           id
         } 
-      }`;
+      }`
       this.apollo.mutate({
         mutation: graphquery,
-        variables: { ids: [this.route_data.id] },
+        variables: { ids: [this.routeData.id] },
       }).subscribe(() => {
-        this.isFavorite = true;
-        this.favoriteIcon = 'star-outline';
-      });
+        this.isFavorite = true
+        this.favoriteIcon = 'star-outline'
+      })
     }
   }
 
   toggleSlopeLayer(event) {
-    event.stopPropagation();
+    event.stopPropagation()
     if (!this.hotlineLayer && !this.isSlopeMode) {
-      this.hotlineLayer = this._routemap.addElevationHotlineLayer(this.line);
-      this.presentToast('標高グラデーションモードに変更');
+      this.hotlineLayer = this.createdRoutemap.addElevationHotlineLayer(this.line)
+      this.presentToast('標高グラデーションモードに変更')
     } else if (this.hotlineLayer && !this.isSlopeMode) {
-      this.map.removeLayer(this.hotlineLayer);
-      this.hotlineLayer = this._routemap.addSlopeHotlineLayer(this.line);
-      this.presentToast('斜度グラデーションモードに変更');
-      this.isSlopeMode = true;
+      this.map.removeLayer(this.hotlineLayer)
+      this.hotlineLayer = this.createdRoutemap.addSlopeHotlineLayer(this.line)
+      this.presentToast('斜度グラデーションモードに変更')
+      this.isSlopeMode = true
     } else {
-      this.map.removeLayer(this.hotlineLayer);
-      this.hotlineLayer = false;
-      this.isSlopeMode = false;
+      this.map.removeLayer(this.hotlineLayer)
+      this.hotlineLayer = false
+      this.isSlopeMode = false
     }
   }
 
   toggleLocation(event) {
-    event.stopPropagation();
+    event.stopPropagation()
     // 無効化
-    if (this.watch_location_subscribe && this.watch_location_subscribe.isStopped !== true) {
-      this.presentToast('GPS off');
+    if (this.watchLocationSubscribe && this.watchLocationSubscribe.isStopped !== true) {
+      this.presentToast('GPS off')
 
-      this.watch_location_subscribe.unsubscribe();
-      this.isWatchLocation = false;
+      this.watchLocationSubscribe.unsubscribe()
+      this.isWatchLocation = false
       if (this.currenPossitionMarker) {
-        this.map.removeLayer(this.currenPossitionMarker);
-        this.currenPossitionMarker = null;
+        this.map.removeLayer(this.currenPossitionMarker)
+        this.currenPossitionMarker = null
       }
-      return;
+      return
     }
 
     // 有効化
-    this.presentToast('GPS on');
-    this.isWatchLocation = true;
-    this.watch_location_subscribe = this.watch.subscribe(() => {
+    this.presentToast('GPS on')
+    this.isWatchLocation = true
+    this.watchLocationSubscribe = this.watch.subscribe(() => {
       this.watch.subscribe((pos) => {
-        if (this.watch_location_subscribe.isStopped === true) {
-          return;
+        if (this.watchLocationSubscribe.isStopped === true) {
+          return
         }
-        const latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude);
+        const latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude)
 
         if (!this.currenPossitionMarker) {
-          this.currenPossitionMarker = new L.marker(latlng, { icon: this.routemap.gpsIcon }).addTo(this.map);
-          this.map.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true }); // 初回のみ移動
+          this.currenPossitionMarker = new L.marker(latlng,
+            { icon: this.routemap.gpsIcon })
+            .addTo(this.map)
+          this.map.setView(
+            [pos.coords.latitude, pos.coords.longitude],
+            15,
+            { animate: true },
+          ) // 初回のみ移動
         } else {
-          this.currenPossitionMarker.setLatLng(latlng);
+          this.currenPossitionMarker.setLatLng(latlng)
         }
-      });
-    });
+      })
+    })
   }
 
   togglePlay(event) {
-    event.stopPropagation();
+    event.stopPropagation()
     if (this.isPlaying) {
-      this.mbAnimatedMarker.stop();
-      this.isPlaying = false;
+      this.mbAnimatedMarker.stop()
+      this.isPlaying = false
     } else {
-      this.mbAnimatedMarker.start();
-      this.isPlaying = true;
+      this.mbAnimatedMarker.start()
+      this.isPlaying = true
     }
   }
 
   edit(event) {
-    event.stopPropagation();
+    event.stopPropagation()
     // 状態の管理ができないのでアプリケーションの初期化をする
     // this.navCtrl.navigateForward('/edit/' + this.id);
-    window.document.location.href = `/edit/${this.id}`;
+    window.document.location.href = `/edit/${this.id}`
   }
 
   fastPlay(event) {
-    event.stopPropagation();
+    event.stopPropagation()
     if (!this.isPlaying) {
       // 動いていないときには再生をする
-      this.mbAnimatedMarker.start();
-      this.isPlaying = true;
-      return;
+      this.mbAnimatedMarker.start()
+      this.isPlaying = true
+      return
     }
     const intervalTable = [
       [500, '約30km/h'],
       [250, '約80km/h'],
       [100, '約120km/h'],
       [30, '約500km/h'],
-    ];
+    ]
     if (intervalTable.length - 1 === this.playSpeedIndex) {
-      this.playSpeedIndex = 0;
+      this.playSpeedIndex = 0
     } else {
-      this.playSpeedIndex++;
+      this.playSpeedIndex++
     }
-    const speed = intervalTable[this.playSpeedIndex];
-    this.presentToast(`現在${speed[1]}で走行中`);
-    this.animatedMarker.setInterval(speed[0] as number);
+    const speed = intervalTable[this.playSpeedIndex]
+    this.presentToast(`現在${speed[1]}で走行中`)
+    this.animatedMarker.setInterval(speed[0] as number)
   }
 
   back() {
     if (window.history.length >= 1) {
-      this.navCtrl.navigateForward('/');
+      this.navCtrl.navigateForward('/')
     } else {
-      this.navCtrl.back();
+      this.navCtrl.back()
     }
   }
 
   moveAuthorList() {
-    this.navCtrl.navigateForward(`/?mode=author&query=${this.route_data.author}`);
+    this.navCtrl.navigateForward(`/?mode=author&query=${this.routeData.author}`)
   }
 
   async presentRouteInfoPage(event) {
-    event.stopPropagation();
+    event.stopPropagation()
     const modal = await this.modalCtrl.create({
       component: RouteinfoPage,
-      componentProps: { route: this.route_data },
-    });
-    return await modal.present();
+      componentProps: { route: this.routeData },
+    })
+    return await modal.present()
   }
 
   async presentRouteExportPage(event) {
-    event.stopPropagation();
+    event.stopPropagation()
     const modal = await this.modalCtrl.create({
       component: ExportPage,
-      componentProps: { route: this.route_data, noteData: this.noteData },
-    });
-    return await modal.present();
+      componentProps: { route: this.routeData, noteData: this.noteData },
+    })
+    return await modal.present()
   }
 
   async presentLayerSelect(event) {
-    event.stopPropagation();
+    event.stopPropagation()
     const modal = await this.modalCtrl.create({
       component: LayerselectPage,
-      componentProps: { route: this.route_data },
-    });
-    return await modal.present();
+      componentProps: { route: this.routeData },
+    })
+    return await modal.present()
   }
 
   async presentToast(message) {
@@ -450,22 +459,22 @@ export class WatchPage implements OnInit {
       message,
       duration: 2000,
       color: 'primary',
-    });
-    toast.present();
+    })
+    toast.present()
   }
 
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({
       message: 'loading',
       duration: 3000,
-    });
+    })
     // ローディング画面を表示
-    await this.loading.present();
+    await this.loading.present()
   }
 
   async dissmissLoading() {
     if (this.loading) {
-      await this.loading.dismiss();
+      await this.loading.dismiss()
     }
   }
 }
