@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { ModalController } from '@ionic/angular'
-import { Routemap, rasterStyleInfo } from '../watch/routemap'
+import { rasterStyleInfo, RoutemapMapbox } from '../watch/routemapMapbox'
+
 
 @Component({
   selector: 'app-layerselect',
@@ -16,19 +17,19 @@ export class LayerselectPage implements OnInit {
   }
 
   changeLayer(index: number) {
-    const map = Routemap.getCurrent()
+    const map = RoutemapMapbox.getCurrent()
     switch (index) {
       case 0:
-        map.setStyle(Routemap.createRasterTile(rasterStyleInfo.OSM))
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.OSM))
         break
       case 1:
-        map.setStyle(Routemap.createRasterTile(rasterStyleInfo.OPEN_CYCLE_LAYER))
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.OPEN_CYCLE_LAYER))
         break
       case 3:
-        map.setStyle(Routemap.createRasterTile(rasterStyleInfo.GSI))
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.GSI))
         break
       default:
-        map.setStyle(Routemap.createRasterTile(rasterStyleInfo.DEFAULT))
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.DEFAULT))
         break
     }
   }

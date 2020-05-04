@@ -15,12 +15,12 @@ import chartjsUtilsElevation from 'chartjs-util-elevation'
 import { RouteinfoPage } from '../routeinfo/routeinfo.page'
 import { ExportPage } from '../export/export.page'
 import { LayerselectPage } from '../layerselect/layerselect.page'
-import { Routemap } from './routemap'
 import { AuthService } from '../auth.service'
 import { RouteModel } from '../model/routemodel'
 import 'firebase/auth'
 import { getRouteQuery } from '../gql/RouteQuery'
 import MapboxAnimatedMarker from './animatedMbMarker'
+import { RoutemapMapbox } from './routemapMapbox'
 
 @Component({
   selector: 'app-watch',
@@ -40,7 +40,7 @@ export class WatchPage implements OnInit {
     private apollo: Apollo,
     private authService: AuthService,
   ) {
-    this.routemap = new Routemap()
+    this.routemap = new RoutemapMapbox()
   }
 
   @ViewChild('map', { static: true }) mapElem: ElementRef;
@@ -105,7 +105,7 @@ export class WatchPage implements OnInit {
   private editMarkers: Array<any> = [];
 
 
-  routemap: Routemap;
+  routemap: RoutemapMapbox;
 
   createdRoutemap: any;
 
@@ -144,7 +144,7 @@ export class WatchPage implements OnInit {
     this.presentLoading()
 
     const routemap = this.createdRoutemap = this.routemap.createMap(
-      this.mapElem.nativeElement
+      this.mapElem.nativeElement,
     )
     this.map = routemap.map
 
