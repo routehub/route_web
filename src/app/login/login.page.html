@@ -11,25 +11,25 @@
 
   <ion-row class="wrapper-helper login-button-row">
     <ion-col>
-      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.signupWithGoogle()">
+      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.login('google')">
         Googleでログイン</ion-button>
     </ion-col>
   </ion-row>
   <ion-row class="wrapper-helper login-button-row">
     <ion-col>
-      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.signupWithTwitter()">
+      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.login('twitter')">
         Twitterでログイン</ion-button>
     </ion-col>
   </ion-row>
   <ion-row class="wrapper-helper login-button-row">
     <ion-col>
-      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.signupWithFacebook()">
+      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.login('facebook')">
         Facebookでログイン</ion-button>
     </ion-col>
   </ion-row>
   <ion-row class="wrapper-helper login-button-row">
     <ion-col>
-      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.signupWithEmail()">
+      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.login('email')">
         Emailでログイン</ion-button>
     </ion-col>
   </ion-row>

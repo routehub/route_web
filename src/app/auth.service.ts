@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { AngularFireAuth } from 'angularfire2/auth'
 import * as firebase from 'firebase/app'
 import { Observable } from 'rxjs/Observable'
+import { Router } from '@angular/router'
 
 @Injectable({
   providedIn: 'root',
@@ -11,31 +12,33 @@ export class AuthService {
 
   user: Observable<firebase.User>
 
-  constructor(private angularFireAuth: AngularFireAuth) {
+  constructor(private angularFireAuth: AngularFireAuth, private router: Router) {
     this.user = angularFireAuth.authState
-
     this.user.subscribe((u) => {
-      // console.log('subcribe')
-      // console.dir(u)
-
       this.currentLoginUser = u
+      router.navigate(['/'])
     })
   }
 
-  public signupWithGoogle() {
-    this.angularFireAuth.auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider())
-  }
-
-  public signupWithFacebook() {
-    this.angularFireAuth.auth.signInWithRedirect(new firebase.auth.FacebookAuthProvider())
-  }
-
-  public signupWithTwitter() {
-    this.angularFireAuth.auth.signInWithRedirect(new firebase.auth.TwitterAuthProvider())
-  }
-
-  public signupWithEmail() {
-    this.angularFireAuth.auth.signInWithRedirect(new firebase.auth.EmailAuthProvider())
+  public login(provider: String) {
+    let authProvider: any
+    switch (provider) {
+      case 'google':
+        authProvider = new firebase.auth.GoogleAuthProvider()
+        break
+      case 'facebook':
+        authProvider = new firebase.auth.FacebookAuthProvider()
+        break
+      case 'twitter':
+        authProvider = new firebase.auth.TwitterAuthProvider()
+        break
+      case 'email':
+        authProvider = new firebase.auth.EmailAuthProvider()
+        break
+      default:
+        console.error(provider) // eslint-disable-line 
+    }
+    this.angularFireAuth.auth.signInWithRedirect(authProvider)
   }
 
   public logout() {
