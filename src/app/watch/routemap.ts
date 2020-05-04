@@ -56,19 +56,19 @@ export class Routemap {
     popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
   });
 
-  startIcon = new L.icon({
+  startIcon = {
     iconUrl: '/assets/icon/start_icon.png',
     iconSize: [50, 27], // size of the icon
     iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
     popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  });
+  };
 
-  goalIcon = new L.icon({
+  goalIcon = {
     iconUrl: '/assets/icon/goal_icon.png',
     iconSize: [50, 27], // size of the icon
     iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
     popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  });
+  };
 
   commentIcon = new L.icon({
     iconUrl: '/assets/icon/comment_icon.png',
@@ -127,37 +127,51 @@ export class Routemap {
     });
   }
 
-  createMap(mapele) {
+  createMap(mapele: string, isVector?: boolean) {
     Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2s3c2tzNndwMG12NjNrcDM2dm1xamQ3bSJ9.fHdfoSXDhbyboKWznJ53Cw');
-    const center: any = [35.681, 139.767];
+    const defaultCenter = [35.681, 139.767];
     const styleId = 'ck7sl13lr2bgw1isx42telruq';
-    const rasterUrl = `https://api.mapbox.com/styles/v1/routehub/${styleId}/tiles/{z}/{x}/{y}@2x?access_token=${mapboxgl.accessToken}`;
-    const mapMb = new mapboxgl.Map({
-      container: mapele, // container id
-      style: {
-        version: 8,
-        sources: {
-          'default-tiles': {
-            type: 'raster',
-            tiles: [
-              rasterUrl,
-            ],
-            tileSize: 256
+    const defaultZoom = 9;
+
+    let mapMb = null;
+    if (isVector) {
+      // vector地図
+      mapMb = new mapboxgl.Map({
+        container: mapele,
+        style: 'mapbox://styles/routehub/ck7sl13lr2bgw1isx42telruq',
+        center: [defaultCenter[1], defaultCenter[0]],
+        zoom: defaultZoom,
+      });
+    } else {
+      const rasterUrl = `https://api.mapbox.com/styles/v1/routehub/${styleId}/tiles/{z}/{x}/{y}?access_token=${mapboxgl.accessToken}`;
+
+      mapMb = new mapboxgl.Map({
+        container: mapele,
+        style: {
+          version: 8,
+          sources: {
+            'default-tiles': {
+              type: 'raster',
+              tiles: [
+                rasterUrl,
+              ],
+              tileSize: 256
+            },
           },
+          layers: [
+            {
+              id: 'simple-tiles',
+              type: 'raster',
+              source: 'default-tiles',
+              minzoom: 0,
+              maxzoom: 22,
+            },
+          ],
         },
-        layers: [
-          {
-            id: 'simple-tiles',
-            type: 'raster',
-            source: 'default-tiles',
-            minzoom: 0,
-            maxzoom: 22,
-          },
-        ],
-      },
-      center: [center[1], center[0]], // starting position [lng, lat]
-      zoom: 9, // starting zoom
-    });
+        center: [defaultCenter[1], defaultCenter[0]],
+        zoom: defaultZoom,
+      });
+    }
 
     return {
       map: mapMb,
@@ -172,10 +186,6 @@ export class Routemap {
     const sw = [bbox[0] * 1 - lonplus, bbox[1] * 1 - latplus] as LngLatLike;
     const ne = [bbox[2] * 1 + lonplus, bbox[3] * 1 + latplus] as LngLatLike;
     return new mapboxgl.LngLatBounds(sw, ne);
-    // return L.latLngBounds([ // いい感じの範囲にするために調整
-    //     [bbox[1] * 1 - latplus, bbox[0] * 1 - lonplus],
-    //     [bbox[3] * 1 + latplus, bbox[2] * 1 + lonplus],
-    // ]);
   }
 
   func(coordinates: Array<Array<number>>): mapboxgl.Expression {
@@ -205,8 +215,6 @@ export class Routemap {
 
     const feature = lineGeoJSON.data as any;
     const coordinates = feature.geometry.coordinates;
-    console.log(feature);
-    console.log(coordinates);
     map.addLayer({
       'id': 'route',
       'type': 'line',
@@ -223,32 +231,29 @@ export class Routemap {
       }
     });
 
-    const startEl = document.createElement('div');
-    startEl.className = 'marker-start';
-    startEl.style.backgroundImage = `url(${this.startIcon.iconUrl})`;
-    startEl.style.backgroundSize = 'cover';
-    startEl.style.width = this.startIcon.iconSize[0] + 'px';
-    startEl.style.height = this.startIcon.iconSize[1] + 'px';
-    new mapboxgl.Marker(startEl, { anchor: 'bottom-right' })
+    this.createMarker(this.startIcon, 'marker-start', {
+      anchor: 'bottom-right'
+    })
       .setLngLat([coordinates[0][0], coordinates[0][1]])
       .addTo(map);
 
-    const goalEl = document.createElement('div');
-    goalEl.id = 'goal';
-    goalEl.className = 'marker-goal';
-    goalEl.style.backgroundImage = `url(${this.goalIcon.iconUrl})`;
-    goalEl.style.backgroundSize = 'cover';
-    goalEl.style.width = this.goalIcon.iconSize[0] + 'px';
-    goalEl.style.height = this.goalIcon.iconSize[1] + 'px';
-    new mapboxgl.Marker(goalEl, { anchor: 'bottom-left', offset: [0, -27] }) //TODO: offsetなしにしたい
+    this.createMarker(this.goalIcon, 'marker-goal', { anchor: "bottom-left", offset: [0, -27] })
       .setLngLat([coordinates[coordinates.length - 1][0], coordinates[coordinates.length - 1][1]])
       .addTo(map);
 
     // 描画範囲をよろしくする
     map.fitBounds(this.posToLatLngBounds(coordinates));
-
   }
 
+  createMarker(iconInfo: any, className: string, option: mapboxgl.MarkerOptions) {
+    const startEl = document.createElement('div');
+    startEl.className = className;
+    startEl.style.backgroundImage = `url(${iconInfo.iconUrl})`;
+    startEl.style.backgroundSize = 'cover';
+    startEl.style.width = iconInfo.iconSize[0] + 'px';
+    startEl.style.height = iconInfo.iconSize[1] + 'px';
+    return new mapboxgl.Marker(startEl, option)
+  }
 
   getColor(x) {
     return x < 20 ? 'blue' :

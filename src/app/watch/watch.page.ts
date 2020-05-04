@@ -1,25 +1,22 @@
-/* eslint-disable no-unused-vars */
 import {
   Component, OnInit, ViewChild, ElementRef,
 } from '@angular/core'
-// import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router'
 import {
   ModalController, NavController, ToastController, Platform, LoadingController,
 } from '@ionic/angular'
 import { Geolocation } from '@ionic-native/geolocation/ngx'
 import * as L from 'leaflet'
-import { Storage } from '@ionic/storage'
+import * as firebase from 'firebase/app'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
 import * as mapboxgl from 'mapbox-gl'
 import chartjsUtilsElevation from 'chartjs-util-elevation'
-import { ActivatedRoute } from '@angular/router'
 import { RouteinfoPage } from '../routeinfo/routeinfo.page'
 import { ExportPage } from '../export/export.page'
 import { LayerselectPage } from '../layerselect/layerselect.page'
-
 import { Routemap } from './routemap'
-import { RouteHubUser } from '../model/routehubuser'
+import { AuthService } from '../auth.service'
 import { RouteModel } from '../model/routemodel'
 import 'firebase/auth'
 import { getRouteQuery } from '../gql/RouteQuery'
@@ -39,9 +36,9 @@ export class WatchPage implements OnInit {
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
     public platform: Platform,
-    private storage: Storage,
     public toastController: ToastController,
     private apollo: Apollo,
+    private authService: AuthService,
   ) {
     this.routemap = new Routemap()
   }
@@ -52,7 +49,7 @@ export class WatchPage implements OnInit {
 
   loading = null;
 
-  user: RouteHubUser;
+  user: firebase.User;
 
   routeData: RouteModel;
 
@@ -131,16 +128,6 @@ export class WatchPage implements OnInit {
     window.dispatchEvent(new Event('resize'))
     this.watch = this.geolocation.watchPosition()
     window.document.title = 'ルートを見る RouteHub(β)'
-
-
-    // ログイン
-    const that = this
-    this.storage.get('user').then((json) => {
-      if (!json || json === '') {
-        return
-      }
-      that.user = JSON.parse(json)
-    })
   }
 
   // @HostListener('window:resize', ['$event'])
@@ -153,9 +140,10 @@ export class WatchPage implements OnInit {
   // }
 
   ionViewWillEnter() {
+    this.user = this.authService.currentLoginUser
     this.presentLoading()
 
-    const routemap = this.createdRoutemap = this.routemap.createMap(this.mapElem.nativeElement)
+    const routemap = this.createdRoutemap = this.routemap.createMap(this.mapElem.nativeElement, true)
     this.map = routemap.map
 
     this.map.on('load', () => {
@@ -171,7 +159,6 @@ export class WatchPage implements OnInit {
 
         that.routeData = new RouteModel()
         that.routeData.setFullData(route)
-        console.log(that.routeData)
 
         // お気に入りの更新
         this.updateFavorite()
@@ -218,7 +205,6 @@ export class WatchPage implements OnInit {
               )
               kindList.push(kindLatlng)
             } else {
-              // console.log(j, pos.length);
             }
           }
         }
@@ -254,7 +240,7 @@ export class WatchPage implements OnInit {
   }
 
   updateFavorite() {
-    if (!this.routeData.id || !this.user || !this.user.uid) {
+    if (!this.routeData.id || !this.user) {
       return
     }
 
@@ -280,7 +266,7 @@ export class WatchPage implements OnInit {
 
   toggleFavorite() {
     if (!this.user) {
-      window.alert('ログイン・ユーザー登録をしてください')
+      window.alert('ログイン・ユーザー登録をしてください') // eslint-disable-line
       return
     }
 
@@ -294,7 +280,7 @@ export class WatchPage implements OnInit {
       this.apollo.mutate({
         mutation: graphquery,
         variables: { ids: [this.routeData.id] },
-      }).subscribe(() => {
+      }).subscribe(({ data }) => {  // eslint-disable-line
         this.isFavorite = true
         this.favoriteIcon = 'star'
       })
@@ -308,8 +294,8 @@ export class WatchPage implements OnInit {
       this.apollo.mutate({
         mutation: graphquery,
         variables: { ids: [this.routeData.id] },
-      }).subscribe(() => {
-        this.isFavorite = true
+      }).subscribe((data) => {  // eslint-disable-line
+        this.isFavorite = false
         this.favoriteIcon = 'star-outline'
       })
     }
