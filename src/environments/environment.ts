@@ -22,4 +22,3 @@ export const environment = {
   },
   routingapi: 'https://routing.routehub.app/route/1.0.0/routing',
 }
-

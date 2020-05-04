@@ -1,28 +1,27 @@
 /* eslint-disable no-unused-vars */
 import {
   Component, OnInit, ViewChild, ElementRef,
-} from '@angular/core';
+} from '@angular/core'
 // import { ActivatedRoute } from '@angular/router';
 import {
   ModalController, NavController, ToastController, Platform, LoadingController,
-} from '@ionic/angular';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
-import * as L from 'leaflet';
-import gql from 'graphql-tag';
-import { Apollo } from 'apollo-angular';
-import { RouteinfoPage } from '../routeinfo/routeinfo.page';
-import { ExportPage } from '../export/export.page';
-import { LayerselectPage } from '../layerselect/layerselect.page';
+} from '@ionic/angular'
+import { Geolocation } from '@ionic-native/geolocation/ngx'
+import * as L from 'leaflet'
+import gql from 'graphql-tag'
+import { Apollo } from 'apollo-angular'
+import * as mapboxgl from 'mapbox-gl'
+import chartjs_utils_elevation from 'chartjs-util-elevation' // eslint-disable-line
+import { ActivatedRoute } from '@angular/router'
+import { RouteinfoPage } from '../routeinfo/routeinfo.page'
+import { ExportPage } from '../export/export.page'
+import { LayerselectPage } from '../layerselect/layerselect.page'
 
-import Routemap from './routemap';
-import { RouteHubUser } from '../model/routehubuser';
-import { RouteModel } from '../model/routemodel';
-import 'firebase/auth';
-import { getRouteQuery } from '../gql/RouteQuery';
-import * as mapboxgl from 'mapbox-gl';
-import chartjs_utils_elevation from 'chartjs-util-elevation';
-import { ActivatedRoute } from '@angular/router';
-import MapboxAnimatedMarker from './animatedMbMarker';
+import Routemap from './routemap'
+import { RouteModel } from '../model/routemodel'
+import 'firebase/auth'
+import { getRouteQuery } from '../gql/RouteQuery'
+import MapboxAnimatedMarker from './animatedMbMarker'
 import { AuthService } from '../auth.service'
 
 
@@ -33,7 +32,6 @@ import { AuthService } from '../auth.service'
 })
 
 export class WatchPage implements OnInit {
-
   constructor(
     private route: ActivatedRoute,
     private geolocation: Geolocation,
@@ -45,41 +43,41 @@ export class WatchPage implements OnInit {
     private apollo: Apollo,
     private authService: AuthService,
   ) {
-    this.routemap = new Routemap();
+    this.routemap = new Routemap()
   }
 
-  @ViewChild('map', { static: true }) map_elem: ElementRef;
-  @ViewChild('elevation', { static: true }) elev_elem: ElementRef;
+  @ViewChild('map', { static: true }) mapElem: ElementRef
 
-  loading = null;
+  @ViewChild('elevation', { static: true }) elevElem: ElementRef
+
+  loading = null
 
   user: firebase.User
 
-  routeData: RouteModel;
+  routeData: RouteModel
 
-  title = '';
+  title = ''
 
-  author = '';
+  author = ''
 
-  noteData = [];
+  noteData = []
 
-  id: string;
+  id: string
 
-  map: any;
+  map: any
   // map: mapboxgl.Map;
 
-  watchLocationSubscribe: any;
+  watchLocationSubscribe: any
 
-  watch: any;
+  watch: any
 
-  currenPossitionMarker: any;
+  currenPossitionMarker: any
 
-  isWatchLocation = false;
+  isWatchLocation = false
 
-  elevation: any;
+  elevation: any
 
-
-  route_geojson = {
+  routeGeojson = {
     type: 'geojson',
     lineMetrics: true,
     data:
@@ -91,32 +89,31 @@ export class WatchPage implements OnInit {
         coordinates: [],
       },
     },
-  };
+  }
 
-  private line: any;
+  private line: any
 
-  favoriteIcon = 'star-outline';
+  favoriteIcon = 'star-outline'
 
-  isFavorite = false;
+  isFavorite = false
 
-  private animatedMarker: MapboxAnimatedMarker;
+  private animatedMarker: MapboxAnimatedMarker
 
-  isPlaying: boolean;
+  isPlaying: boolean
 
-  private hotlineLayer: any;
+  private hotlineLayer: any
 
-  private isSlopeMode = false;
+  private isSlopeMode = false
 
-  private editMarkers: Array<any> = [];
+  private editMarkers: Array<any> = []
 
+  routemap: Routemap
 
-  routemap: Routemap;
+  createdRoutemap: any
 
-  createdRoutemap: any;
+  private playSpeedIndex = 0
 
-  private playSpeedIndex = 0;
-
-  private mbAnimatedMarker: MapboxAnimatedMarker | null;
+  private mbAnimatedMarker: MapboxAnimatedMarker | null
 
   ionViewWillLeave() {
     if (this.platform.is('mobile')) {
@@ -139,68 +136,70 @@ export class WatchPage implements OnInit {
     // ログインユーザーを取得
     this.user = this.authService.currentLoginUser
 
-    const routemap = this.createdRoutemap = this.routemap.createMap(this.map_elem.nativeElement);
-    this.map = routemap.map;
+    const routemap = this.createdRoutemap = this.routemap.createMap(this.mapElem.nativeElement)
+    this.map = routemap.map
 
     this.map.on('load', () => {
-      this.id = this.route.snapshot.paramMap.get('id');
-      const that = this;
+      this.id = this.route.snapshot.paramMap.get('id')
+      const that = this
       this.apollo.query({
         query: getRouteQuery(),
         variables: { ids: [this.id] },
       }).subscribe(({ data }) => {
-        this.dissmissLoading();
-        const _route: any = data;
-        const route = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0]);
+        this.dissmissLoading()
+        const routeData: any = data
+        const route = Object.assign(routeData.getPublicRoutes[0], routeData.publicSearch[0])
 
-        that.routeData = new RouteModel();
-        that.routeData.setFullData(route);
-        console.log(that.routeData);
+        that.routeData = new RouteModel()
+        that.routeData.setFullData(route)
+        console.log(that.routeData)
 
         // お気に入りの更新
-        this.updateFavorite();
+        this.updateFavorite()
 
         // タイトル変更
-        that.title = that.routeData.title;
-        window.document.title = `${that.routeData.title} RouteHub(β)`;
-        that.author = that.routeData.author;
+        that.title = that.routeData.title
+        window.document.title = `${that.routeData.title} RouteHub(β)`
+        that.author = that.routeData.author
 
         // 標高グラフ用のデータ作成
-        const { pos } = that.routeData;
+        const { pos } = that.routeData
         for (let i = 0; i < that.routeData.level.length; i++) {
-          pos[i].push(that.routeData.level[i] * 1);
+          pos[i].push(that.routeData.level[i] * 1)
         }
-        that.route_geojson.data.geometry.coordinates = pos;
+        that.routeGeojson.data.geometry.coordinates = pos
         // ルート表示
-        this.routemap.renderRouteLayer(that.map, that.route_geojson as any);
+        this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
 
         // 標高グラフ表示
-        console.dir(that.routeData);
-        let elevation = chartjs_utils_elevation(this.elev_elem.nativeElement, that.routeData.pos, {});
-        console.dir(elevation);
+        console.dir(that.routeData)
+        const elevation = chartjs_utils_elevation( // eslint-disable-line
+          this.elevElem.nativeElement, that.routeData.pos, {},
+        )
+        console.dir(elevation)
 
-        const lnglats = that.route_geojson.data.geometry.coordinates.map(p => {
-          return new mapboxgl.LngLat(p[0], p[1]);
-        });
+        const lnglats = that.routeGeojson.data.geometry.coordinates
+          .map((p) => new mapboxgl.LngLat(p[0], p[1]))
 
         // アニメーション機能初期化
-        this.mbAnimatedMarker = new MapboxAnimatedMarker(that.map, lnglats);
+        this.mbAnimatedMarker = new MapboxAnimatedMarker(that.map, lnglats)
 
-        const kindList = [];
+        const kindList = []
         for (let i = 0; i < route.kind.length; i++) {
           if (i === 0 || i === route.kind.length - 1) {
             // start, goalは除外
-            continue;
+            continue
           }
           if (route.kind[i] === '1') {
-            const j = i / 2;
+            const j = i / 2
             if (pos[j]) {
-              //            let edit = L.marker([pos[j][1], pos[j][0]], { icon: that.routemap.editIcon }).addTo(that.map);
-              const kindLatlng = [pos[j][1], pos[j][0]];
+              // let edit = L.marker([pos[j][1], pos[j][0]],
+              //   { icon: that.routemap.editIcon }).addTo(that.map);
+              const kindLatlng = [pos[j][1], pos[j][0]]
               that.editMarkers.push(
                 L.marker(kindLatlng, { icon: that.routemap.editIcon }),
-              );
-              kindList.push(kindLatlng);
+              )
+              kindList.push(kindLatlng)
             } else {
               //            console.log(j, pos.length);
             }
@@ -229,10 +228,9 @@ export class WatchPage implements OnInit {
             editmarker.bindPopup(comment)
           }
         }
-        that.line = pos;
-
-      });
-    });
+        that.line = pos
+      })
+    })
 
     // UIの調整
     if (this.platform.is('mobile')) {
@@ -360,11 +358,11 @@ export class WatchPage implements OnInit {
   togglePlay(event) {
     event.stopPropagation()
     if (this.isPlaying) {
-      this.mbAnimatedMarker.stop();
-      this.isPlaying = false;
+      this.mbAnimatedMarker.stop()
+      this.isPlaying = false
     } else {
-      this.mbAnimatedMarker.start();
-      this.isPlaying = true;
+      this.mbAnimatedMarker.start()
+      this.isPlaying = true
     }
   }
 
@@ -379,7 +377,7 @@ export class WatchPage implements OnInit {
     event.stopPropagation()
     if (!this.isPlaying) {
       // 動いていないときには再生をする
-      this.mbAnimatedMarker.start();
+      this.mbAnimatedMarker.start()
       this.isPlaying = true
       return
     }
