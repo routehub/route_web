@@ -1,11 +1,9 @@
 import * as L from 'leaflet'
-import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js'
-import * as Hotline from 'leaflet-hotline'
 import turfbbox from '@turf/bbox'
 import * as turf from '@turf/helpers'
-import * as AnimatedMarker from './animatedMarker.js'
 import * as mapboxgl from 'mapbox-gl'
 import { LngLatLike } from 'mapbox-gl'
+import { Copyright } from 'gpx-builder/dist/builder/BaseBuilder/models'
 /** *
  * ルートModel
  * いろんなところで使いまわしたい
@@ -47,6 +45,38 @@ export class Route {
   }
   */
 }
+Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2s3c2tzNndwMG12NjNrcDM2dm1xamQ3bSJ9.fHdfoSXDhbyboKWznJ53Cw');
+const styleId = 'ck7sl13lr2bgw1isx42telruq';
+
+interface RasterStyle {
+  url: string,
+  copyright: string
+}
+interface RasterStyleInfo {
+  DEFAULT: RasterStyle,
+  OSM: RasterStyle,
+  OPEN_CYCLE_LAYER: RasterStyle,
+  GSI: RasterStyle
+}
+
+export const rasterStyleInfo: RasterStyleInfo = {
+  DEFAULT: {
+    url: `https://api.mapbox.com/styles/v1/routehub/${styleId}/tiles/{z}/{x}/{y}?access_token=${mapboxgl.accessToken}`,
+    copyright: ''
+  },
+  OSM: {
+    url: 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png',
+    copyright: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+  },
+  OPEN_CYCLE_LAYER: {
+    url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=8ff577dddcc24dbd945e80ef152bf1e5',
+    copyright: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+  },
+  GSI: {
+    url: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+    copyright: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+  }
+}
 
 export class Routemap {
   gpsIcon = new L.icon({
@@ -84,6 +114,11 @@ export class Routemap {
     popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
     className: 'map-editIcon',
   });
+
+  private static currentMap = null;
+  public static getCurrent = (): mapboxgl.Map | null => {
+    return Routemap.currentMap;
+  }
 
   private getYahooLayer() {
     const attrString = '<a href="https://map.yahoo.co.jp/maps?hlat=35.66572&amp;lat=35.66572&amp;hlon=139.731&amp;lon=139.731&amp;z=18&amp;datum=wgs&amp;mode=map&amp;.f=jsapilogo" target="_blank" id="yolp-logo-link" class= "yolp-logo" style="z-index: 10; position: absolute; margin: 0px; padding: 0px; right: 3px; bottom: 3px;" > <img src="https://s.yimg.jp/images/maps/logo/yj_logo.png" alt = "" border="0" > </a>'
@@ -128,9 +163,7 @@ export class Routemap {
   }
 
   createMap(mapele: string, isVector?: boolean) {
-    Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2s3c2tzNndwMG12NjNrcDM2dm1xamQ3bSJ9.fHdfoSXDhbyboKWznJ53Cw');
     const defaultCenter = [35.681, 139.767];
-    const styleId = 'ck7sl13lr2bgw1isx42telruq';
     const defaultZoom = 9;
 
     let mapMb = null;
@@ -153,9 +186,10 @@ export class Routemap {
             'default-tiles': {
               type: 'raster',
               tiles: [
-                rasterUrl,
+                rasterStyleInfo.DEFAULT.url
               ],
-              tileSize: 256
+              tileSize: 256,
+              attribution: rasterStyleInfo.DEFAULT.copyright
             },
           },
           layers: [
@@ -172,6 +206,7 @@ export class Routemap {
         zoom: defaultZoom,
       });
     }
+    Routemap.currentMap = mapMb;
 
     return {
       map: mapMb,
@@ -262,5 +297,30 @@ export class Routemap {
           x < 80 ? 'lime' :
             x < 100 ? 'red' :
               'blue';
+  }
+
+  public static createRasterTile(rasterStyleInfo: RasterStyle): mapboxgl.Style {
+    return {
+      version: 8,
+      sources: {
+        'base-raster-source': {
+          type: 'raster',
+          tiles: [
+            rasterStyleInfo.url,
+          ],
+          tileSize: 256,
+          attribution: rasterStyleInfo.copyright
+        },
+      },
+      layers: [
+        {
+          id: 'base-raster-layer',
+          type: 'raster',
+          source: 'base-raster-source',
+          minzoom: 0,
+          maxzoom: 22,
+        },
+      ],
+    }
   }
 }

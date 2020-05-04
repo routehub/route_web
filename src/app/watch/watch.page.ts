@@ -143,7 +143,9 @@ export class WatchPage implements OnInit {
     this.user = this.authService.currentLoginUser
     this.presentLoading()
 
-    const routemap = this.createdRoutemap = this.routemap.createMap(this.mapElem.nativeElement, true)
+    const routemap = this.createdRoutemap = this.routemap.createMap(
+      this.mapElem.nativeElement
+    )
     this.map = routemap.map
 
     this.map.on('load', () => {
@@ -204,7 +206,6 @@ export class WatchPage implements OnInit {
                 L.marker(kindLatlng, { icon: that.routemap.editIcon }),
               )
               kindList.push(kindLatlng)
-            } else {
             }
           }
         }
