@@ -1,0 +1,16 @@
+node_modules
+assets
+e2e
+src/app/Events.ts
+**/*.spec.ts
+src/app/watch/animatedMarker.js
+**/*.module.ts
+src/karma.conf.js
+src/assets/leaflet.elevation-0.0.4.min.js
+src/zone-flags.ts
+src/polyfills.ts
+
+# for tmp ignore
+src/app/watch/routemap.ts
+src/app/edit/edit.page.ts
+src/app/model/routemodel.ts

@@ -1,10 +1,19 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable new-cap */
-import * as L from 'leaflet';
-import turfbbox from '@turf/bbox';
-import * as turf from '@turf/helpers';
-import * as mapboxgl from 'mapbox-gl';
-import { LngLatLike } from 'mapbox-gl';
+import * as L from 'leaflet'
+import turfbbox from '@turf/bbox'
+import * as turf from '@turf/helpers'
+import * as mapboxgl from 'mapbox-gl'
+import { LngLatLike } from 'mapbox-gl'
+// import * as Elevation from 'leaflet.elevation/src/L.Control.Elevation.js'
+// import * as Hotline from 'leaflet-hotline'
+// import turfbbox from '@turf/bbox'
+// import * as turf from '@turf/helpers'
+// import * as AnimatedMarker from './animatedMarker.js'
+/** *
+ * ルートModel
+ * いろんなところで使いまわしたい
+ */
 
 export default class Routemap {
   gpsIcon = {

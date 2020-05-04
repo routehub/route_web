@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header #search_header *ngIf="showSearchHeader" style="position: fixed;">
   <ion-toolbar class="wrapper-helper">
     <ion-buttons start>
 
@@ -13,9 +13,65 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid>
-    <ion-row class="wrapper-helper">
+<ion-content [scrollEvents]="true" (ionScroll)="logScrolling($event)">
+  <ion-grid style="padding: 0;">
+    <ion-row class="wrapper-helper" *ngIf="showTitlePane">
+      <ion-col class="titleimage" *ngIf="platform.is('desktop')">
+        <h2>Open RouteHub</h2>
+        <p>
+          ルートを作って共有して<br>
+          欲しい機能をみんなでつくるアプリ
+        </p>
+
+        <ion-buttons start style="min-width:400px; width:50%;margin:auto;margin-top:30px;">
+
+          <ion-searchbar (change)="search()" autocorrect="off" autocomplete="on" searchIcon="search"
+            placeholder="サイクリング" animated [(ngModel)]="query" (ionChange)="wordChanged()">
+          </ion-searchbar>
+          <ion-button layout="end" (click)="search()">
+            <ion-icon slot="icon-only" name="search"></ion-icon>
+          </ion-button>
+
+        </ion-buttons>
+      </ion-col>
+
+
+
+      <ion-col class="titleimage titleimage-mobile" [ngStyle]="titleimageheight" *ngIf="platform.is('mobile')">
+        <h1><img src="./assets/logo-white.png" alt="routehub"></h1>
+        <p style="margin-top:60px;">
+          ルートを作って共有して<br>
+          欲しい機能をみんなでつくるアプリ
+        </p>
+
+        <ion-buttons start style="margin-top:30px;">
+
+          <ion-searchbar searchIcon="none" autocomplete="on" searchIcon="search" placeholder="サイクリング" animated
+            [(ngModel)]="query" mode="md">
+          </ion-searchbar>
+          <ion-button layout="end" (click)="search()">
+            <ion-icon slot="icon-only" name="search"></ion-icon>
+          </ion-button>
+
+        </ion-buttons>
+        <ion-button style="margin-top:30px;--color:white;--border-color:white;" shape="round" fill="outline"
+          target="_blank" href="https://github.com/routehub/route_web">くわしく知る</ion-button>
+
+        <ion-avatar class="login-button-mobile" *ngIf="platform.is('mobile')" routerLink="/my"
+          style="width:40px;height:40px;" #logoutButton>
+          <img src="{{ user.photoURL }}">
+        </ion-avatar>
+
+        <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile')" expand="block" fill="outline"
+          style="-color:white;--border-color:white;" (click)="toLoginPage()" layout="icon-end" #loginButton>ログイン・登録
+        </ion-button>
+
+      </ion-col>
+
+
+    </ion-row>
+
+    <ion-row class="wrapper-helper" style="margin-top: 50px">
       <ion-col size="24" sizeXs="24" sizeMd="12" sizeXl="12" size *ngFor="let item of items">
 
         <ion-card class="one-image">

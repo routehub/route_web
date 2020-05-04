@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams } from '@ionic/angular';
-import { RouteModel } from '../model/routemodel';
+import { Component, OnInit } from '@angular/core'
+import { ModalController, NavParams } from '@ionic/angular'
+import { RouteModel } from '../model/routemodel'
 
 @Component({
   selector: 'app-routeinfo',
@@ -16,18 +16,18 @@ export class RouteinfoPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route = this.navParams.get('route');
-    this.route.body = this.route.body.replace(/\n/g, '<br>');
+    this.route = this.navParams.get('route')
+    this.route.body = this.route.body.replace(/\n/g, '<br>')
   }
 
   async closeModal() {
-    await this.modalController.dismiss();
+    await this.modalController.dismiss()
   }
 
   goLLL() {
-    const link = document.createElement('a');
-    link.href = `https://latlonglab.yahoo.co.jp/route/watch?id=${this.route.id}`;
-    link.target = '_blank';
-    link.click();
+    const link = document.createElement('a')
+    link.href = `https://latlonglab.yahoo.co.jp/route/watch?id=${this.route.id}`
+    link.target = '_blank'
+    link.click()
   }
 }
