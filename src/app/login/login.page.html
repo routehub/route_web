@@ -1,28 +1,36 @@
 <ion-content>
   <ion-row class="wrapper-helper" style="max-width:500px">
-    <p>
+    <p class="login-message">
       各種ソーシャルアカウントを利用してログインできます。<br>
-      ログインした情報はルート作成・いいね等の機能のためにのみ利用します。<br>
+      ログイン情報はルート作成・いいね等の機能のためにのみ利用します。詳しくは<a href="https://routehub.github.io/route_web/privacypolicy.html"
+        target="_blank">プライバシーポリシー</a>を参照ください。<br>
       <br>
       本サービス内ではログインもとの登録名は表示されず、ログイン後設定された名前が表示されます。
     </p>
   </ion-row>
 
-  <ion-row class="wrapper-helper" style="max-width:500px; text-align: center;">
+  <ion-row class="wrapper-helper login-button-row">
     <ion-col>
-      <ion-button expand="block" (click)="authService.signupWithGoogle()">Googleでログイン</ion-button>
+      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.signupWithGoogle()">
+        Googleでログイン</ion-button>
     </ion-col>
+  </ion-row>
+  <ion-row class="wrapper-helper login-button-row">
     <ion-col>
-      <ion-button expand="block" (click)="authService.signupWithTwitter()">Twitterでログイン</ion-button>
+      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.signupWithTwitter()">
+        Twitterでログイン</ion-button>
     </ion-col>
+  </ion-row>
+  <ion-row class="wrapper-helper login-button-row">
     <ion-col>
-      <ion-button expand="block" (click)="authService.signupWithFacebook()">Facebookでログイン</ion-button>
+      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.signupWithFacebook()">
+        Facebookでログイン</ion-button>
     </ion-col>
+  </ion-row>
+  <ion-row class="wrapper-helper login-button-row">
     <ion-col>
-      <ion-button expand="block" (click)="authService.signupWithEmail()">Emailでログイン</ion-button>
-    </ion-col>
-    <ion-col>
-      <ion-button expand="block" (click)="authService.logout()">ログアウト</ion-button>
+      <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.signupWithEmail()">
+        Emailでログイン</ion-button>
     </ion-col>
   </ion-row>
 

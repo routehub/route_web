@@ -1,1 +1,14 @@
 @import url('https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css');
+
+.login-message {
+    font-size: 90%;
+    color: rgb(148, 148, 148);
+}
+
+.login-button-row {
+    max-width:300px; 
+    text-align: center;
+}
+.login-button-el {
+    text-transform: none;
+}
