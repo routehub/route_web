@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { PopoverController, NavParams } from '@ionic/angular';
-
+import { Component, OnInit } from '@angular/core'
+import { PopoverController, NavParams } from '@ionic/angular'
+/*
 enum SearchQueryType {
   keyword = 'keyword',
   tag = 'tag',
@@ -11,6 +11,7 @@ enum SearchSortType {
   elevation = 'elevation',
   created_at = 'created_at',
 }
+*/
 enum SearchSortOrder {
   asc = 'ASC',
   desc = 'DESC',
@@ -62,7 +63,7 @@ export class SearchSettingComponent implements OnInit {
 
   query: string;
 
-  order_type: SearchSortOrder = SearchSortOrder.desc;
+  orderType: SearchSortOrder = SearchSortOrder.desc;
 
   sortkey: string;
 
@@ -76,61 +77,61 @@ export class SearchSettingComponent implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.query = this.navParams.get('query');
+    this.query = this.navParams.get('query')
 
 
-    const querytype = this.queryTypes.find((st) => (st.id == this.navParams.get('query_type')));
-    this.queryType = querytype ? querytype.kana : this.queryTypes[0].kana;
+    const querytype = this.queryTypes.find((st) => (st.id === this.navParams.get('query_type')))
+    this.queryType = querytype ? querytype.kana : this.queryTypes[0].kana
 
 
-    const sorttype = this.sortTypes.find((st) => (st.id == `${this.navParams.get('sort_type')}/${this.navParams.get('order_type')}`));
-    this.sortType = sorttype ? sorttype.kana : this.sortTypes[4].kana;
+    const sorttype = this.sortTypes.find((st) => (st.id === `${this.navParams.get('sort_type')}/${this.navParams.get('order_type')}`))
+    this.sortType = sorttype ? sorttype.kana : this.sortTypes[4].kana
 
     if (this.navParams.get('dist_opt')) {
-      const dist_opt = this.navParams.get('dist_opt').split(':');
+      const distOpt = this.navParams.get('dist_opt').split(':')
       this.kmrange = {
-        upper: dist_opt[1],
-        lower: dist_opt[0],
-      };
-      this.isDistDisabled = 'false';
-      this.distIsChecked = true;
+        upper: distOpt[1],
+        lower: distOpt[0],
+      }
+      this.isDistDisabled = 'false'
+      this.distIsChecked = true
     }
     if (this.navParams.get('elev_opt')) {
-      const elev_opt = this.navParams.get('elev_opt').split(':');
+      const elevOpt = this.navParams.get('elev_opt').split(':')
       this.kmrange = {
-        upper: elev_opt[1],
-        lower: elev_opt[0],
-      };
-      this.isElevDisabled = 'false';
-      this.elevationIsChecked = true;
+        upper: elevOpt[1],
+        lower: elevOpt[0],
+      }
+      this.isElevDisabled = 'false'
+      this.elevationIsChecked = true
     }
   }
 
   compareQueryType(o1, o2): boolean {
-    return o1 && o2 ? o1.id === o2.id : o1 === o2;
+    return o1 && o2 ? o1.id === o2.id : o1 === o2
   }
 
 
   distCheckboxChanged(event) {
     if (event.detail.checked === true) {
-      this.isDistDisabled = 'false';
+      this.isDistDisabled = 'false'
     } else {
-      this.isDistDisabled = 'true';
+      this.isDistDisabled = 'true'
     }
   }
 
   elevCheckboxChanged(event) {
     if (event.detail.checked === true) {
-      this.isElevDisabled = 'false';
+      this.isElevDisabled = 'false'
     } else {
-      this.isElevDisabled = 'true';
+      this.isElevDisabled = 'true'
     }
   }
 
   search() {
     // 検索ロジックは元でヨロシクー
-    const querytype = this.queryTypes.find((st) => (st.kana == this.queryType));
-    const sort = this.sortTypes.find((st) => (st.kana == this.sortType));
+    const querytype = this.queryTypes.find((st) => (st.kana === this.queryType))
+    const sort = this.sortTypes.find((st) => (st.kana === this.sortType))
 
     this.popoverCtrl.dismiss({
       query: this.query,
@@ -141,7 +142,7 @@ export class SearchSettingComponent implements OnInit {
       elevrange: this.elevrange,
       isDistDisabled: this.isDistDisabled === 'true',
       isElevDisabled: this.isElevDisabled === 'true',
-    });
+    })
   }
   /*
     changeSearchType(event) {

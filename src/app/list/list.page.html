@@ -59,7 +59,7 @@
 
         <ion-avatar class="login-button-mobile" *ngIf="platform.is('mobile')" routerLink="/my"
           style="width:40px;height:40px;" #logoutButton>
-          <img src="{{ photoURL }}">
+          <img src="{{ user.photoURL }}">
         </ion-avatar>
 
         <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile')" expand="block" fill="outline"
