@@ -16,7 +16,11 @@ export class AuthService {
     this.user = angularFireAuth.authState
     this.user.subscribe((u) => {
       this.currentLoginUser = u
-      router.navigate(['/'])
+
+      // ログイン時はログイン後myに遷移
+      if (u !== null) {
+        router.navigate(['/my'])
+      }
     })
   }
 
