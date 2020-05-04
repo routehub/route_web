@@ -20,7 +20,9 @@ import { RouteModel } from '../model/routemodel'
 import 'firebase/auth'
 import { getRouteQuery } from '../gql/RouteQuery'
 import MapboxAnimatedMarker from './animatedMbMarker'
-import { RoutemapMapbox } from './routemapMapbox'
+import {
+  RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon,
+} from './routemapMapbox'
 
 @Component({
   selector: 'app-watch',
@@ -177,6 +179,16 @@ export class WatchPage implements OnInit {
         }
         that.routeGeojson.data.geometry.coordinates = pos
         // ルート表示
+        RoutemapMapbox.routeLayer = that.routeGeojson
+        this.routemap.createMarker(startIcon, 'marker-start', {
+          anchor: 'bottom-right',
+        })
+          .setLngLat([pos[0][0], pos[0][1]])
+          .addTo(that.map)
+
+        this.routemap.createMarker(goalIcon, 'marker-goal', { anchor: 'bottom-left', offset: [0, -27] })
+          .setLngLat([pos[pos.length - 1][0], pos[pos.length - 1][1]])
+          .addTo(that.map)
         this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
 
         // 標高グラフ表示
@@ -203,7 +215,7 @@ export class WatchPage implements OnInit {
               //  .addTo(that.map);
               const kindLatlng = [pos[j][1], pos[j][0]]
               that.editMarkers.push(
-                L.marker(kindLatlng, { icon: that.routemap.editIcon }),
+                L.marker(kindLatlng, { icon: editIcon }),
               )
               kindList.push(kindLatlng)
             }
@@ -224,7 +236,7 @@ export class WatchPage implements OnInit {
               },
             )
             const editmarker = L.marker(kindList[notedEditablepos],
-              { icon: that.routemap.commentIcon })
+              { icon: commentIcon })
               .addTo(that.map)
             const comment = note[i].img ? note[i].img.replace('\n', '<br>') : '' // APIのJSONにいれるやりかた間違えてるね
             editmarker.bindPopup(comment)
@@ -232,6 +244,11 @@ export class WatchPage implements OnInit {
         }
         that.line = pos
       })
+    })
+
+    this.map.on('style.load', () => {
+      console.log('style load')
+      // this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
     })
 
     // UIの調整

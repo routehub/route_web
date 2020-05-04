@@ -36,45 +36,41 @@ export const rasterStyleInfo: RasterStyleInfo = {
     copyright: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
   },
 }
-
+export const gpsIcon = {
+  iconUrl: '/assets/icon/gps_icon.png',
+  iconSize: [20, 20], // size of the icon
+  iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
+  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+}
+export const startIcon = {
+  iconUrl: '/assets/icon/start_icon.png',
+  iconSize: [50, 27], // size of the icon
+  iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
+  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+}
+export const goalIcon = {
+  iconUrl: '/assets/icon/goal_icon.png',
+  iconSize: [50, 27], // size of the icon
+  iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
+  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+}
+export const commentIcon = {
+  iconUrl: '/assets/icon/comment_icon.png',
+  iconSize: [20, 20], // size of the icon
+  iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
+  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+}
+export const editIcon = {
+  iconUrl: '/assets/icon/edit_icon.png',
+  iconSize: [14, 14], // size of the icon
+  iconAnchor: [7, 7], // point of the icon which will correspond to marker's location
+  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+  className: 'map-editIcon',
+}
 export class RoutemapMapbox {
-  gpsIcon = {
-    iconUrl: '/assets/icon/gps_icon.png',
-    iconSize: [20, 20], // size of the icon
-    iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
-    popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  };
-
-  startIcon = {
-    iconUrl: '/assets/icon/start_icon.png',
-    iconSize: [50, 27], // size of the icon
-    iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
-    popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  };
-
-  goalIcon = {
-    iconUrl: '/assets/icon/goal_icon.png',
-    iconSize: [50, 27], // size of the icon
-    iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
-    popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  };
-
-  commentIcon = {
-    iconUrl: '/assets/icon/comment_icon.png',
-    iconSize: [20, 20], // size of the icon
-    iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
-    popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-  };
-
-  editIcon = {
-    iconUrl: '/assets/icon/edit_icon.png',
-    iconSize: [14, 14], // size of the icon
-    iconAnchor: [7, 7], // point of the icon which will correspond to marker's location
-    popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
-    className: 'map-editIcon',
-  };
-
   private static currentMap = null;
+
+  public static routeLayer = null;
 
   public static getCurrent = (): mapboxgl.Map | null => RoutemapMapbox.currentMap
 
@@ -154,9 +150,11 @@ export class RoutemapMapbox {
   }
 
   renderRouteLayer(map: mapboxgl.Map, lineGeoJSON: mapboxgl.GeoJSONSourceRaw) {
-    if (map.getLayer('route') !== undefined) {
-      map.removeSource('route')
+    if (map.getLayer('route')) {
       map.removeLayer('route')
+    }
+    if (map.getSource('route')) {
+      map.removeSource('route')
     }
     map.addSource('route', lineGeoJSON)
 
@@ -177,16 +175,6 @@ export class RoutemapMapbox {
         'line-gradient': this.func(coordinates),
       },
     })
-
-    this.createMarker(this.startIcon, 'marker-start', {
-      anchor: 'bottom-right',
-    })
-      .setLngLat([coordinates[0][0], coordinates[0][1]])
-      .addTo(map)
-
-    this.createMarker(this.goalIcon, 'marker-goal', { anchor: 'bottom-left', offset: [0, -27] })
-      .setLngLat([coordinates[coordinates.length - 1][0], coordinates[coordinates.length - 1][1]])
-      .addTo(map)
 
     // 描画範囲をよろしくする
     map.fitBounds(this.posToLatLngBounds(coordinates))
