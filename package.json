@@ -11,6 +11,7 @@
     "release": "npm run setup && ng build --prod && npm run setup_after",
     "test": "ng test",
     "lint": "ng lint",
+    "lint_and_fix": "eslint --ext js,ts src  --fix",
     "e2e": "ng e2e",
     "setup": "cp ./node_modules/leaflet.elevation/dist/leaflet.elevation-0.0.4.min.js ./src/assets/ ",
     "setup_after": "cp ./_redirects ./www/ && cp ./robots.txt ./www && cp ./embed.html ./www/ "

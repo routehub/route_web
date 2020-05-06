@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
-import { AuthService } from '../auth.service'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs'
+import { AuthService } from '../auth.service'
 
 
 @Component({
@@ -10,12 +10,11 @@ import { Subscription } from 'rxjs'
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-
   private loginSubscription: Subscription;
 
   constructor(
     public authService: AuthService,
-    private router: Router
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -30,7 +29,7 @@ export class LoginPage implements OnInit {
   ngOnDestroy() {
     // 画面遷移時に購読解除
     if (this.loginSubscription) {
-      this.loginSubscription.unsubscribe();
+      this.loginSubscription.unsubscribe()
     }
   }
 
