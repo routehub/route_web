@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core'
 import { AngularFireAuth } from 'angularfire2/auth'
 import * as firebase from 'firebase/app'
 import { Observable } from 'rxjs/Observable'
-import { Router } from '@angular/router'
 
 @Injectable({
   providedIn: 'root',
@@ -12,15 +11,10 @@ export class AuthService {
 
   user: Observable<firebase.User>
 
-  constructor(private angularFireAuth: AngularFireAuth, private router: Router) {
+  constructor(private angularFireAuth: AngularFireAuth) {
     this.user = angularFireAuth.authState
     this.user.subscribe((u) => {
       this.currentLoginUser = u
-
-      // ログイン時はログイン後myに遷移
-      if (u !== null) {
-        router.navigate(['/my'])
-      }
     })
   }
 
