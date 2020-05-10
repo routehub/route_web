@@ -11,7 +11,7 @@ import * as firebase from 'firebase/app'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
 import * as mapboxgl from 'mapbox-gl'
-import chartjsUtilsElevation from 'chartjs-util-elevation'
+import { ElevationGraph } from 'chartjs-util-elevation'
 import { RouteinfoPage } from '../routeinfo/routeinfo.page'
 import { ExportPage } from '../export/export.page'
 import { LayerselectPage } from '../layerselect/layerselect.page'
@@ -21,7 +21,7 @@ import 'firebase/auth'
 import { getRouteQuery } from '../gql/RouteQuery'
 import MapboxAnimatedMarker from './animatedMbMarker'
 import {
-  RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon,
+  RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon, gpsIcon,
 } from './routemapMapbox'
 
 @Component({
@@ -193,7 +193,28 @@ export class WatchPage implements OnInit {
 
         // 標高グラフ表示
         console.dir(that.routeData)
-        const elevation = chartjsUtilsElevation(this.elevElem.nativeElement, that.routeData.pos, {})
+        const option = {
+          selector: '#elevation',
+          color: 'red',
+          pinColor: 'blue',
+          padding: 50,
+          onHover: (d, i) => {
+            console.log(d, i)
+          },
+          onSelectStart: (e) => {
+            console.log(e)
+            console.log('start')
+          },
+          onSelectMove: (e) => {
+            console.log(e)
+            console.log('move')
+          },
+          onSelectEnd: (e) => {
+            console.log(e)
+            console.log('end')
+          },
+        }
+        const elevation = new ElevationGraph(that.routeData.pos, option)
         console.dir(elevation)
 
         const lnglats = that.routeGeojson.data.geometry.coordinates
@@ -363,7 +384,7 @@ export class WatchPage implements OnInit {
 
         if (!this.currenPossitionMarker) {
           this.currenPossitionMarker = new L.marker(latlng,
-            { icon: this.routemap.gpsIcon })
+            { icon: gpsIcon })
             .addTo(this.map)
           this.map.setView(
             [pos.coords.latitude, pos.coords.longitude],

@@ -15,13 +15,13 @@
 
 <ion-content>
   <div class="mainmap" #map></div>
-  <canvas style="position: relative;
-    background: #ffffff78;
+  <div id="elevation"
+  style="position: absolute;
     width: 100%;
-    top: -200px;
-    height: 200px;" #elevation></canvas>
-
-
+    max-height: 200px;
+    bottom: 0;
+    background: #ffffff78;
+    " ></div>
 
   <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button>
