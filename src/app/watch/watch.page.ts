@@ -19,7 +19,6 @@ import { AuthService } from '../auth.service'
 import { RouteModel } from '../model/routemodel'
 import 'firebase/auth'
 import { getRouteQuery } from '../gql/RouteQuery'
-import MapboxAnimatedMarker from './animatedMbMarker'
 import {
   RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon,
 } from './routemapMapbox'
@@ -63,7 +62,6 @@ export class WatchPage implements OnInit {
 
   id: string;
 
-  // map: any;
   map: mapboxgl.Map;
 
   watchLocationSubscribe: any;
@@ -96,7 +94,8 @@ export class WatchPage implements OnInit {
 
   isFavorite = false;
 
-  private animatedMarker: MapboxAnimatedMarker;
+  // private animatedMarker: MapboxAnimatedMarker;
+  // private mbAnimatedMarker: MapboxAnimatedMarker | null;
 
   isPlaying: boolean;
 
@@ -115,7 +114,6 @@ export class WatchPage implements OnInit {
 
   private playSpeedIndex = 0;
 
-  private mbAnimatedMarker: MapboxAnimatedMarker | null;
 
   ionViewWillLeave() {
     if (this.platform.is('mobile')) {
@@ -192,6 +190,7 @@ export class WatchPage implements OnInit {
           pinColor: 'blue',
           padding: 50,
           onHover: (d, i) => {
+            console.log(d, i)
             const point = that.routeData.pos[i]
             console.log(point)
 
@@ -201,18 +200,18 @@ export class WatchPage implements OnInit {
             } else {
               this.elevationHoverMarker = this.routemap.createMarker(editIcon, { anchor: 'center' }, 'marker-circle').setLngLat(lngLat).addTo(that.map)
             }
-
-            console.log(d, i)
           },
           onSelectStart: (e) => {
           },
           onSelectMove: (e) => {
           },
           onSelectEnd: (e) => {
+            console.log(e)
             const sections = e.selection
             if (!sections || sections.length !== 2) {
               return
             }
+            console.log(that.routeData.pos)
 
             const start = that.routeData.pos[sections[0]]
             const end = that.routeData.pos[sections[1]]
@@ -227,7 +226,7 @@ export class WatchPage implements OnInit {
           .map((p) => new mapboxgl.LngLat(p[0], p[1]))
 
         // アニメーション機能初期化
-        this.mbAnimatedMarker = new MapboxAnimatedMarker(that.map, lnglats)
+        // this.mbAnimatedMarker = new MapboxAnimatedMarker(that.map, lnglats)
 
         const kindList = []
         for (let i = 0; i < route.kind.length; i++) {
@@ -271,11 +270,6 @@ export class WatchPage implements OnInit {
         }
         that.line = pos
       })
-    })
-
-    this.map.on('style.load', () => {
-      console.log('style load')
-      // this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
     })
 
     // UIの調整
@@ -407,10 +401,10 @@ export class WatchPage implements OnInit {
   togglePlay(event) {
     event.stopPropagation()
     if (this.isPlaying) {
-      this.mbAnimatedMarker.stop()
+      // this.mbAnimatedMarker.stop()
       this.isPlaying = false
     } else {
-      this.mbAnimatedMarker.start()
+      // this.mbAnimatedMarker.start()
       this.isPlaying = true
     }
   }
@@ -426,7 +420,7 @@ export class WatchPage implements OnInit {
     event.stopPropagation()
     if (!this.isPlaying) {
       // 動いていないときには再生をする
-      this.mbAnimatedMarker.start()
+      // this.mbAnimatedMarker.start()
       this.isPlaying = true
       return
     }
@@ -443,7 +437,7 @@ export class WatchPage implements OnInit {
     }
     const speed = intervalTable[this.playSpeedIndex]
     this.presentToast(`現在${speed[1]}で走行中`)
-    this.animatedMarker.setInterval(speed[0] as number)
+    // this.animatedMarker.setInterval(speed[0] as number)
   }
 
   back() {

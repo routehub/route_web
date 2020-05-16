@@ -46,41 +46,39 @@ export interface IconInfo {
 }
 
 export const elevationIcon: IconInfo = {
-  iconSize: [20, 20], // size of the icon
-  iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
-  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  popupAnchor: [0, 0],
 }
-
-
 export const gpsIcon: IconInfo = {
   iconUrl: '/assets/icon/gps_icon.png',
-  iconSize: [20, 20], // size of the icon
-  iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
-  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  popupAnchor: [0, 0],
 }
 export const startIcon: IconInfo = {
   iconUrl: '../../assets/icon/start_icon.png',
-  iconSize: [50, 27], // size of the icon
-  iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
-  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+  iconSize: [50, 27],
+  iconAnchor: [52, 27],
+  popupAnchor: [0, 0],
 }
 export const goalIcon: IconInfo = {
   iconUrl: './assets/icon/goal_icon.png',
-  iconSize: [50, 27], // size of the icon
-  iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
-  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+  iconSize: [50, 27],
+  iconAnchor: [-2, 27],
+  popupAnchor: [0, 0],
 }
 export const commentIcon: IconInfo = {
   iconUrl: '/assets/icon/comment_icon.png',
-  iconSize: [20, 20], // size of the icon
-  iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
-  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  popupAnchor: [0, 0],
 }
 export const editIcon:IconInfo = {
   iconUrl: '/assets/icon/edit_icon.png',
-  iconSize: [14, 14], // size of the icon
-  iconAnchor: [7, 7], // point of the icon which will correspond to marker's location
-  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+  iconSize: [14, 14],
+  iconAnchor: [7, 7],
+  popupAnchor: [0, 0],
   className: 'map-editIcon',
 }
 export class RoutemapMapbox {
@@ -102,7 +100,7 @@ export class RoutemapMapbox {
         center: [defaultCenter[1], defaultCenter[0]],
         zoom: defaultZoom,
       })
-      // mapMb.addControl(new mapboxgl.AttributionControl(), 'bottom-right')
+      mapMb.addControl(new mapboxgl.AttributionControl(), 'top-left')
     } else {
       mapMb = new mapboxgl.Map({
         container: mapele,
