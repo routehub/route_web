@@ -5,6 +5,7 @@
   "homepage": "https://routehub.app/",
   "scripts": {
     "ng": "ng",
+    "dev": "ionic serve -l",
     "start": "npm run setup && ng serve",
     "build": "npm run setup && ng build && npm run setup_after",
     "stage": "npm run setup && ng build -c stg && npm run setup_after",

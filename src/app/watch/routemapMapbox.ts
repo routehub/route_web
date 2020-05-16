@@ -36,31 +36,47 @@ export const rasterStyleInfo: RasterStyleInfo = {
     copyright: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
   },
 }
-export const gpsIcon = {
+
+export interface IconInfo {
+  iconUrl?: string,
+  iconSize: [number, number],
+  iconAnchor: [number, number],
+  popupAnchor: [number, number],
+  className?: string,
+}
+
+export const elevationIcon: IconInfo = {
+  iconSize: [20, 20], // size of the icon
+  iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
+  popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+}
+
+
+export const gpsIcon: IconInfo = {
   iconUrl: '/assets/icon/gps_icon.png',
   iconSize: [20, 20], // size of the icon
   iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
   popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
 }
-export const startIcon = {
-  iconUrl: '/assets/icon/start_icon.png',
+export const startIcon: IconInfo = {
+  iconUrl: '../../assets/icon/start_icon.png',
   iconSize: [50, 27], // size of the icon
   iconAnchor: [52, 27], // point of the icon which will correspond to marker's location
   popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
 }
-export const goalIcon = {
-  iconUrl: '/assets/icon/goal_icon.png',
+export const goalIcon: IconInfo = {
+  iconUrl: './assets/icon/goal_icon.png',
   iconSize: [50, 27], // size of the icon
   iconAnchor: [-2, 27], // point of the icon which will correspond to marker's location
   popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
 }
-export const commentIcon = {
+export const commentIcon: IconInfo = {
   iconUrl: '/assets/icon/comment_icon.png',
   iconSize: [20, 20], // size of the icon
   iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
   popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
 }
-export const editIcon = {
+export const editIcon:IconInfo = {
   iconUrl: '/assets/icon/edit_icon.png',
   iconSize: [14, 14], // size of the icon
   iconAnchor: [7, 7], // point of the icon which will correspond to marker's location
@@ -180,13 +196,20 @@ export class RoutemapMapbox {
     map.fitBounds(this.posToLatLngBounds(coordinates))
   }
 
-  createMarker(iconInfo: any, className: string, option: mapboxgl.MarkerOptions) {
+  createMarker(
+    iconInfo?: IconInfo,
+    option?: mapboxgl.MarkerOptions,
+    className?: string,
+  ): mapboxgl.Marker {
     const startEl = document.createElement('div')
-    startEl.className = className
-    startEl.style.backgroundImage = `url(${iconInfo.iconUrl})`
-    startEl.style.backgroundSize = 'cover'
-    startEl.style.width = `${iconInfo.iconSize[0]}px`
-    startEl.style.height = `${iconInfo.iconSize[1]}px`
+    if (iconInfo) {
+      startEl.style.backgroundImage = `url(${iconInfo.iconUrl})`
+      startEl.style.backgroundSize = 'cover'
+      startEl.style.width = `${iconInfo.iconSize[0]}px`
+      startEl.style.height = `${iconInfo.iconSize[1]}px`
+    } else if (className) {
+      startEl.className = className
+    }
     return new mapboxgl.Marker(startEl, option)
   }
 

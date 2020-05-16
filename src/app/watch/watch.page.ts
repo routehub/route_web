@@ -21,7 +21,7 @@ import 'firebase/auth'
 import { getRouteQuery } from '../gql/RouteQuery'
 import MapboxAnimatedMarker from './animatedMbMarker'
 import {
-  RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon, gpsIcon,
+  RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon, gpsIcon, elevationIcon,
 } from './routemapMapbox'
 
 @Component({
@@ -102,6 +102,8 @@ export class WatchPage implements OnInit {
 
   private hotlineLayer: any;
 
+  private elevationHoverMarker: mapboxgl.Marker;
+
   private isSlopeMode = false;
 
   private editMarkers: Array<any> = [];
@@ -180,25 +182,40 @@ export class WatchPage implements OnInit {
         that.routeGeojson.data.geometry.coordinates = pos
         // ルート表示
         RoutemapMapbox.routeLayer = that.routeGeojson
-        this.routemap.createMarker(startIcon, 'marker-start', {
+        this.routemap.createMarker(startIcon, {
           anchor: 'bottom-right',
-        })
+        }, 'marker-start')
           .setLngLat([pos[0][0], pos[0][1]])
           .addTo(that.map)
 
-        this.routemap.createMarker(goalIcon, 'marker-goal', { anchor: 'bottom-left', offset: [0, -27] })
+        this.routemap.createMarker(goalIcon, { anchor: 'bottom-left', offset: [0, -27] }, 'marker-goal')
           .setLngLat([pos[pos.length - 1][0], pos[pos.length - 1][1]])
           .addTo(that.map)
         this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
 
         // 標高グラフ表示
-        console.dir(that.routeData)
         const option = {
           selector: '#elevation',
           color: 'red',
           pinColor: 'blue',
           padding: 50,
           onHover: (d, i) => {
+            const point = that.routeData.pos[i]
+            console.log(point)
+            const el = document.createElement('div')
+            el.style.width = '20px'
+            el.style.height = '20px'
+            el.style.borderRadius = '50%'
+            el.style.background = '#ff0000'
+
+            const lngLat = new mapboxgl.LngLat(point[0], point[1])
+            if (this.elevationHoverMarker) {
+              this.elevationHoverMarker.setLngLat(lngLat)
+            } else {
+              // this.elevationHoverMarker = new mapboxgl.Marker(el ).setLngLat(lngLat).addTo(that.map)
+              this.elevationHoverMarker = this.routemap.createMarker(editIcon, { anchor: 'center' }).setLngLat(lngLat).addTo(that.map)
+            }
+
             console.log(d, i)
           },
           onSelectStart: (e) => {
