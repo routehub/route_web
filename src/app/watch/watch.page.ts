@@ -21,7 +21,7 @@ import 'firebase/auth'
 import { getRouteQuery } from '../gql/RouteQuery'
 import MapboxAnimatedMarker from './animatedMbMarker'
 import {
-  RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon, gpsIcon, elevationIcon,
+  RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon,
 } from './routemapMapbox'
 
 @Component({
@@ -63,8 +63,8 @@ export class WatchPage implements OnInit {
 
   id: string;
 
-  map: any;
-  // map: mapboxgl.Map;
+  // map: any;
+  map: mapboxgl.Map;
 
   watchLocationSubscribe: any;
 
@@ -134,21 +134,13 @@ export class WatchPage implements OnInit {
     window.document.title = 'ルートを見る RouteHub(β)'
   }
 
-  // @HostListener('window:resize', ['$event'])
-  // sizeChange(event) {
-  //   if (!this.elevation) {
-
-  //   }
-  //   // todo
-  //   // resizeしたあと1秒以上固定だったら標高グラフを削除して再描画
-  // }
-
   ionViewWillEnter() {
     this.user = this.authService.currentLoginUser
     this.presentLoading()
 
     const routemap = this.createdRoutemap = this.routemap.createMap(
       this.mapElem.nativeElement,
+      true,
     )
     this.map = routemap.map
 
@@ -202,33 +194,30 @@ export class WatchPage implements OnInit {
           onHover: (d, i) => {
             const point = that.routeData.pos[i]
             console.log(point)
-            const el = document.createElement('div')
-            el.style.width = '20px'
-            el.style.height = '20px'
-            el.style.borderRadius = '50%'
-            el.style.background = '#ff0000'
 
             const lngLat = new mapboxgl.LngLat(point[0], point[1])
             if (this.elevationHoverMarker) {
               this.elevationHoverMarker.setLngLat(lngLat)
             } else {
-              // this.elevationHoverMarker = new mapboxgl.Marker(el ).setLngLat(lngLat).addTo(that.map)
-              this.elevationHoverMarker = this.routemap.createMarker(editIcon, { anchor: 'center' }).setLngLat(lngLat).addTo(that.map)
+              this.elevationHoverMarker = this.routemap.createMarker(editIcon, { anchor: 'center' }, 'marker-circle').setLngLat(lngLat).addTo(that.map)
             }
 
             console.log(d, i)
           },
           onSelectStart: (e) => {
-            console.log(e)
-            console.log('start')
           },
           onSelectMove: (e) => {
-            console.log(e)
-            console.log('move')
           },
           onSelectEnd: (e) => {
-            console.log(e)
-            console.log('end')
+            const sections = e.selection
+            if (!sections || sections.length !== 2) {
+              return
+            }
+
+            const start = that.routeData.pos[sections[0]]
+            const end = that.routeData.pos[sections[1]]
+            const bounds = RoutemapMapbox.toBounds([start, end])
+            that.map.fitBounds(bounds, { animate: true })
           },
         }
         const elevation = new ElevationGraph(that.routeData.pos, option)
@@ -394,23 +383,23 @@ export class WatchPage implements OnInit {
     this.isWatchLocation = true
     this.watchLocationSubscribe = this.watch.subscribe(() => {
       this.watch.subscribe((pos) => {
-        if (this.watchLocationSubscribe.isStopped === true) {
-          return
-        }
-        const latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude)
+        // if (this.watchLocationSubscribe.isStopped === true) {
+        //   return
+        // }
+        // const latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude)
 
-        if (!this.currenPossitionMarker) {
-          this.currenPossitionMarker = new L.marker(latlng,
-            { icon: gpsIcon })
-            .addTo(this.map)
-          this.map.setView(
-            [pos.coords.latitude, pos.coords.longitude],
-            15,
-            { animate: true },
-          ) // 初回のみ移動
-        } else {
-          this.currenPossitionMarker.setLatLng(latlng)
-        }
+        // if (!this.currenPossitionMarker) {
+        //   this.currenPossitionMarker = new L.marker(latlng,
+        //     { icon: gpsIcon })
+        //     .addTo(this.map)
+        // this.map.setView(
+        //   [pos.coords.latitude, pos.coords.longitude],
+        //   15,
+        //   { animate: true },
+        // ) // 初回のみ移動
+        // } else {
+        //   this.currenPossitionMarker.setLatLng(latlng)
+        // }
       })
     })
   }

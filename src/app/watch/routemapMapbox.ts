@@ -96,13 +96,13 @@ export class RoutemapMapbox {
 
     let mapMb = null
     if (isVector) {
-      // vector地図
       mapMb = new mapboxgl.Map({
         container: mapele,
         style: 'mapbox://styles/routehub/ck7sl13lr2bgw1isx42telruq',
         center: [defaultCenter[1], defaultCenter[0]],
         zoom: defaultZoom,
       })
+      // mapMb.addControl(new mapboxgl.AttributionControl(), 'bottom-right')
     } else {
       mapMb = new mapboxgl.Map({
         container: mapele,
@@ -245,5 +245,17 @@ export class RoutemapMapbox {
         },
       ],
     }
+  }
+
+  public static toBounds(lngLats: mapboxgl.LngLat[]): mapboxgl.LngLatBounds | null{
+    if (lngLats.length === 0) {
+      return null
+    }
+
+    const bounds = new mapboxgl.LngLatBounds()
+    lngLats.forEach((ll) => {
+      bounds.extend(ll)
+    })
+    return bounds
   }
 }

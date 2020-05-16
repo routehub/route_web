@@ -24,12 +24,15 @@ export class LayerselectPage implements OnInit {
 
     switch (index) {
       case 0:
-        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.OSM))
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.DEFAULT))
         break
       case 1:
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.OSM))
+        break
+      case 2:
         map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.OPEN_CYCLE_LAYER))
         break
-      case 3:
+      case 4:
         map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.GSI))
         break
       default:
