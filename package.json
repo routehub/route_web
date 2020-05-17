@@ -43,7 +43,7 @@
     "apollo-link-context": "^1.0.19",
     "apollo-link-error": "^1.1.12",
     "apollo-link-http": "^1.5.16",
-    "chartjs-util-elevation": "github:routehub/elevation-module#d3",
+    "chartjs-util-elevation": "git+https://github.com/routehub/elevation-module.git#d3",
     "classlist.js": "^1.1.20150312",
     "cordova-plugin-geolocation": "^4.0.2",
     "core-js": "^3.6.4",

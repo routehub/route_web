@@ -114,6 +114,10 @@ export class WatchPage implements OnInit {
 
   private playSpeedIndex = 0;
 
+  private selectStartPointIndex = null
+
+  private selectEndPointIndex = null
+
 
   ionViewWillLeave() {
     if (this.platform.is('mobile')) {
@@ -184,43 +188,7 @@ export class WatchPage implements OnInit {
         this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
 
         // 標高グラフ表示
-        const option = {
-          selector: '#elevation',
-          color: 'red',
-          pinColor: 'blue',
-          padding: 50,
-          onHover: (d, i) => {
-            console.log(d, i)
-            const point = that.routeData.pos[i]
-            console.log(point)
-
-            const lngLat = new mapboxgl.LngLat(point[0], point[1])
-            if (this.elevationHoverMarker) {
-              this.elevationHoverMarker.setLngLat(lngLat)
-            } else {
-              this.elevationHoverMarker = this.routemap.createMarker(editIcon, { anchor: 'center' }, 'marker-circle').setLngLat(lngLat).addTo(that.map)
-            }
-          },
-          onSelectStart: (e) => {
-          },
-          onSelectMove: (e) => {
-          },
-          onSelectEnd: (e) => {
-            console.log(e)
-            const sections = e.selection
-            if (!sections || sections.length !== 2) {
-              return
-            }
-            console.log(that.routeData.pos)
-
-            const start = that.routeData.pos[sections[0]]
-            const end = that.routeData.pos[sections[1]]
-            const bounds = RoutemapMapbox.toBounds([start, end])
-            that.map.fitBounds(bounds, { animate: true })
-          },
-        }
-        const elevation = new ElevationGraph(that.routeData.pos, option)
-        console.dir(elevation)
+        this.setAltitudeGraph(this.map, this.routeData)
 
         const lnglats = that.routeGeojson.data.geometry.coordinates
           .map((p) => new mapboxgl.LngLat(p[0], p[1]))
@@ -276,6 +244,59 @@ export class WatchPage implements OnInit {
     if (this.platform.is('mobile')) {
       window.document.querySelector('ion-tab-bar').style.display = 'none'
     }
+  }
+
+  setAltitudeGraph(map, routeData:RouteModel) {
+    const onHover = (d, i) => {
+      const point = routeData.pos[i]
+
+      const lngLat = new mapboxgl.LngLat(point[0], point[1])
+      if (this.elevationHoverMarker) {
+        this.elevationHoverMarker.setLngLat(lngLat)
+      } else {
+        this.elevationHoverMarker = this.routemap.createMarker(editIcon, { anchor: 'center' }, 'marker-circle').setLngLat(lngLat).addTo(this.map)
+      }
+    }
+
+    const onSelectStart = (e) => {
+    }
+
+    const onSelectMove = (e, i, j) => {
+      this.selectStartPointIndex = i - 1
+      this.selectEndPointIndex = j - 1
+    }
+
+    const onSelectEnd = (e, i) => {
+      if (!e.selection) {
+        return
+      }
+      // console.log(`end : start=${this.selectStartPointIndex}; end=${this.selectEndPointIndex}`)
+      if (this.selectStartPointIndex === null || this.selectEndPointIndex === null) {
+        return
+      }
+
+      const posArea = routeData.pos.slice(this.selectStartPointIndex, this.selectEndPointIndex + 1)
+      const lngLats = posArea.map((p) => new mapboxgl.LngLat(p[0], p[1]))
+      const bounds = RoutemapMapbox.toBounds(lngLats)
+      this.map.fitBounds(bounds, { padding: 80, animate: true })
+
+      this.selectStartPointIndex = null
+      this.selectEndPointIndex = null
+    }
+
+
+    // 標高グラフ表示
+    const option = {
+      selector: '#elevation',
+      color: 'red',
+      pinColor: 'blue',
+      padding: 50,
+      onHover,
+      onSelectStart,
+      onSelectMove,
+      onSelectEnd,
+    }
+    this.elevation = new ElevationGraph(routeData.pos, option)
   }
 
   updateFavorite() {
