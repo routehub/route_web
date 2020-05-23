@@ -20,7 +20,7 @@ import { RouteModel } from '../model/routemodel'
 import 'firebase/auth'
 import { getRouteQuery } from '../gql/RouteQuery'
 import {
-  RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon,
+  RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon, gpsIcon,
 } from './routemapMapbox'
 
 @Component({
@@ -174,27 +174,33 @@ export class WatchPage implements OnInit {
           pos[i].push(that.routeData.level[i] * 1)
         }
         that.routeGeojson.data.geometry.coordinates = pos
+
+        // 標高グラフ表示
+        const startLngLat = [pos[0][0], pos[0][1]] as mapboxgl.LngLatLike
+        const goalLngLat = [pos[pos.length - 1][0], pos[pos.length - 1][1]] as mapboxgl.LngLatLike
+        // 事前にmarker作成
+        this.elevationHoverMarker = this.routemap.createMarker(gpsIcon, { anchor: 'center' }, 'marker-start')
+          .setLngLat(startLngLat)
+          .addTo(this.map)
+        this.elevationHoverMarker.getElement().hidden = true
+        this.setAltitudeGraph(this.map, this.elevationHoverMarker, this.routeData)
+
         // ルート表示
         RoutemapMapbox.routeLayer = that.routeGeojson
+        // ルート表示: スタート地点
         this.routemap.createMarker(startIcon, {
           anchor: 'bottom-right',
         }, 'marker-start')
-          .setLngLat([pos[0][0], pos[0][1]])
+          .setLngLat(startLngLat)
           .addTo(that.map)
 
+        // ルート表示: ゴール地点
         this.routemap.createMarker(goalIcon, { anchor: 'bottom-left', offset: [0, -27] }, 'marker-goal')
-          .setLngLat([pos[pos.length - 1][0], pos[pos.length - 1][1]])
+          .setLngLat(goalLngLat)
           .addTo(that.map)
+
+        // ルート表示: 経路表示
         this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
-
-        // 標高グラフ表示
-        this.setAltitudeGraph(this.map, this.routeData)
-
-        const lnglats = that.routeGeojson.data.geometry.coordinates
-          .map((p) => new mapboxgl.LngLat(p[0], p[1]))
-
-        // アニメーション機能初期化
-        // this.mbAnimatedMarker = new MapboxAnimatedMarker(that.map, lnglats)
 
         const kindList = []
         for (let i = 0; i < route.kind.length; i++) {
@@ -246,16 +252,22 @@ export class WatchPage implements OnInit {
     }
   }
 
-  setAltitudeGraph(map, routeData:RouteModel) {
+  setAltitudeGraph(map, marker: mapboxgl.Marker, routeData:RouteModel) {
     const onHover = (d, i) => {
       const point = routeData.pos[i]
 
       const lngLat = new mapboxgl.LngLat(point[0], point[1])
-      if (this.elevationHoverMarker) {
-        this.elevationHoverMarker.setLngLat(lngLat)
-      } else {
-        this.elevationHoverMarker = this.routemap.createMarker(editIcon, { anchor: 'center' }, 'marker-circle').setLngLat(lngLat).addTo(this.map)
-      }
+      // eslint-disable-next-line no-param-reassign
+      marker.getElement().hidden = false
+      marker.setLngLat(lngLat)
+      // if (this.elevationHoverMarker) {
+      //   // this.elevationHoverMarker.setLngLat(lngLat)
+      // } else {
+      //   // this.elevationHoverMarker = this.routemap.createMarker(gpsIcon, { anchor: 'center' }, 'marker-circle')
+      //   this.elevationHoverMarker = this.routemap.createMarker(gpsIcon, { anchor: 'center' }, 'marker-start')
+      //     .setLngLat(new mapboxgl.LngLat(139.77044378, 35.67832667))
+      //     .addTo(this.map)
+      // }
     }
 
     const onSelectStart = (e) => {
