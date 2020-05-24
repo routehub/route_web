@@ -4,47 +4,6 @@ import * as Hotline from 'leaflet-hotline'
 import turfbbox from '@turf/bbox'
 import * as turf from '@turf/helpers'
 import * as AnimatedMarker from './animatedMarker.js'
-/** *
- * ルートModel
- * いろんなところで使いまわしたい
- */
-export class Route {
-  id: string;
-
-  title: string;
-
-  body: string;
-
-  tag: string;
-
-  author: string;
-
-  summary: string;
-
-  thumburl: string;
-
-  isGps: boolean;
-
-  isPrivate: boolean;
-
-  createdAt: string;
-
-  /*
-  private staticmap_url = 'https://map.yahooapis.jp/map/V1/static';
-
-  private thumbappid = 'dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-';
-
-  private getThumbUrl(summary) {
-    const line = summary.slice(11, -1).split(',').map((pos) => {
-      const p = pos.split(' ')
-      return `${p[1]},${p[0]}`
-    }).join(',')
-    return `${this.staticmap_url}?appid=${this.thumbappid
-    }&autoscale=on&scalebar=off&width=450&height=300&l=` + `0,0,255,105,4,${ // rgb, a, weight
-      line}`
-  }
-  */
-}
 
 export class Routemap {
   gpsIcon = new L.icon({

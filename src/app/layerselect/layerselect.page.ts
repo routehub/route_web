@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { ModalController } from '@ionic/angular'
+import { rasterStyleInfo, RoutemapMapbox } from '../watch/routemapMapbox'
+
 
 @Component({
   selector: 'app-layerselect',
@@ -15,8 +17,28 @@ export class LayerselectPage implements OnInit {
   }
 
   changeLayer(index: number) {
-    const layerControlElement = document.getElementsByClassName('leaflet-control-layers')[0]
-    layerControlElement.getElementsByTagName('input')[index].click()
+    const map = RoutemapMapbox.getCurrent()
+    map.once('styledata', () => {
+      new RoutemapMapbox().renderRouteLayer(map, RoutemapMapbox.routeLayer)
+    })
+
+    switch (index) {
+      case 0:
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.DEFAULT))
+        break
+      case 1:
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.OSM))
+        break
+      case 2:
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.OPEN_CYCLE_LAYER))
+        break
+      case 4:
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.GSI))
+        break
+      default:
+        map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.DEFAULT))
+        break
+    }
   }
 
   async closeModal() {
