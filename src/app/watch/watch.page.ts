@@ -252,7 +252,7 @@ export class WatchPage implements OnInit {
     }
   }
 
-  setAltitudeGraph(map, marker: mapboxgl.Marker, routeData:RouteModel) {
+  setAltitudeGraph(map, marker: mapboxgl.Marker, routeData: RouteModel) {
     const onHover = (d, i) => {
       const point = routeData.pos[i]
 
@@ -301,6 +301,7 @@ export class WatchPage implements OnInit {
     const option = {
       selector: '#elevation',
       color: '#ec1644',
+      fill: '#ff004c70',
       pinColor: '#ec1644',
       padding: 40,
       onHover,
