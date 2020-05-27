@@ -178,7 +178,7 @@ export class RoutemapMapbox {
     ]
   }
 
-  renderRouteLayer(map: mapboxgl.Map, lineGeoJSON: mapboxgl.GeoJSONSourceRaw) {
+  renderRouteLayer(map: mapboxgl.Map, lineGeoJSON: mapboxgl.GeoJSONSourceRaw, mode: string) {
     if (map.getLayer('route')) {
       map.removeLayer('route')
     }
@@ -201,7 +201,7 @@ export class RoutemapMapbox {
         'line-color': '#0000ff',
         'line-width': 6,
         'line-opacity': 0.7,
-        'line-gradient': this.func(coordinates, 'slope'),
+        'line-gradient': this.func(coordinates, mode),
       },
     })
 

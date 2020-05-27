@@ -200,7 +200,7 @@ export class WatchPage implements OnInit {
           .addTo(that.map)
 
         // ルート表示: 経路表示
-        this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
+        this.routemap.renderRouteLayer(that.map, that.routeGeojson as any, 'height')
 
         const kindList = []
         for (let i = 0; i < route.kind.length; i++) {
