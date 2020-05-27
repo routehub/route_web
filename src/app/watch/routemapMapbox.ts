@@ -3,6 +3,7 @@ import turfbbox from '@turf/bbox'
 import * as turf from '@turf/helpers'
 import * as mapboxgl from 'mapbox-gl'
 import { LngLatLike } from 'mapbox-gl'
+import * as chroma from "chroma-js";
 
 Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2s3c2tzNndwMG12NjNrcDM2dm1xamQ3bSJ9.fHdfoSXDhbyboKWznJ53Cw')
 const styleId = 'ck7sl13lr2bgw1isx42telruq'
@@ -74,7 +75,7 @@ export const commentIcon: IconInfo = {
   iconAnchor: [10, 10],
   popupAnchor: [0, 0],
 }
-export const editIcon:IconInfo = {
+export const editIcon: IconInfo = {
   iconUrl: '/assets/icon/edit_icon.png',
   iconSize: [14, 14],
   iconAnchor: [7, 7],
@@ -149,11 +150,14 @@ export class RoutemapMapbox {
 
   func(coordinates: Array<Array<number>>): mapboxgl.Expression {
     const { length } = coordinates
+    // 標高の最大値を求める
+    const maxHeight = coordinates.map(a => a[2]).reduce((a, b) => Math.max(a, b));
+
     const color = []
     coordinates.forEach((c, i) => {
       const v = i / length
       color.push(v)
-      color.push(this.getColor(c[2]))
+      color.push(this.getHeightColor(c[2], maxHeight))
     })
     return [
       'interpolate',
@@ -211,13 +215,8 @@ export class RoutemapMapbox {
     return new mapboxgl.Marker(startEl, option)
   }
 
-  getColor(x) {
-    return x < 20 ? 'blue'
-      : x < 40 ? 'royalblue'
-        : x < 60 ? 'cyan'
-          : x < 80 ? 'lime'
-            : x < 100 ? 'red'
-              : 'blue'
+  getHeightColor(height, maxHeight) {
+    return chroma.scale(['blue', 'green', 'yellow', 'red', 'black'])(height / maxHeight).hex()
   }
 
   public static createRasterTile(rasterStyle: RasterStyle): mapboxgl.Style {
@@ -245,7 +244,7 @@ export class RoutemapMapbox {
     }
   }
 
-  public static toBounds(lngLats: mapboxgl.LngLat[]): mapboxgl.LngLatBounds | null{
+  public static toBounds(lngLats: mapboxgl.LngLat[]): mapboxgl.LngLatBounds | null {
     if (lngLats.length === 0) {
       return null
     }
