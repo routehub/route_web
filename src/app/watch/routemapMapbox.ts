@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import turfbbox from '@turf/bbox'
 import * as turf from '@turf/helpers'
+import distance from '@turf/distance';
 import * as mapboxgl from 'mapbox-gl'
 import { LngLatLike } from 'mapbox-gl'
 import * as chroma from "chroma-js";
@@ -148,17 +149,27 @@ export class RoutemapMapbox {
     return new mapboxgl.LngLatBounds(sw, ne)
   }
 
-  func(coordinates: Array<Array<number>>): mapboxgl.Expression {
+  func(coordinates: Array<Array<number>>, mode: string): mapboxgl.Expression {
     const { length } = coordinates
     // 標高の最大値を求める
     const maxHeight = coordinates.map(a => a[2]).reduce((a, b) => Math.max(a, b));
 
     const color = []
-    coordinates.forEach((c, i) => {
-      const v = i / length
-      color.push(v)
-      color.push(this.getHeightColor(c[2], maxHeight))
-    })
+
+    if (mode == 'slope') {
+      coordinates.forEach((c, i) => {
+        const v = i / length
+        color.push(v)
+        color.push(this.getSlopeColor(c, coordinates[i + 1]))
+        //color.push(this.getHeightColor(c[2], maxHeight))
+      })
+    } else {
+      coordinates.forEach((c, i) => {
+        const v = i / length
+        color.push(v)
+        color.push(this.getHeightColor(c[2], maxHeight))
+      })
+    }
     return [
       'interpolate',
       ['linear'],
@@ -190,7 +201,7 @@ export class RoutemapMapbox {
         'line-color': '#0000ff',
         'line-width': 6,
         'line-opacity': 0.7,
-        'line-gradient': this.func(coordinates),
+        'line-gradient': this.func(coordinates, 'slope'),
       },
     })
 
@@ -217,6 +228,21 @@ export class RoutemapMapbox {
 
   getHeightColor(height, maxHeight) {
     return chroma.scale(['blue', 'green', 'yellow', 'red', 'black'])(height / maxHeight).hex()
+  }
+
+  getSlopeColor(current, next) {
+    const pallet = ['blue', 'green', 'red']
+    if (!next || next == NaN) {
+      return chroma.scale(pallet)(0.5).hex()
+    }
+
+    // calcurate slope : https://tomari.org/main/java/koubai_keisan.html
+    const dist = distance(current, next) * 1000 // km to m
+    const heightDiff = next[2] - current[2]
+    const slope = heightDiff * 100 / dist
+    // -20度~+20度の間を0...1で表す
+    const percentageSlope = (slope + 20) / 40
+    return chroma.scale(pallet)(percentageSlope).hex()
   }
 
   public static createRasterTile(rasterStyle: RasterStyle): mapboxgl.Style {
