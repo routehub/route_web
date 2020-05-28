@@ -189,6 +189,18 @@ export class RoutemapMapbox {
 
     const feature = lineGeoJSON.data as any
     const { coordinates } = feature.geometry
+
+    const paint = mode === null ? {
+      'line-color': '#0000ff',
+      'line-width': 6,
+      'line-opacity': 0.7
+    } : {
+        'line-color': '#0000ff',
+        'line-width': 6,
+        'line-opacity': 0.7,
+        'line-gradient': this.func(coordinates, mode),
+      };
+
     map.addLayer({
       id: 'route',
       type: 'line',
@@ -197,12 +209,7 @@ export class RoutemapMapbox {
         'line-join': 'round',
         'line-cap': 'round',
       },
-      paint: {
-        'line-color': '#0000ff',
-        'line-width': 6,
-        'line-opacity': 0.7,
-        'line-gradient': this.func(coordinates, mode),
-      },
+      paint: paint
     })
 
     // 描画範囲をよろしくする

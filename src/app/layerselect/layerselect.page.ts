@@ -19,7 +19,7 @@ export class LayerselectPage implements OnInit {
   changeLayer(index: number) {
     const map = RoutemapMapbox.getCurrent()
     map.once('styledata', () => {
-      new RoutemapMapbox().renderRouteLayer(map, RoutemapMapbox.routeLayer)
+      new RoutemapMapbox().renderRouteLayer(map, RoutemapMapbox.routeLayer, 'height')
     })
 
     switch (index) {

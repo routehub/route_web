@@ -200,7 +200,7 @@ export class WatchPage implements OnInit {
           .addTo(that.map)
 
         // ルート表示: 経路表示
-        this.routemap.renderRouteLayer(that.map, that.routeGeojson as any, 'height')
+        this.routemap.renderRouteLayer(that.map, that.routeGeojson as any, null)
 
         const kindList = []
         for (let i = 0; i < route.kind.length; i++) {
@@ -377,16 +377,17 @@ export class WatchPage implements OnInit {
   toggleSlopeLayer(event) {
     event.stopPropagation()
     if (!this.hotlineLayer && !this.isSlopeMode) {
-      this.hotlineLayer = this.createdRoutemap.addElevationHotlineLayer(this.line)
+      this.routemap.renderRouteLayer(this.map, this.routeGeojson as any, 'height')
       this.presentToast('標高グラデーションモードに変更')
+      this.hotlineLayer = true
+
     } else if (this.hotlineLayer && !this.isSlopeMode) {
       this.map.removeLayer(this.hotlineLayer)
-      this.hotlineLayer = this.createdRoutemap.addSlopeHotlineLayer(this.line)
+      this.routemap.renderRouteLayer(this.map, this.routeGeojson as any, 'slope')
       this.presentToast('斜度グラデーションモードに変更')
       this.isSlopeMode = true
     } else {
-      this.map.removeLayer(this.hotlineLayer)
-      this.hotlineLayer = false
+      this.routemap.renderRouteLayer(this.map, this.routeGeojson as any, null)
       this.isSlopeMode = false
     }
   }
