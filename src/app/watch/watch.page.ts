@@ -380,14 +380,16 @@ export class WatchPage implements OnInit {
       this.routemap.renderRouteLayer(this.map, this.routeGeojson as any, 'height')
       this.presentToast('標高グラデーションモードに変更')
       this.hotlineLayer = true
-
+      this.isSlopeMode = false
     } else if (this.hotlineLayer && !this.isSlopeMode) {
       this.map.removeLayer(this.hotlineLayer)
       this.routemap.renderRouteLayer(this.map, this.routeGeojson as any, 'slope')
       this.presentToast('斜度グラデーションモードに変更')
+      this.hotlineLayer = false
       this.isSlopeMode = true
     } else {
       this.routemap.renderRouteLayer(this.map, this.routeGeojson as any, null)
+      this.hotlineLayer = false
       this.isSlopeMode = false
     }
   }
