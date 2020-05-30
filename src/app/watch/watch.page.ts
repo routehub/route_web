@@ -300,10 +300,10 @@ export class WatchPage implements OnInit {
     // 標高グラフ表示
     const option = {
       selector: '#elevation',
-      color: 'red',
-      fill: 'red',
-      pinColor: 'blue',
-      padding: 50,
+      color: '#ec1644',
+      fill: '#ff004c70',
+      pinColor: '#ec1644',
+      padding: 40,
       onHover,
       onSelectStart,
       onSelectMove,

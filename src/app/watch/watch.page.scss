@@ -1,6 +1,6 @@
 .mainmap {
   width: 100%;
-  height: 100%;
+  height: calc( 100% - 201px );
 }
 .route-info {
   zoom:180%;
@@ -19,3 +19,25 @@
   border-radius: 50%;
   background: #ff0000;
 }
+
+
+/* 標高グラフ関連 */
+
+.elevation {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  bottom: 0;
+  border-top: solid #ccc 1px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.elevation svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
