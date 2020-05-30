@@ -106,3 +106,44 @@ footer {
   font-size:0.8em;
   text-align: center;
 }
+
+
+/* 標高グラフ関連 */
+.axis .domain {
+  stroke: #ccc;
+  position: relative;
+}
+.axis .tick line {
+  stroke: #ccc;
+}
+.axis .tick text {
+/*  stroke: #7c7c7c;;*/
+/*  fill: #ccc;*/
+  fill: #7c7c7c;
+  font-family: "Helvetica Neue", "Roboto", "ヒラギノ角ゴ ProN",
+    "Hiragino Kaku Gothic ProN", "游ゴシック体", "Yu Gothic", YuGothic, Verdana,
+    Meiryo, sans-serif !important;
+  font-size: 0.7rem;
+}
+
+.chart--tooltip {
+  position: absolute;
+  width: auto;
+  height: auto;
+  padding: 10px 15px;
+  border-radius: 4px;
+  color : #ec1644;
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  visibility: hidden;
+  font-size: 12px;
+  font-weight: bold;
+  max-width: 160px;
+}
+
+
+.brush .selection {
+  fill: #ec1644;;
+}
