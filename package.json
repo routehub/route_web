@@ -35,6 +35,7 @@
     "@mapbox/polyline": "^1.1.0",
     "@turf/bbox": "^6.0.1",
     "@turf/distance": "^6.0.1",
+    "@turf/helpers": "^6.1.4",
     "@types/chroma-js": "^2.0.0",
     "angularfire2": "^5.4.2",
     "apollo-angular": "^1.8.0",

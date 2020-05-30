@@ -1,10 +1,10 @@
 /* eslint-disable no-nested-ternary */
 import turfbbox from '@turf/bbox'
 import * as turf from '@turf/helpers'
-import distance from '@turf/distance';
+import distance from '@turf/distance'
 import * as mapboxgl from 'mapbox-gl'
 import { LngLatLike } from 'mapbox-gl'
-import * as chroma from "chroma-js";
+import * as chroma from 'chroma-js'
 
 Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2s3c2tzNndwMG12NjNrcDM2dm1xamQ3bSJ9.fHdfoSXDhbyboKWznJ53Cw')
 const styleId = 'ck7sl13lr2bgw1isx42telruq'
@@ -152,16 +152,16 @@ export class RoutemapMapbox {
   func(coordinates: Array<Array<number>>, mode: string): mapboxgl.Expression {
     const { length } = coordinates
     // 標高の最大値を求める
-    const maxHeight = coordinates.map(a => a[2]).reduce((a, b) => Math.max(a, b));
+    const maxHeight = coordinates.map((a) => a[2]).reduce((a, b) => Math.max(a, b))
 
     const color = []
 
-    if (mode == 'slope') {
+    if (mode === 'slope') {
       coordinates.forEach((c, i) => {
         const v = i / length
         color.push(v)
         color.push(this.getSlopeColor(c, coordinates[i + 1]))
-        //color.push(this.getHeightColor(c[2], maxHeight))
+        // color.push(this.getHeightColor(c[2], maxHeight))
       })
     } else {
       coordinates.forEach((c, i) => {
@@ -193,14 +193,13 @@ export class RoutemapMapbox {
     const paint = mode === null ? {
       'line-color': '#0000ff',
       'line-width': 6,
-      'line-opacity': 0.7
+      'line-opacity': 0.7,
     } : {
-        'line-color': '#0000ff',
-        'line-width': 6,
-        'line-opacity': 0.7,
-        'line-gradient': this.func(coordinates, mode),
-      };
-
+      'line-color': '#0000ff',
+      'line-width': 6,
+      'line-opacity': 0.7,
+      'line-gradient': this.func(coordinates, mode),
+    }
     map.addLayer({
       id: 'route',
       type: 'line',
@@ -209,7 +208,7 @@ export class RoutemapMapbox {
         'line-join': 'round',
         'line-cap': 'round',
       },
-      paint: paint
+      paint,
     })
 
     // 描画範囲をよろしくする
@@ -239,7 +238,7 @@ export class RoutemapMapbox {
 
   getSlopeColor(current, next) {
     const pallet = ['blue', 'green', 'red']
-    if (!next || next == NaN) {
+    if (!next) {
       return chroma.scale(pallet)(0.5).hex()
     }
 

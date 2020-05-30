@@ -263,22 +263,24 @@ export class WatchPage implements OnInit {
       // if (this.elevationHoverMarker) {
       //   // this.elevationHoverMarker.setLngLat(lngLat)
       // } else {
-      //   // this.elevationHoverMarker = this.routemap.createMarker(gpsIcon, { anchor: 'center' }, 'marker-circle')
-      //   this.elevationHoverMarker = this.routemap.createMarker(gpsIcon, { anchor: 'center' }, 'marker-start')
+      //   // this.elevationHoverMarker = this.routemap
+      //   .createMarker(gpsIcon, { anchor: 'center' }, 'marker-circle')
+      //   this.elevationHoverMarker = this.routemap
+      //   .createMarker(gpsIcon, { anchor: 'center' }, 'marker-start')
       //     .setLngLat(new mapboxgl.LngLat(139.77044378, 35.67832667))
       //     .addTo(this.map)
       // }
     }
 
-    const onSelectStart = (e) => {
+    const onSelectStart = (e) => { // eslint-disable-line @typescript-eslint/no-unused-vars
     }
 
-    const onSelectMove = (e, i, j) => {
+    const onSelectMove = (e, i, j) => { // eslint-disable-line @typescript-eslint/no-unused-vars
       this.selectStartPointIndex = i - 1
       this.selectEndPointIndex = j - 1
     }
 
-    const onSelectEnd = (e, i) => {
+    const onSelectEnd = (e, i) => { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (!e.selection) {
         return
       }
@@ -413,7 +415,7 @@ export class WatchPage implements OnInit {
     this.presentToast('GPS on')
     this.isWatchLocation = true
     this.watchLocationSubscribe = this.watch.subscribe(() => {
-      this.watch.subscribe((pos) => {
+      this.watch.subscribe((pos) => { // eslint-disable-line @typescript-eslint/no-unused-vars
         // if (this.watchLocationSubscribe.isStopped === true) {
         //   return
         // }
