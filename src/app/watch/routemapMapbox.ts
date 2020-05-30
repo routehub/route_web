@@ -1,8 +1,10 @@
 /* eslint-disable no-nested-ternary */
 import turfbbox from '@turf/bbox'
 import * as turf from '@turf/helpers'
+import distance from '@turf/distance'
 import * as mapboxgl from 'mapbox-gl'
 import { LngLatLike } from 'mapbox-gl'
+import * as chroma from 'chroma-js'
 
 Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2s3c2tzNndwMG12NjNrcDM2dm1xamQ3bSJ9.fHdfoSXDhbyboKWznJ53Cw')
 const styleId = 'ck7sl13lr2bgw1isx42telruq'
@@ -74,7 +76,7 @@ export const commentIcon: IconInfo = {
   iconAnchor: [10, 10],
   popupAnchor: [0, 0],
 }
-export const editIcon:IconInfo = {
+export const editIcon: IconInfo = {
   iconUrl: '/assets/icon/edit_icon.png',
   iconSize: [14, 14],
   iconAnchor: [7, 7],
@@ -147,14 +149,27 @@ export class RoutemapMapbox {
     return new mapboxgl.LngLatBounds(sw, ne)
   }
 
-  func(coordinates: Array<Array<number>>): mapboxgl.Expression {
+  func(coordinates: Array<Array<number>>, mode: string): mapboxgl.Expression {
     const { length } = coordinates
+    // 標高の最大値を求める
+    const maxHeight = coordinates.map((a) => a[2]).reduce((a, b) => Math.max(a, b))
+
     const color = []
-    coordinates.forEach((c, i) => {
-      const v = i / length
-      color.push(v)
-      color.push(this.getColor(c[2]))
-    })
+
+    if (mode === 'slope') {
+      coordinates.forEach((c, i) => {
+        const v = i / length
+        color.push(v)
+        color.push(this.getSlopeColor(c, coordinates[i + 1]))
+        // color.push(this.getHeightColor(c[2], maxHeight))
+      })
+    } else {
+      coordinates.forEach((c, i) => {
+        const v = i / length
+        color.push(v)
+        color.push(this.getHeightColor(c[2], maxHeight))
+      })
+    }
     return [
       'interpolate',
       ['linear'],
@@ -163,7 +178,7 @@ export class RoutemapMapbox {
     ]
   }
 
-  renderRouteLayer(map: mapboxgl.Map, lineGeoJSON: mapboxgl.GeoJSONSourceRaw) {
+  renderRouteLayer(map: mapboxgl.Map, lineGeoJSON: mapboxgl.GeoJSONSourceRaw, mode: string) {
     if (map.getLayer('route')) {
       map.removeLayer('route')
     }
@@ -174,6 +189,17 @@ export class RoutemapMapbox {
 
     const feature = lineGeoJSON.data as any
     const { coordinates } = feature.geometry
+
+    const paint = mode === null ? {
+      'line-color': '#0000ff',
+      'line-width': 6,
+      'line-opacity': 0.7,
+    } : {
+      'line-color': '#0000ff',
+      'line-width': 6,
+      'line-opacity': 0.7,
+      'line-gradient': this.func(coordinates, mode),
+    }
     map.addLayer({
       id: 'route',
       type: 'line',
@@ -182,12 +208,7 @@ export class RoutemapMapbox {
         'line-join': 'round',
         'line-cap': 'round',
       },
-      paint: {
-        'line-color': '#0000ff',
-        'line-width': 6,
-        'line-opacity': 0.7,
-        'line-gradient': this.func(coordinates),
-      },
+      paint,
     })
 
     // 描画範囲をよろしくする
@@ -211,13 +232,23 @@ export class RoutemapMapbox {
     return new mapboxgl.Marker(startEl, option)
   }
 
-  getColor(x) {
-    return x < 20 ? 'blue'
-      : x < 40 ? 'royalblue'
-        : x < 60 ? 'cyan'
-          : x < 80 ? 'lime'
-            : x < 100 ? 'red'
-              : 'blue'
+  getHeightColor(height, maxHeight) {
+    return chroma.scale(['blue', 'green', 'yellow', 'red', 'black'])(height / maxHeight).hex()
+  }
+
+  getSlopeColor(current, next) {
+    const pallet = ['blue', 'green', 'red']
+    if (!next) {
+      return chroma.scale(pallet)(0.5).hex()
+    }
+
+    // calcurate slope : https://tomari.org/main/java/koubai_keisan.html
+    const dist = distance(current, next) * 1000 // km to m
+    const heightDiff = next[2] - current[2]
+    const slope = heightDiff * 100 / dist
+    // -20度~+20度の間を0...1で表す
+    const percentageSlope = (slope + 20) / 40
+    return chroma.scale(pallet)(percentageSlope).hex()
   }
 
   public static createRasterTile(rasterStyle: RasterStyle): mapboxgl.Style {
@@ -245,7 +276,7 @@ export class RoutemapMapbox {
     }
   }
 
-  public static toBounds(lngLats: mapboxgl.LngLat[]): mapboxgl.LngLatBounds | null{
+  public static toBounds(lngLats: mapboxgl.LngLat[]): mapboxgl.LngLatBounds | null {
     if (lngLats.length === 0) {
       return null
     }

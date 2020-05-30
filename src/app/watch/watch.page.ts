@@ -200,7 +200,7 @@ export class WatchPage implements OnInit {
           .addTo(that.map)
 
         // ルート表示: 経路表示
-        this.routemap.renderRouteLayer(that.map, that.routeGeojson as any)
+        this.routemap.renderRouteLayer(that.map, that.routeGeojson as any, null)
 
         const kindList = []
         for (let i = 0; i < route.kind.length; i++) {
@@ -263,22 +263,24 @@ export class WatchPage implements OnInit {
       // if (this.elevationHoverMarker) {
       //   // this.elevationHoverMarker.setLngLat(lngLat)
       // } else {
-      //   // this.elevationHoverMarker = this.routemap.createMarker(gpsIcon, { anchor: 'center' }, 'marker-circle')
-      //   this.elevationHoverMarker = this.routemap.createMarker(gpsIcon, { anchor: 'center' }, 'marker-start')
+      //   // this.elevationHoverMarker = this.routemap
+      //   .createMarker(gpsIcon, { anchor: 'center' }, 'marker-circle')
+      //   this.elevationHoverMarker = this.routemap
+      //   .createMarker(gpsIcon, { anchor: 'center' }, 'marker-start')
       //     .setLngLat(new mapboxgl.LngLat(139.77044378, 35.67832667))
       //     .addTo(this.map)
       // }
     }
 
-    const onSelectStart = (e) => {
+    const onSelectStart = (e) => { // eslint-disable-line @typescript-eslint/no-unused-vars
     }
 
-    const onSelectMove = (e, i, j) => {
+    const onSelectMove = (e, i, j) => { // eslint-disable-line @typescript-eslint/no-unused-vars
       this.selectStartPointIndex = i - 1
       this.selectEndPointIndex = j - 1
     }
 
-    const onSelectEnd = (e, i) => {
+    const onSelectEnd = (e, i) => { // eslint-disable-line @typescript-eslint/no-unused-vars
       if (!e.selection) {
         return
       }
@@ -377,15 +379,18 @@ export class WatchPage implements OnInit {
   toggleSlopeLayer(event) {
     event.stopPropagation()
     if (!this.hotlineLayer && !this.isSlopeMode) {
-      this.hotlineLayer = this.createdRoutemap.addElevationHotlineLayer(this.line)
+      this.routemap.renderRouteLayer(this.map, this.routeGeojson as any, 'height')
       this.presentToast('標高グラデーションモードに変更')
+      this.hotlineLayer = true
+      this.isSlopeMode = false
     } else if (this.hotlineLayer && !this.isSlopeMode) {
       this.map.removeLayer(this.hotlineLayer)
-      this.hotlineLayer = this.createdRoutemap.addSlopeHotlineLayer(this.line)
+      this.routemap.renderRouteLayer(this.map, this.routeGeojson as any, 'slope')
       this.presentToast('斜度グラデーションモードに変更')
+      this.hotlineLayer = false
       this.isSlopeMode = true
     } else {
-      this.map.removeLayer(this.hotlineLayer)
+      this.routemap.renderRouteLayer(this.map, this.routeGeojson as any, null)
       this.hotlineLayer = false
       this.isSlopeMode = false
     }
@@ -410,7 +415,7 @@ export class WatchPage implements OnInit {
     this.presentToast('GPS on')
     this.isWatchLocation = true
     this.watchLocationSubscribe = this.watch.subscribe(() => {
-      this.watch.subscribe((pos) => {
+      this.watch.subscribe((pos) => { // eslint-disable-line @typescript-eslint/no-unused-vars
         // if (this.watchLocationSubscribe.isStopped === true) {
         //   return
         // }
