@@ -5,10 +5,10 @@ import {
 import { Location } from '@angular/common'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
+import { DomSanitizer } from '@angular/platform-browser'
 import { SearchSettingComponent } from '../search-setting/search-setting.component'
 import { RouteModel } from '../model/routemodel'
 import { AuthService } from '../auth.service'
-import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
   selector: 'app-list',
@@ -276,8 +276,8 @@ export class ListPage implements OnInit {
         const r = new RouteModel()
         r.setData(res.publicSearch[i])
         r.thumbnail = this.sanitizer.bypassSecurityTrustResourceUrl(
-          "https://github.routehub.app/?line=" + encodeURI(res.publicSearch[i].summary)
-        );
+          `https://github.routehub.app/?line=${encodeURI(res.publicSearch[i].summary)}`,
+        )
         this.items.push(r)
 
         this.infiniteScroll.complete()

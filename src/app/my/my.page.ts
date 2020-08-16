@@ -4,11 +4,11 @@ import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
+import { DomSanitizer } from '@angular/platform-browser'
 import { RouteModel } from '../model/routemodel'
 import { environment } from '../../environments/environment'
 import { Events } from '../Events'
 import { AuthService } from '../auth.service'
-import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
   selector: 'app-my',
@@ -211,8 +211,8 @@ export class MyPage implements OnInit {
         const r = new RouteModel()
         r.setData(res[i])
         r.thumbnail = this.sanitizer.bypassSecurityTrustResourceUrl(
-          "https://github.routehub.app/?line=" + encodeURI(res.publicSearch[i].summary)
-        );
+          `https://github.routehub.app/?line=${encodeURI(res.publicSearch[i].summary)}`,
+        )
         this.items.push(r)
       }
 
