@@ -8,6 +8,7 @@ import { Apollo } from 'apollo-angular'
 import { SearchSettingComponent } from '../search-setting/search-setting.component'
 import { RouteModel } from '../model/routemodel'
 import { AuthService } from '../auth.service'
+import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
   selector: 'app-list',
@@ -63,6 +64,7 @@ export class ListPage implements OnInit {
     private location: Location,
     private apollo: Apollo,
     private authService: AuthService,
+    public sanitizer: DomSanitizer,
   ) {
   }
 
@@ -273,6 +275,9 @@ export class ListPage implements OnInit {
       for (let i = 0; i < res.publicSearch.length; i++) {
         const r = new RouteModel()
         r.setData(res.publicSearch[i])
+        r.thumbnail = this.sanitizer.bypassSecurityTrustResourceUrl(
+          "https://github.routehub.app/?line=" + encodeURI(res.publicSearch[i].summary)
+        );
         this.items.push(r)
 
         this.infiniteScroll.complete()

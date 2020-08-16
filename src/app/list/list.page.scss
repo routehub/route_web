@@ -1,9 +1,9 @@
 .list-thumb {
     transition: opacity 1s;
-    opacity: 0;
     min-height: 150px;
     min-width: 200px;
     width: 100%;
+    border : none;
 }
 .list-thumb.ng-lazyloaded {
   opacity: 1;

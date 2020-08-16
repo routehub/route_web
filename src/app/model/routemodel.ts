@@ -47,6 +47,8 @@ export class RouteModel {
 
   public kind = [];
 
+  public thumbnail;
+
   constructor() { }
 
   public setFullData(r) {

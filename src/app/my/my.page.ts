@@ -8,6 +8,7 @@ import { RouteModel } from '../model/routemodel'
 import { environment } from '../../environments/environment'
 import { Events } from '../Events'
 import { AuthService } from '../auth.service'
+import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
   selector: 'app-my',
@@ -32,6 +33,7 @@ export class MyPage implements OnInit {
     public events: Events,
     public platform: Platform,
     private apollo: Apollo,
+    public sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit() { }
@@ -208,6 +210,9 @@ export class MyPage implements OnInit {
       for (let i = 0; i < res.length; i++) {
         const r = new RouteModel()
         r.setData(res[i])
+        r.thumbnail = this.sanitizer.bypassSecurityTrustResourceUrl(
+          "https://github.routehub.app/?line=" + encodeURI(res.publicSearch[i].summary)
+        );
         this.items.push(r)
       }
 

@@ -1,7 +1,6 @@
 import { NgModule, Injectable } from '@angular/core';
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 import { Apollo, ApolloModule } from 'apollo-angular';
 import { createHttpLink } from 'apollo-link-http';
@@ -49,7 +48,6 @@ export class IonicGestureConfig extends HammerGestureConfig {
     RouteinfoPageModule,
     ExportPageModule,
     LayerselectPageModule,
-    LazyLoadImageModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
   ],
