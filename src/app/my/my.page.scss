@@ -15,3 +15,11 @@
 .card-author ion-label {
   margin-top: 0;
 }
+
+.list-thumb {
+    transition: opacity 1s;
+    min-height: 160px;
+    min-width: 200px;
+    width: 100%;
+    border : none;
+}
