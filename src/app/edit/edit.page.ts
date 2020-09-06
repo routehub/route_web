@@ -798,6 +798,23 @@ export class EditPage implements OnInit {
     // document.getElementById("file").click();
   }
 
+  // 一つ戻るボタン(実質最後尾削除)
+  deletePresent (event) {
+    event.stopPropagation()
+
+    if (this.editMarkers.length == 0) {
+      return;
+    }
+
+    let marker = this.editMarkers[this.editMarkers.length-1];
+    marker.remove_marker();
+    this.refresh_route();
+
+    // 2点以上ない場合なグラフをクリアする
+    if (this.editMarkers.length < 2) {
+      this.elevation.clear()
+    }
+  }
 
   toggleRoutingMode(event) {
     console.log('toggleRoutingMode')
