@@ -140,10 +140,9 @@ export class WatchPage implements OnInit {
     this.user = this.authService.currentLoginUser
     this.presentLoading()
 
-    const routemap = this.createdRoutemap = this.routemap.createMap(
-      this.mapElem.nativeElement,
-      true,
-    )
+    const routemap = this.createdRoutemap = this.createdRoutemap
+      ? this.createdRoutemap : this.routemap.createMap(this.mapElem.nativeElement, true)
+      
     this.map = routemap.map
 
     this.map.on('load', () => {
