@@ -142,7 +142,7 @@ export class WatchPage implements OnInit {
 
     const routemap = this.createdRoutemap = this.createdRoutemap
       ? this.createdRoutemap : this.routemap.createMap(this.mapElem.nativeElement, true)
-      
+
     this.map = routemap.map
 
     this.map.on('load', () => {
