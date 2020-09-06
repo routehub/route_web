@@ -95,7 +95,7 @@ export class EditPage implements OnInit {
 
   isWatchLocation = false;
 
-  routing_url = environment.routingapi
+  routing_url = 'https://api2.routehub.app/route/1.0.0/routing'
 
   distance = 0.0;
 
@@ -558,9 +558,7 @@ export class EditPage implements OnInit {
   async routing(pointList: string[]) {
     const costing_model = this.routingModeList[this.routingMode].split(',')[1]
     const bicycle_type = this.routingModeList[this.routingMode].split(',')[2]
-    const start = this.replaceLatLon(pointList[0])
-    const goal = this.replaceLatLon(pointList[1])
-    const url = `${this.routing_url}?costing_model=${costing_model}&bicycle_type=${bicycle_type}&start=${start}&goal=${goal}`
+    const url = `${this.routing_url}?costing_model=${costing_model}&bicycle_type=${bicycle_type}&points=${pointList.join(' ')}`;
 
     return await this.http.get(url).toPromise().then((res: any) => {
       const ret = []
@@ -570,11 +568,6 @@ export class EditPage implements OnInit {
       })
       return ret
     })
-  }
-
-  private replaceLatLon(latlon) {
-    const ll = latlon.split(',')
-    return `${ll[1]},${ll[0]}`
   }
 
   async load() {
