@@ -146,6 +146,7 @@ export class MyPage implements OnInit {
   ionViewWillEnter() {
     this.angularFireAuth.authState.subscribe((u) => {
       this.currentLoginUser = u
+      this.showMyRoute()
     })
 
     window.document.title = 'マイページ RouteHub(β)'
@@ -161,8 +162,6 @@ export class MyPage implements OnInit {
     }).subscribe(({ data }) => {
       const loginData: any = data
       this.displayName = loginData.getUser.display_name
-
-      this.showMyRoute()
     })
   }
 
