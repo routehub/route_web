@@ -95,7 +95,7 @@ export class EditPage implements OnInit {
 
   isWatchLocation = false;
 
-  routing_url = environment.routingapi
+  routing_url = 'https://api2.routehub.app/route/1.0.0/routing'
 
   distance = 0.0;
 
@@ -558,9 +558,7 @@ export class EditPage implements OnInit {
   async routing(pointList: string[]) {
     const costing_model = this.routingModeList[this.routingMode].split(',')[1]
     const bicycle_type = this.routingModeList[this.routingMode].split(',')[2]
-    const start = this.replaceLatLon(pointList[0])
-    const goal = this.replaceLatLon(pointList[1])
-    const url = `${this.routing_url}?costing_model=${costing_model}&bicycle_type=${bicycle_type}&start=${start}&goal=${goal}`
+    const url = `${this.routing_url}?costing_model=${costing_model}&bicycle_type=${bicycle_type}&points=${pointList.join(' ')}`;
 
     return await this.http.get(url).toPromise().then((res: any) => {
       const ret = []
@@ -570,11 +568,6 @@ export class EditPage implements OnInit {
       })
       return ret
     })
-  }
-
-  private replaceLatLon(latlon) {
-    const ll = latlon.split(',')
-    return `${ll[1]},${ll[0]}`
   }
 
   async load() {
@@ -805,6 +798,23 @@ export class EditPage implements OnInit {
     // document.getElementById("file").click();
   }
 
+  // 一つ戻るボタン(実質最後尾削除)
+  deletePresent (event) {
+    event.stopPropagation()
+
+    if (this.editMarkers.length == 0) {
+      return;
+    }
+
+    let marker = this.editMarkers[this.editMarkers.length-1];
+    marker.remove_marker();
+    this.refresh_route();
+
+    // 2点以上ない場合なグラフをクリアする
+    if (this.editMarkers.length < 2) {
+      this.elevation.clear()
+    }
+  }
 
   toggleRoutingMode(event) {
     console.log('toggleRoutingMode')

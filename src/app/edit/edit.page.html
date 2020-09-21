@@ -42,6 +42,9 @@
       <ion-icon [color]="isWatchLocation ? 'primary' : ''" name="locate"> </ion-icon>
     </ion-fab-button>
 
+    <ion-fab-button (click)="deletePresent($event)">
+      <ion-icon color="primary" name="arrow-undo-outline"></ion-icon>
+    </ion-fab-button>
 
   </ion-fab-list>
 </ion-fab>
