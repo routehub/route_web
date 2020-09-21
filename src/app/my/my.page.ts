@@ -3,6 +3,7 @@ import { Platform, NavController, LoadingController } from '@ionic/angular'
 import 'firebase/auth'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
+import { AngularFireAuth } from 'angularfire2/auth'
 import { RouteModel } from '../model/routemodel'
 import { environment } from '../../environments/environment'
 import { Events } from '../Events'
@@ -15,6 +16,8 @@ import { AuthService } from '../auth.service'
 })
 export class MyPage implements OnInit {
   loading = null
+
+  currentLoginUser: firebase.User
 
   displayName: string;
 
@@ -29,6 +32,7 @@ export class MyPage implements OnInit {
     public events: Events,
     public platform: Platform,
     private apollo: Apollo,
+    private angularFireAuth: AngularFireAuth,
   ) { }
 
   ngOnInit() { }
@@ -140,6 +144,10 @@ export class MyPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.angularFireAuth.authState.subscribe((u) => {
+      this.currentLoginUser = u
+    })
+
     window.document.title = 'マイページ RouteHub(β)'
 
     // 表示用ユーザー名を取得
