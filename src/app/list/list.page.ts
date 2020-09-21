@@ -27,8 +27,6 @@ export class ListPage implements OnInit {
 
   loading = null
 
-  user: firebase.User
-
   /**
    * 検索用パラメーター
    */
@@ -92,9 +90,8 @@ export class ListPage implements OnInit {
     this.search()
 
     // ログインユーザーを取得
-    this.user = this.authService.currentLoginUser
     if (this.platform.is('mobile')) {
-      if (!this.user) {
+      if (!this.authService.currentLoginUser) {
         this.loginButton.el.style.display = 'none'
       } else {
         this.logoutButton.el.style.display = 'block'

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core'
 import { Platform, NavController, LoadingController } from '@ionic/angular'
-import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
@@ -16,8 +15,6 @@ import { AuthService } from '../auth.service'
 })
 export class MyPage implements OnInit {
   loading = null
-
-  user: firebase.User
 
   displayName: string;
 
@@ -143,9 +140,6 @@ export class MyPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // ログイン状態を取得
-    this.user = this.authService.currentLoginUser
-
     window.document.title = 'マイページ RouteHub(β)'
 
     // 表示用ユーザー名を取得

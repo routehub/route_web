@@ -7,7 +7,6 @@ import {
 } from '@ionic/angular'
 import { Geolocation } from '@ionic-native/geolocation/ngx'
 import * as L from 'leaflet'
-import * as firebase from 'firebase/app'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
 import * as mapboxgl from 'mapbox-gl'
@@ -49,8 +48,6 @@ export class WatchPage implements OnInit {
   @ViewChild('elevation', { static: true }) elevElem: ElementRef;
 
   loading = null;
-
-  user: firebase.User;
 
   routeData: RouteModel;
 
@@ -137,7 +134,6 @@ export class WatchPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.user = this.authService.currentLoginUser
     this.presentLoading()
 
     const routemap = this.createdRoutemap = this.createdRoutemap
@@ -314,7 +310,7 @@ export class WatchPage implements OnInit {
   }
 
   updateFavorite() {
-    if (!this.routeData.id || !this.user) {
+    if (!this.routeData.id || !this.authService.currentLoginUser) {
       return
     }
 
@@ -339,7 +335,7 @@ export class WatchPage implements OnInit {
   }
 
   toggleFavorite() {
-    if (!this.user) {
+    if (!this.authService.currentLoginUser) {
       window.alert('ログイン・ユーザー登録をしてください') // eslint-disable-line
       return
     }
