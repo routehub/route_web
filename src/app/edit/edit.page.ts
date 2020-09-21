@@ -913,7 +913,7 @@ export class EditPage implements OnInit {
       if (d[d.length - 1].length == 9) { // postcode
         d.pop()
       }
-      return d.join(' ')
+      return d.join('')
 
     } catch (e) {
       return '住所なし'
