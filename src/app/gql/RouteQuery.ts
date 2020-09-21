@@ -8,6 +8,7 @@ export function getRouteQuery() {
         id
         title
         body
+        tag
         author
         total_dist
         max_elevation

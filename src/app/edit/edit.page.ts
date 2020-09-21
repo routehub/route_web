@@ -589,9 +589,9 @@ export class EditPage implements OnInit {
 
       const r = new RouteModel()
       r.setFullData(_r)
-
+      
       that.title = r.title
-      that.author = r.display_name
+      that.author = r.author
       that.isNotPrivate = !r.is_private
       that.tags = r.tag
       that.body = r.body
