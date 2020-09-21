@@ -44,8 +44,6 @@ export class EditPage implements OnInit {
 
   @ViewChild('close_editbar', { static: true }) close_editbar_elem: ElementRef;
 
-  user: firebase.User
-
   loading = null;
 
   route_id: string = null;
@@ -149,9 +147,6 @@ export class EditPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // ログインユーザーを取得
-    this.user = this.authService.currentLoginUser
-
     const that = this
     // ルートidが指定されているときは読み込み
     this.route_id = this.ngRoute.snapshot.paramMap.get('id')
@@ -651,7 +646,7 @@ export class EditPage implements OnInit {
     event.stopPropagation()
 
     // TODO ログインしていないときはローカルストレージに入れて一時保存させてあげたいなぁ
-    if (!this.user) {
+    if (!this.authService.currentLoginUser) {
       alert('ログインしてから作成してください')
       return
     }
@@ -689,7 +684,7 @@ export class EditPage implements OnInit {
     const start_point_name = await this.getAddressName(this.line[0]).then((address) => address)
     const goal_point_name = await this.getAddressName(this.line[this.line.length - 1]).then((address) => address)
 
-    const token = await this.user.getIdToken()
+    const token = await this.authService.currentLoginUser.getIdToken()
     const route = {
       id: this.route_id || '',
       title: `${this.title.replace('\n', '')}`,
