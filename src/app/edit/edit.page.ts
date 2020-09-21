@@ -724,7 +724,7 @@ export class EditPage implements OnInit {
         author: this.author,
         title: `${this.title.replace('\n', '')}`,
         body: this.body,
-        summary: RouteModel.getSummary(this.line.map((p) => [p[1], p[0]])),
+        summary: RouteModel.getSummary(this.line.map((p) => [p[0], p[1]])),
         tag: this.tags.map((t) => ((typeof t === 'object') ? t.value : t)).join(' '),
         total_dist: Math.round(this.distance * 10) / 10,
         total_elevation: Math.round(this.height_gain * 10) / 10,
