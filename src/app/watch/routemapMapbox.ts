@@ -212,7 +212,7 @@ export class RoutemapMapbox {
     })
 
     // 描画範囲をよろしくする
-    map.fitBounds(this.posToLatLngBounds(coordinates))
+    map.fitBounds(this.posToLatLngBounds(coordinates), { duration: 0 })
   }
 
   createMarker(
