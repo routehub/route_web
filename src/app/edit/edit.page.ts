@@ -902,13 +902,21 @@ export class EditPage implements OnInit {
 
 
   async getAddressName(pos) {
-    const url = 'https://map.yahooapis.jp/geoapi/V1/reverseGeoCoder'
-    const appid = 'dj00aiZpPXlGRWpKYXlpbHA2ZCZzPWNvbnN1bWVyc2VjcmV0Jng9ZTg-'
-    const ret = await this.http.jsonp(`${url}?output=json&appid=${appid}&lat=${pos[1]}&lon=${pos[0]}`, 'callback').toPromise().then((res: any) => res)
+    const url = 'https://nominatim.openstreetmap.org/search'
+    const ret = await this.http.jsonp(`${url}?format=json&q=${pos[1]},${pos[0]}&addressdetails=1&email=routehubapp@gmail.com`, 'json_callback').toPromise().then((res: any) => res)
+    // 住所文字列の整形
     try {
-      return ret.Feature[0].Property.Address
+      let d = ret[0].display_name.split(',')
+      if (d[d.length-1] == ' 日本') {
+        d.pop()
+      }
+      if (d[d.length - 1].length == 9) { // postcode
+        d.pop()
+      }
+      return d.join(' ')
+
     } catch (e) {
-      return '番地なし'
+      return '住所なし'
     }
   }
 
