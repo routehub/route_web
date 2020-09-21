@@ -146,6 +146,9 @@ export class MyPage implements OnInit {
   ionViewWillEnter() {
     this.angularFireAuth.authState.subscribe((u) => {
       this.currentLoginUser = u
+      if (!u) {
+        this.navCtrl.navigateRoot('/')
+      }
       this.showMyRoute()
     })
 
@@ -227,7 +230,7 @@ export class MyPage implements OnInit {
 
   logout() {
     this.events.publish('user:logout', {})
-    this.navCtrl.navigateForward('/login')
+    window.location.reload()
   }
 
 
