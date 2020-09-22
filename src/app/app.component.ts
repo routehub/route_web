@@ -23,9 +23,9 @@ export class AppComponent implements OnInit {
       route: () => { this.navCtrl.navigateForward('/') },
     },
     {
-      title: 'gpxアップロード',
+      title: 'アップロード',
       icon: 'cloud-upload-outline',
-      route: () => { alert('ルートラボ移行は終了しました。\n一括アップロード機能を開発予定です。'); return false }, // eslint-disable-line
+      route: () => { this.navCtrl.navigateForward('/import') },
     },
     {
       title: 'ルート作成',
