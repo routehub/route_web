@@ -589,9 +589,9 @@ export class EditPage implements OnInit {
 
       const r = new RouteModel()
       r.setFullData(_r)
-
+      
       that.title = r.title
-      that.author = r.display_name
+      that.author = r.author
       that.isNotPrivate = !r.is_private
       that.tags = r.tag
       that.body = r.body
@@ -684,32 +684,6 @@ export class EditPage implements OnInit {
     const start_point_name = await this.getAddressName(this.line[0]).then((address) => address)
     const goal_point_name = await this.getAddressName(this.line[this.line.length - 1]).then((address) => address)
 
-    const token = await this.authService.currentLoginUser.getIdToken()
-    const route = {
-      id: this.route_id || '',
-      title: `${this.title.replace('\n', '')}`,
-      body: this.body,
-      author: this.author,
-      tag: this.tags.map((t) => ((typeof t === 'object') ? t.value : t)).join(' '),
-      total_dist: `${Math.round(this.distance * 10) / 10}`,
-      total_elevation: `${Math.round(this.height_gain * 10) / 10}`,
-      max_elevation: `${Math.round(this.height_max * 10) / 10}`,
-      max_slope: '0.0', // TODO
-      avg_slope: '0.0', // TODO
-      start_point: start_point_name,
-      goal_point: goal_point_name,
-      is_private: !this.isNotPrivate ? 'true' : 'false',
-      is_gps: 'false', // TODO
-      pos: this.line.map((p) => `${p[0]} ${p[1]}`).join(','),
-      //      time: '', // TODO
-      level: this.line.map((p) => p[2]).join(','),
-      kind: getKind().join(','),
-      note: JSON.stringify([
-        //        { pos: 1, txt: 'hogehoge' },
-      ]),
-      firebase_id_token: `${token}`,
-    }
-
     // ルートをpost
     const graphquery = gql`mutation SaveRoute($id: String, $author: String!, $title: String!, $body:String, $summary: String!, $tag:String, $total_dist:Float!, $total_elevation: Float!, $max_elevation: Float!, $max_slope:Float!, $avg_slope:Float!, $start_point: String!, $goal_point: String!, $is_private:Boolean, $pos: String!, $level:String!, $kind: String, $note:String) {
         saveRoute(route : {id: $id, author: $author, title:$title, body:$body, summary:$summary, tag:$tag, total_dist:$total_dist, total_elevation:$total_elevation, max_elevation:$max_elevation, max_slope:$max_slope, avg_slope:$avg_slope, start_point: $start_point, goal_point:$goal_point, is_private:$is_private, pos:$pos, level:$level, kind:$kind, note:$note} ) { 
@@ -724,7 +698,7 @@ export class EditPage implements OnInit {
         author: this.author,
         title: `${this.title.replace('\n', '')}`,
         body: this.body,
-        summary: RouteModel.getSummary(this.line.map((p) => [p[1], p[0]])),
+        summary: RouteModel.getSummary(this.line.map((p) => [p[0], p[1]])),
         tag: this.tags.map((t) => ((typeof t === 'object') ? t.value : t)).join(' '),
         total_dist: Math.round(this.distance * 10) / 10,
         total_elevation: Math.round(this.height_gain * 10) / 10,
