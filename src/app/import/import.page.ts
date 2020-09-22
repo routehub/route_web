@@ -10,4 +10,8 @@ export class ImportPage implements OnInit {
 
   ngOnInit() {
   }
+
+  ionViewDidEnter() {
+    window.document.title = 'アップロード RouteHub(β)'
+  }
 }
