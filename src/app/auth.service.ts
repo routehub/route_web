@@ -7,7 +7,11 @@ import { Observable } from 'rxjs/Observable'
   providedIn: 'root',
 })
 export class AuthService {
-  currentLoginUser: firebase.User // 簡易的にログイン状態を保持
+  /**
+   * ログイン状態を保持
+   * 各インスタンス内で状態をコピーせずここを参照すること
+   */
+  currentLoginUser: firebase.User
 
   user: Observable<firebase.User>
 

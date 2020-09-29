@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core'
 import { Platform, NavController, LoadingController } from '@ionic/angular'
-import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
 import { DomSanitizer } from '@angular/platform-browser'
+import { AngularFireAuth } from 'angularfire2/auth'
 import { RouteModel } from '../model/routemodel'
 import { environment } from '../../environments/environment'
 import { Events } from '../Events'
@@ -18,7 +18,7 @@ import { AuthService } from '../auth.service'
 export class MyPage implements OnInit {
   loading = null
 
-  user: firebase.User
+  currentLoginUser: firebase.User
 
   displayName: string;
 
@@ -34,6 +34,7 @@ export class MyPage implements OnInit {
     public platform: Platform,
     private apollo: Apollo,
     public sanitizer: DomSanitizer,
+    private angularFireAuth: AngularFireAuth,
   ) { }
 
   ngOnInit() { }
@@ -145,8 +146,13 @@ export class MyPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // ログイン状態を取得
-    this.user = this.authService.currentLoginUser
+    this.angularFireAuth.authState.subscribe((u) => {
+      this.currentLoginUser = u
+      if (!u) {
+        this.navCtrl.navigateRoot('/')
+      }
+      this.showMyRoute()
+    })
 
     window.document.title = 'マイページ RouteHub(β)'
 
@@ -161,8 +167,6 @@ export class MyPage implements OnInit {
     }).subscribe(({ data }) => {
       const loginData: any = data
       this.displayName = loginData.getUser.display_name
-
-      this.showMyRoute()
     })
   }
 
@@ -231,7 +235,7 @@ export class MyPage implements OnInit {
 
   logout() {
     this.events.publish('user:logout', {})
-    this.navCtrl.navigateForward('/login')
+    window.location.reload()
   }
 
 
