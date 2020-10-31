@@ -96,7 +96,9 @@
                 </ion-chip>
               </ion-row>
 
-              <img class="list-thumb" lazyLoad='{{item.thumburl}}' (click)="pageSelected(item)" offset="50" />
+              <div class="list-thumb-surface" (click)="pageSelected(item)"></div>
+              <iframe class="list-thumb" [src]='item.thumbnail'></iframe>
+
             </ion-card-header>
 
 

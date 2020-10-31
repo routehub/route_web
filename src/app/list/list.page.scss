@@ -1,13 +1,17 @@
 .list-thumb {
-    transition: opacity 1s;
-    opacity: 0;
-    min-height: 150px;
+    min-height: 160px;
     min-width: 200px;
     width: 100%;
+    border : none;
 }
-.list-thumb.ng-lazyloaded {
-  opacity: 1;
+
+.list-thumb-surface {
+  min-height: 160px;
+  min-width: 200px;
+  width: 100%;
+  position: absolute;
 }
+
 .list-body {
   width:200px;
   display: -webkit-box;

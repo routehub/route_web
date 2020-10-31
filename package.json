@@ -62,7 +62,6 @@
     "leaflet-hotline": "^0.4.0",
     "leaflet.elevation": "github:ctyo/Leaflet.Elevation#innerlabel_tooltips",
     "mapbox-gl": "^1.8.1",
-    "ng-lazyload-image": "^7.1.0",
     "ngx-chips": "^2.1.0",
     "rxjs": "^6.5.4",
     "rxjs-compat": "^6.5.4",

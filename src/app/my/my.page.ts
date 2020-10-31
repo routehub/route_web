@@ -3,6 +3,7 @@ import { Platform, NavController, LoadingController } from '@ionic/angular'
 import 'firebase/auth'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
+import { DomSanitizer } from '@angular/platform-browser'
 import { AngularFireAuth } from 'angularfire2/auth'
 import { RouteModel } from '../model/routemodel'
 import { environment } from '../../environments/environment'
@@ -32,6 +33,7 @@ export class MyPage implements OnInit {
     public events: Events,
     public platform: Platform,
     private apollo: Apollo,
+    public sanitizer: DomSanitizer,
     private angularFireAuth: AngularFireAuth,
   ) { }
 
@@ -212,6 +214,10 @@ export class MyPage implements OnInit {
       for (let i = 0; i < res.length; i++) {
         const r = new RouteModel()
         r.setData(res[i])
+        const scale = r.total_dist > 30 ? 10 : 1
+        r.thumbnail = this.sanitizer.bypassSecurityTrustResourceUrl(
+          `https://routehub.github.io/clientside_thumbmap/?line=${encodeURI(res.publicSearch[i].summary)}&scale=${scale}`,
+        )
         this.items.push(r)
       }
 

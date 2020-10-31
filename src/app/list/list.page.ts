@@ -5,6 +5,7 @@ import {
 import { Location } from '@angular/common'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
+import { DomSanitizer } from '@angular/platform-browser'
 import { SearchSettingComponent } from '../search-setting/search-setting.component'
 import { RouteModel } from '../model/routemodel'
 import { AuthService } from '../auth.service'
@@ -61,6 +62,7 @@ export class ListPage implements OnInit {
     private location: Location,
     private apollo: Apollo,
     private authService: AuthService,
+    public sanitizer: DomSanitizer,
   ) {
   }
 
@@ -270,6 +272,10 @@ export class ListPage implements OnInit {
       for (let i = 0; i < res.publicSearch.length; i++) {
         const r = new RouteModel()
         r.setData(res.publicSearch[i])
+        const scale = r.total_dist > 30 ? 10 : 1
+        r.thumbnail = this.sanitizer.bypassSecurityTrustResourceUrl(
+          `https://routehub.github.io/clientside_thumbmap/?line=${encodeURI(res.publicSearch[i].summary)}&scale=${scale}`,
+        )
         this.items.push(r)
 
         this.infiniteScroll.complete()
