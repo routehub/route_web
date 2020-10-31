@@ -1,9 +1,15 @@
 .list-thumb {
-    transition: opacity 1s;
     min-height: 160px;
     min-width: 200px;
     width: 100%;
     border : none;
+}
+
+.list-thumb-surface {
+  min-height: 160px;
+  min-width: 200px;
+  width: 100%;
+  position: absolute;
 }
 
 .list-body {
