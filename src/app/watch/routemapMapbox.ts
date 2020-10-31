@@ -106,28 +106,7 @@ export class RoutemapMapbox {
     } else {
       mapMb = new mapboxgl.Map({
         container: mapele,
-        style: {
-          version: 8,
-          sources: {
-            'default-tiles': {
-              type: 'raster',
-              tiles: [
-                rasterStyleInfo.DEFAULT.url,
-              ],
-              tileSize: 256,
-              attribution: rasterStyleInfo.DEFAULT.copyright,
-            },
-          },
-          layers: [
-            {
-              id: 'simple-tiles',
-              type: 'raster',
-              source: 'default-tiles',
-              minzoom: 0,
-              maxzoom: 22,
-            },
-          ],
-        },
+        style: RoutemapMapbox.createTile(),
         center: [defaultCenter[1], defaultCenter[0]],
         zoom: defaultZoom,
       })
@@ -250,6 +229,32 @@ export class RoutemapMapbox {
     const percentageSlope = (slope + 20) / 40
     return chroma.scale(pallet)(percentageSlope).hex()
   }
+
+  public static createTile(): mapboxgl.Style {
+    return {
+      version: 8,
+      sources: {
+        'default-tiles': {
+          type: 'raster',
+          tiles: [
+            rasterStyleInfo.DEFAULT.url,
+          ],
+          // tileSize: 256,
+          attribution: rasterStyleInfo.DEFAULT.copyright,
+        },
+      },
+      layers: [
+        {
+          id: 'simple-tiles',
+          type: 'raster',
+          source: 'default-tiles',
+          minzoom: 0,
+          maxzoom: 22,
+        },
+      ],
+    }
+  }
+
 
   public static createRasterTile(rasterStyle: RasterStyle): mapboxgl.Style {
     return {

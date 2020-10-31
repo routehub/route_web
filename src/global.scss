@@ -97,8 +97,9 @@ div.leaflet-bottom.leaflet-right {
   max-width:900px;
   margin:auto;
 }
-
-
+ion-toolbar {
+  padding-top : 0 !important;
+}
 footer {
   max-width:900px;
   margin:auto;
