@@ -272,8 +272,9 @@ export class ListPage implements OnInit {
       for (let i = 0; i < res.publicSearch.length; i++) {
         const r = new RouteModel()
         r.setData(res.publicSearch[i])
+        const scale = r.total_dist > 30 ? 10 : 1
         r.thumbnail = this.sanitizer.bypassSecurityTrustResourceUrl(
-          `https://routehub.github.io/clientside_thumbmap/?line=${encodeURI(res.publicSearch[i].summary)}`,
+          `https://routehub.github.io/clientside_thumbmap/?line=${encodeURI(res.publicSearch[i].summary)}&scale=${scale}`,
         )
         this.items.push(r)
 
