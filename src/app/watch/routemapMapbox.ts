@@ -98,7 +98,7 @@ export class RoutemapMapbox {
     if (isVector) {
       mapMb = new mapboxgl.Map({
         container: mapele,
-        style: 'mapbox://styles/routehub/ck7sl13lr2bgw1isx42telruq',
+        style: RoutemapMapbox.getVectorStyle(),
         center: [defaultCenter[1], defaultCenter[0]],
         zoom: defaultZoom,
       })
@@ -106,7 +106,28 @@ export class RoutemapMapbox {
     } else {
       mapMb = new mapboxgl.Map({
         container: mapele,
-        style: RoutemapMapbox.createTile(),
+        style: {
+          version: 8,
+          sources: {
+            'default-tiles': {
+              type: 'raster',
+              tiles: [
+                rasterStyleInfo.DEFAULT.url,
+              ],
+              tileSize: 256,
+              attribution: rasterStyleInfo.DEFAULT.copyright,
+            },
+          },
+          layers: [
+            {
+              id: 'simple-tiles',
+              type: 'raster',
+              source: 'default-tiles',
+              minzoom: 0,
+              maxzoom: 22,
+            },
+          ],
+        },
         center: [defaultCenter[1], defaultCenter[0]],
         zoom: defaultZoom,
       })
@@ -230,29 +251,8 @@ export class RoutemapMapbox {
     return chroma.scale(pallet)(percentageSlope).hex()
   }
 
-  public static createTile(): mapboxgl.Style {
-    return {
-      version: 8,
-      sources: {
-        'default-tiles': {
-          type: 'raster',
-          tiles: [
-            rasterStyleInfo.DEFAULT.url,
-          ],
-          // tileSize: 256,
-          attribution: rasterStyleInfo.DEFAULT.copyright,
-        },
-      },
-      layers: [
-        {
-          id: 'simple-tiles',
-          type: 'raster',
-          source: 'default-tiles',
-          minzoom: 0,
-          maxzoom: 22,
-        },
-      ],
-    }
+  public static getVectorStyle(): string {
+    return 'mapbox://styles/routehub/ck7sl13lr2bgw1isx42telruq'
   }
 
 

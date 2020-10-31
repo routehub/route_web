@@ -24,7 +24,7 @@ export class LayerselectPage implements OnInit {
 
     switch (index) {
       case 0:
-        map.setStyle(RoutemapMapbox.createTile())
+        map.setStyle(RoutemapMapbox.getVectorStyle())
         break
       case 1:
         map.setStyle(RoutemapMapbox.createRasterTile(rasterStyleInfo.OSM))
