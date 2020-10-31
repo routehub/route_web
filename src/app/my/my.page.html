@@ -88,7 +88,7 @@
               -->
                 <ion-chip *ngIf="isMyRoute" (click)="togglePrivate(item)" layout="end">
                   <ion-icon [name]="item.isPrivate ? 'eye-off' : 'eye'"></ion-icon>
-                  <ion-label>{{item.isPrivateJa}}</ion-label>
+                  <ion-label>{{item.is_private_ja}}</ion-label>
                 </ion-chip>
                 <ion-chip *ngIf="isMyRoute" (click)="delete(item)">
                   <ion-icon name="trash"></ion-icon>
