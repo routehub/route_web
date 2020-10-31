@@ -39,6 +39,15 @@
 
       <ion-col class="titleimage titleimage-mobile" [ngStyle]="titleimageheight" *ngIf="platform.is('mobile')">
         <h1><img src="./assets/logo-white.png" alt="routehub"></h1>
+
+        <ion-avatar class="login-button-mobile" *ngIf="currentLoginUser" routerLink="/my"
+          style="width:40px;height:40px; background-color: #fffffff7;" #logoutButton>
+          <img src="{{ currentLoginUser.photoURL }}">
+        </ion-avatar>
+        <ion-button class="login-button login-button-mobile" *ngIf="!currentLoginUser" expand="block" fill="outline"
+          style="-color:white;--border-color:white;" (click)="toLoginPage()" layout="icon-end" #loginButton>ログイン・登録
+        </ion-button>
+
         <p style="margin-top:60px;">
           ルートを作って共有して<br>
           欲しい機能をみんなでつくるアプリ
@@ -56,15 +65,6 @@
         </ion-buttons>
         <ion-button style="margin-top:30px;--color:white;--border-color:white;" shape="round" fill="outline"
           target="_blank" href="https://github.com/routehub/route_web">くわしく知る</ion-button>
-
-        <ion-avatar class="login-button-mobile" *ngIf="platform.is('mobile')" routerLink="/my"
-          style="width:40px;height:40px;" #logoutButton>
-          <img src="{{ user.photoURL }}">
-        </ion-avatar>
-
-        <ion-button class="login-button login-button-mobile" *ngIf="platform.is('mobile')" expand="block" fill="outline"
-          style="-color:white;--border-color:white;" (click)="toLoginPage()" layout="icon-end" #loginButton>ログイン・登録
-        </ion-button>
 
       </ion-col>
 
@@ -97,7 +97,7 @@
 
             <div class="list-thumb-surface" (click)="pageSelected(item)"></div>
             <iframe class="list-thumb" [src]='item.thumbnail'></iframe>
-            
+
           </ion-card-header>
 
           <ion-card-content>

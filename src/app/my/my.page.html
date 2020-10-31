@@ -11,7 +11,7 @@
     <ion-row align-items-center *ngIf="currentLoginUser">
       <ion-col size=3 *ngIf="platform.is('mobile')">
         <ion-avatar class="ion-avatar">
-          <img src="{{currentLoginUser.photoURL}}">
+          <img src="{{currentLoginUser.photoURL}}" style="object-fit: scale-down;">
         </ion-avatar>
       </ion-col>
 
@@ -23,8 +23,10 @@
       <ion-col size-lg>
         <ion-row>
           <ion-col>
-            <ion-label style="font-size:50%;color:gray">認証元 : {{currentLoginUser.providerData[0].providerId}}</ion-label><br />
-            <ion-label style="font-size:50%;color:gray">認証元ID :{{currentLoginUser.providerData[0].displayName}}</ion-label>
+            <ion-label style="font-size:50%;color:gray">認証元 : {{currentLoginUser.providerData[0].providerId}}
+            </ion-label><br />
+            <ion-label style="font-size:50%;color:gray">認証元ID :{{currentLoginUser.providerData[0].displayName}}
+            </ion-label>
           </ion-col>
           <ion-col>
             <ion-button color="light" (click)="logout()">ログアウト</ion-button>

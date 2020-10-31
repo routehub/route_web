@@ -6,8 +6,10 @@ import { Location } from '@angular/common'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
 import { DomSanitizer } from '@angular/platform-browser'
+import { AngularFireAuth } from 'angularfire2/auth'
 import { SearchSettingComponent } from '../search-setting/search-setting.component'
 import { RouteModel } from '../model/routemodel'
+import 'firebase/auth'
 import { AuthService } from '../auth.service'
 
 @Component({
@@ -47,6 +49,8 @@ export class ListPage implements OnInit {
 
   private elevOpt = '';
 
+  currentLoginUser: firebase.User
+
 
   /**
    * ルート情報モジュール
@@ -63,6 +67,7 @@ export class ListPage implements OnInit {
     private apollo: Apollo,
     private authService: AuthService,
     public sanitizer: DomSanitizer,
+    private angularFireAuth: AngularFireAuth,
   ) {
   }
 
@@ -93,6 +98,12 @@ export class ListPage implements OnInit {
 
     // ログインユーザーを取得
     if (this.platform.is('mobile')) {
+      this.angularFireAuth.authState.subscribe((u) => {
+        this.currentLoginUser = u
+      })
+    }
+    /*
+    if (this.platform.is('mobile')) {
       if (!this.authService.currentLoginUser) {
         this.loginButton.el.style.display = 'none'
       } else {
@@ -101,6 +112,7 @@ export class ListPage implements OnInit {
         this.logoutButton.el.style.background = '#ffffffa6'
       }
     }
+    */
   }
 
   changeURL() {
@@ -274,7 +286,7 @@ export class ListPage implements OnInit {
         r.setData(res.publicSearch[i])
         const scale = r.total_dist > 30 ? 10 : 1
         r.thumbnail = this.sanitizer.bypassSecurityTrustResourceUrl(
-          `https://routehub.github.io/clientside_thumbmap/?line=${encodeURI(res.publicSearch[i].summary)}&scale=${scale}`,
+          `https://thumb.routehub.app/?line=${encodeURI(res.publicSearch[i].summary)}&scale=${scale}`,
         )
         this.items.push(r)
 
@@ -314,5 +326,9 @@ export class ListPage implements OnInit {
     } else {
       this.showSearchHeader = false
     }
+  }
+
+  toLoginPage() {
+    this.navCtrl.navigateForward('/login')
   }
 }
