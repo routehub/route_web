@@ -1,15 +1,6 @@
 <ion-content>
-  <ion-row class="wrapper-helper" style="max-width:500px">
-    <p class="login-message">
-      各種ソーシャルアカウントを利用してログインできます。<br>
-      ログイン情報はルート作成・いいね等の機能のためにのみ利用します。詳しくは<a href="https://routehub.github.io/route_web/privacypolicy.html"
-        target="_blank">プライバシーポリシー</a>を参照ください。<br>
-      <br>
-      本サービス内ではログインもとの登録名は表示されず、ログイン後設定された名前が表示されます。
-    </p>
-  </ion-row>
 
-  <ion-row class="wrapper-helper login-button-row">
+  <ion-row class="wrapper-helper login-button-row" style="margin-top: 50px">
     <ion-col>
       <ion-button class="login-button-el" fill="outline" expand="block" (click)="authService.login('google')">
         Googleでログイン</ion-button>
@@ -33,6 +24,17 @@
         Emailでログイン</ion-button>
     </ion-col>
   </ion-row>
+
+  <ion-row class="wrapper-helper" style="max-width:500px; margin-top:50px;">
+    <p class="login-message">
+      各種ソーシャルアカウントを利用してログインできます。<br>
+      ログイン情報はルート作成・いいね等の機能のためにのみ利用します。詳しくは<a href="https://routehub.github.io/route_web/privacypolicy.html"
+        target="_blank">プライバシーポリシー</a>を参照ください。<br>
+      <br>
+      本サービス内ではログインもとの登録名は表示されず、ログイン後設定された名前が表示されます。
+    </p>
+  </ion-row>
+
 
   <footer>
     routehub.app © 2020&nbsp;&nbsp;

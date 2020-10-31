@@ -45,8 +45,8 @@ export class MyPage implements OnInit {
    */
   togglePrivate(item) {
     // UI変更
-    item.isPrivate = !item.isPrivate // eslint-disable-line
-    item.isPrivateJa = item.isPrivate ? '非公開' : '公開' // eslint-disable-line
+    item.is_private = !item.is_private // eslint-disable-line
+    item.is_private_ja = item.is_private ? '非公開' : '公開' // eslint-disable-line
 
     const graphquery = gql`mutation ChangePrivateStatus($id: String!, $is_private: Boolean!) {
         changePrivateStatus(id: $id, is_private : $is_private) { 
@@ -216,7 +216,7 @@ export class MyPage implements OnInit {
         r.setData(res[i])
         const scale = r.total_dist > 30 ? 10 : 1
         r.thumbnail = this.sanitizer.bypassSecurityTrustResourceUrl(
-          `https://routehub.github.io/clientside_thumbmap/?line=${encodeURI(res.publicSearch[i].summary)}&scale=${scale}`,
+          `https://thumb.routehub.app/?line=${encodeURI(res[i].summary)}&scale=${scale}`,
         )
         this.items.push(r)
       }

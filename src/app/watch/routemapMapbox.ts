@@ -98,7 +98,7 @@ export class RoutemapMapbox {
     if (isVector) {
       mapMb = new mapboxgl.Map({
         container: mapele,
-        style: 'mapbox://styles/routehub/ck7sl13lr2bgw1isx42telruq',
+        style: RoutemapMapbox.getVectorStyle(),
         center: [defaultCenter[1], defaultCenter[0]],
         zoom: defaultZoom,
       })
@@ -250,6 +250,11 @@ export class RoutemapMapbox {
     const percentageSlope = (slope + 20) / 40
     return chroma.scale(pallet)(percentageSlope).hex()
   }
+
+  public static getVectorStyle(): string {
+    return 'mapbox://styles/routehub/ck7sl13lr2bgw1isx42telruq'
+  }
+
 
   public static createRasterTile(rasterStyle: RasterStyle): mapboxgl.Style {
     return {
