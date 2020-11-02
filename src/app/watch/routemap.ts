@@ -58,11 +58,11 @@ export class Routemap {
   }
 
   private getOSMLayer() {
-    // const url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    const url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     // const url2 = 'https://www.toolserver.org/tiles/hikebike/{z}/{x}/{y}.png'
-    const url3 = 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png'
+    //const url3 = 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png'
     // const url4 = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
-    const layer = L.tileLayer(url3, {
+    const layer = L.tileLayer(url, {
       attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
       maxZoom: 19,
     })
