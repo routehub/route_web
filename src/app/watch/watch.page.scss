@@ -1,6 +1,6 @@
 .mainmap {
   width: 100%;
-  height: calc( 100% - 201px );
+  height: calc( 100% - 22% );
 }
 .route-info {
   zoom:180%;
@@ -27,9 +27,8 @@
 .elevation {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 22%;
   bottom: 0;
-  border-top: solid #ccc 1px;
   background: #ffffff;
   overflow: hidden;
 }
