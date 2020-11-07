@@ -300,7 +300,7 @@ export class WatchPage implements OnInit {
       color: '#ec1644',
       fill: '#ff004c70',
       pinColor: '#ec1644',
-      padding: 40,
+      padding: 30,
       onHover,
       onSelectStart,
       onSelectMove,
