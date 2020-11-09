@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router'
 import {
   ModalController, NavController, ToastController, Platform, LoadingController,
 } from '@ionic/angular'
-import { Geolocation } from '@ionic-native/geolocation/ngx'
 import * as L from 'leaflet'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
@@ -31,7 +30,6 @@ import {
 export class WatchPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
-    private geolocation: Geolocation,
     public modalCtrl: ModalController,
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
@@ -61,10 +59,6 @@ export class WatchPage implements OnInit {
 
   map: mapboxgl.Map;
 
-  watchLocationSubscribe: any;
-
-  watch: any;
-
   currenPossitionMarker: any;
 
   isWatchLocation = false;
@@ -86,6 +80,8 @@ export class WatchPage implements OnInit {
   };
 
   private line: any;
+
+  private geolocate: mapboxgl.GeolocateControl
 
   favoriteIcon = 'star-outline';
 
@@ -129,7 +125,6 @@ export class WatchPage implements OnInit {
 
   ngOnInit() {
     window.dispatchEvent(new Event('resize'))
-    this.watch = this.geolocation.watchPosition()
     window.document.title = 'ルートを見る RouteHub(β)'
   }
 
@@ -140,7 +135,10 @@ export class WatchPage implements OnInit {
       ? this.createdRoutemap : this.routemap.createMap(this.mapElem.nativeElement, true)
 
     this.map = routemap.map
-
+    this.geolocate = new mapboxgl.GeolocateControl({
+      trackUserLocation: true,
+    })
+    this.map.addControl(this.geolocate)
     this.map.on('load', () => {
       this.id = this.route.snapshot.paramMap.get('id')
       const that = this
@@ -394,42 +392,18 @@ export class WatchPage implements OnInit {
   toggleLocation(event) {
     event.stopPropagation()
     // 無効化
-    if (this.watchLocationSubscribe && this.watchLocationSubscribe.isStopped !== true) {
+    if (this.isWatchLocation) {
       this.presentToast('GPS off')
-
-      this.watchLocationSubscribe.unsubscribe()
+      this.map.removeControl(this.geolocate)
       this.isWatchLocation = false
-      if (this.currenPossitionMarker) {
-        this.map.removeLayer(this.currenPossitionMarker)
-        this.currenPossitionMarker = null
-      }
       return
     }
 
     // 有効化
     this.presentToast('GPS on')
     this.isWatchLocation = true
-    this.watchLocationSubscribe = this.watch.subscribe(() => {
-      this.watch.subscribe((pos) => { // eslint-disable-line @typescript-eslint/no-unused-vars
-        // if (this.watchLocationSubscribe.isStopped === true) {
-        //   return
-        // }
-        // const latlng = new L.LatLng(pos.coords.latitude, pos.coords.longitude)
-
-        // if (!this.currenPossitionMarker) {
-        //   this.currenPossitionMarker = new L.marker(latlng,
-        //     { icon: gpsIcon })
-        //     .addTo(this.map)
-        // this.map.setView(
-        //   [pos.coords.latitude, pos.coords.longitude],
-        //   15,
-        //   { animate: true },
-        // ) // 初回のみ移動
-        // } else {
-        //   this.currenPossitionMarker.setLatLng(latlng)
-        // }
-      })
-    })
+    this.map.addControl(this.geolocate)
+    this.geolocate.trigger()
   }
 
   togglePlay(event) {
