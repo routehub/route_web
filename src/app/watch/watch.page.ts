@@ -136,6 +136,7 @@ export class WatchPage implements OnInit {
 
     this.map = routemap.map
     this.geolocate = new mapboxgl.GeolocateControl({
+      showAccuracyCircle: false,
       trackUserLocation: true,
     })
     this.map.addControl(this.geolocate)
