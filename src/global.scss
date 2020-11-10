@@ -156,3 +156,12 @@ footer {
     }
   }
 }
+
+// mapboxgl logo hide
+.mapboxgl-control-container {
+  .mapboxgl-ctrl-bottom-left {
+    .mapboxgl-ctrl {
+      display: none !important;
+    }
+  }
+}
