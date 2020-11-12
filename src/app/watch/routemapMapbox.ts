@@ -101,6 +101,7 @@ export class RoutemapMapbox {
         style: RoutemapMapbox.getVectorStyle(),
         center: [defaultCenter[1], defaultCenter[0]],
         zoom: defaultZoom,
+        attributionControl: false,
       })
       mapMb.addControl(new mapboxgl.AttributionControl(), 'top-left')
     } else {

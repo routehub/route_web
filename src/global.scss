@@ -147,3 +147,21 @@ footer {
 .brush .selection {
   fill: #ec1644;;
 }
+
+// mapboxgl gps button hide
+.mapboxgl-control-container {
+  .mapboxgl-ctrl-top-right {
+    .mapboxgl-ctrl {
+      display: none;
+    }
+  }
+}
+
+// mapboxgl logo hide
+.mapboxgl-control-container {
+  .mapboxgl-ctrl-bottom-left {
+    .mapboxgl-ctrl {
+      display: none !important;
+    }
+  }
+}
