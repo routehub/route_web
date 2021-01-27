@@ -12,6 +12,10 @@ const routes: Routes = [
   { path: 'layerselect', loadChildren: () => import('./layerselect/layerselect.module').then((m) => m.LayerselectPageModule) },
   { path: 'edit', loadChildren: () => import('./edit/edit.module').then((m) => m.EditPageModule) },
   { path: 'edit/:id', loadChildren: () => import('./edit/edit.module').then((m) => m.EditPageModule) },
+  {
+    path: 'import',
+    loadChildren: () => import('./import/import.module').then( m => m.ImportPageModule)
+  },
 ];
 
 @NgModule({

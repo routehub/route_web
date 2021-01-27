@@ -146,6 +146,10 @@ export class EditPage implements OnInit {
     this.watch = this.geolocation.watchPosition()
   }
 
+  ionViewDidEnter() {
+    window.document.title = '編集 RouteHub(β)'
+  }
+
   ionViewWillEnter() {
     const that = this
     // ルートidが指定されているときは読み込み
