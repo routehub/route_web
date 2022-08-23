@@ -6,7 +6,7 @@ import * as mapboxgl from 'mapbox-gl'
 import { LngLatLike } from 'mapbox-gl'
 import * as chroma from 'chroma-js'
 
-Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2s3c2tzNndwMG12NjNrcDM2dm1xamQ3bSJ9.fHdfoSXDhbyboKWznJ53Cw')
+Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2w3NjZoeGJ3MDhnMDNubWk2MWdpNG15diJ9.-viZ5gtnqX6qg2eRpjLNBA')
 const styleId = 'ck7sl13lr2bgw1isx42telruq'
 
 interface RasterStyle {
