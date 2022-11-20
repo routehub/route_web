@@ -12,11 +12,11 @@ export const environment = {
   hostname: 'http://localhost:8100',
 
   api: {
-    host: 'https://api.routehub.app/route/1.0.0',
+    host: 'https://routing.routehub.app/route/1.0.0',
     routing_path: '/routing',
     migrate_path: '/migrate',
     expand_url_path: '/expand_shorturl',
-    graphql_host: 'https://routehub-api.herokuapp.com/',
+    graphql_host: 'https://api.routehub.app/',
     staticmap_url: 'https://map.yahooapis.jp/map/V1/static',
     thumbappid: 'dj00aiZpPXFPNk1BUG4xYkJvYSZzPWNvbnN1bWVyc2VjcmV0Jng9N2U-',
   },
