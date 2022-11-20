@@ -13,7 +13,7 @@ export const environment = {
   hostname: 'routehub.app',
 
   api: {
-    host: 'https://api2.routehub.app/route/1.0.0',
+    host: 'https://routing.routehub.app/route/1.0.0',
     routing_path: '/routing',
     migrate_path: '/migrate',
     expand_url_path: '/expand_shorturl',

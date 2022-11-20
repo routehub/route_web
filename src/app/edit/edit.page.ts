@@ -93,7 +93,7 @@ export class EditPage implements OnInit {
 
   isWatchLocation = false;
 
-  routing_url = 'https://api2.routehub.app/route/1.0.0/routing'
+  routing_url = 'https://routing.routehub.app/route/1.0.0/routing'
 
   distance = 0.0;
 
