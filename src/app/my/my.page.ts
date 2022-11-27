@@ -171,7 +171,11 @@ export class MyPage implements OnInit {
   }
 
   pageSelected(item) {
-    this.navCtrl.navigateForward(`/watch/${item.id}`)
+    if (item.is_private) {
+      this.navCtrl.navigateForward(`/watch/${item.id}?is_private=1`)
+    } else {
+      this.navCtrl.navigateForward(`/watch/${item.id}`)
+    }
   }
 
   /**

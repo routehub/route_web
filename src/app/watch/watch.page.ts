@@ -16,7 +16,7 @@ import { LayerselectPage } from '../layerselect/layerselect.page'
 import { AuthService } from '../auth.service'
 import { RouteModel } from '../model/routemodel'
 import 'firebase/auth'
-import { getRouteQuery } from '../gql/RouteQuery'
+import { getPrivateRouteQuery, getRouteQuery } from '../gql/RouteQuery'
 import {
   RoutemapMapbox, startIcon, goalIcon, editIcon, commentIcon, gpsIcon,
 } from './routemapMapbox'
@@ -56,6 +56,8 @@ export class WatchPage implements OnInit {
   noteData = [];
 
   id: string;
+
+  isPrivate: boolean = false;
 
   map: mapboxgl.Map;
 
@@ -128,7 +130,7 @@ export class WatchPage implements OnInit {
     window.document.title = 'ルートを見る RouteHub(β)'
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.presentLoading()
 
     const routemap = this.createdRoutemap = this.createdRoutemap
@@ -142,14 +144,28 @@ export class WatchPage implements OnInit {
     this.map.addControl(this.geolocate)
     this.map.on('load', () => {
       this.id = this.route.snapshot.paramMap.get('id')
+      this.isPrivate = this.route.snapshot.queryParams.is_private === '1'
+
       const that = this
       this.apollo.query({
-        query: getRouteQuery(),
+        query: this.isPrivate ? getPrivateRouteQuery() : getRouteQuery(),
         variables: { ids: [this.id] },
       }).subscribe(({ data }) => {
         this.dissmissLoading()
         const routeData: any = data
-        const route = Object.assign(routeData.getPublicRoutes[0], routeData.publicSearch[0])
+
+        if (!this.isPrivate && (!routeData.getPublicRoutes || !routeData.getPublicRoutes[0])) {
+          alert('Sorry... Route Loading Error')
+          return
+        }
+        if (this.isPrivate && (!routeData.getPrivateRoutes || !routeData.getPrivateRoutes[0])) {
+          alert('Sorry... Route Loading Error.')
+          return
+        }
+
+        const route = this.isPrivate
+          ? Object.assign(routeData.getPrivateRoutes[0], routeData.privateSearch[0])
+          : Object.assign(routeData.getPublicRoutes[0], routeData.publicSearch[0])
 
         that.routeData = new RouteModel()
         that.routeData.setFullData(route)
@@ -422,7 +438,11 @@ export class WatchPage implements OnInit {
     event.stopPropagation()
     // 状態の管理ができないのでアプリケーションの初期化をする
     // this.navCtrl.navigateForward('/edit/' + this.id);
-    window.document.location.href = `/edit/${this.id}`
+    if (this.isPrivate) {
+      this.navCtrl.navigateForward(`/edit/${this.id}?is_private=1`)
+    } else {
+      this.navCtrl.navigateForward(`/edit/${this.id}`)
+    }
   }
 
   fastPlay(event) {

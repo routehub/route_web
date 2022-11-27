@@ -18,7 +18,7 @@ import polyline from '@mapbox/polyline'
 import { Routemap } from '../watch/routemap'
 import { environment } from '../../environments/environment'
 import { LayerselectPage } from '../layerselect/layerselect.page'
-import { getRouteQuery } from '../gql/RouteQuery'
+import { getPrivateRouteQuery, getRouteQuery } from '../gql/RouteQuery'
 import { AuthService } from '../auth.service'
 
 @Component({
@@ -47,6 +47,8 @@ export class EditPage implements OnInit {
   loading = null;
 
   route_id: string = null;
+
+  isPrivate: boolean = false;
 
   map: any;
 
@@ -146,10 +148,11 @@ export class EditPage implements OnInit {
     this.watch = this.geolocation.watchPosition()
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     const that = this
     // ルートidが指定されているときは読み込み
     this.route_id = this.ngRoute.snapshot.paramMap.get('id')
+    this.isPrivate = this.ngRoute.snapshot.queryParams.is_private === '1'
 
     if (!this.route_id) {
       window.document.getElementById('share_link_row').style.display = 'none'
@@ -570,14 +573,27 @@ export class EditPage implements OnInit {
     this.presentLoading()
 
     this.apollo.query({
-      query: getRouteQuery(),
+      query: this.isPrivate ? getPrivateRouteQuery() : getRouteQuery(),
       variables: { ids: [this.route_id] },
       fetchPolicy: 'no-cache',
     }).subscribe(({ data }) => {
       this.dissmissLoading()
 
       const _route: any = data
-      const _r = Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0])
+
+      if (!this.isPrivate && (!_route.getPublicRoutes || !_route.getPublicRoutes[0])) {
+        alert('Sorry... Route Loading Error')
+        return
+      }
+      if (this.isPrivate && (!_route.getPrivateRoutes || !_route.getPrivateRoutes[0])) {
+        alert('Sorry... Route Loading Error.')
+        return
+      }
+      const _r = this.isPrivate
+        ? Object.assign(_route.getPrivateRoutes[0], _route.privateSearch[0])
+        : Object.assign(_route.getPublicRoutes[0], _route.publicSearch[0])
+      console.log('load.')
+
 
       that.editMarkers = []
       that.line = []
@@ -589,7 +605,7 @@ export class EditPage implements OnInit {
 
       const r = new RouteModel()
       r.setFullData(_r)
-      
+
       that.title = r.title
       that.author = r.author
       that.isNotPrivate = !r.is_private
@@ -768,14 +784,14 @@ export class EditPage implements OnInit {
   }
 
   // 一つ戻るボタン(実質最後尾削除)
-  deletePresent (event) {
+  deletePresent(event) {
     event.stopPropagation()
 
     if (this.editMarkers.length == 0) {
       return;
     }
 
-    let marker = this.editMarkers[this.editMarkers.length-1];
+    let marker = this.editMarkers[this.editMarkers.length - 1];
     marker.remove_marker();
     this.refresh_route();
 

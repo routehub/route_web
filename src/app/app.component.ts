@@ -98,6 +98,7 @@ export class AppComponent implements OnInit {
         }),
         cache: new InMemoryCache(),
       })
+      console.log('initialized auth')
     })
   }
 
