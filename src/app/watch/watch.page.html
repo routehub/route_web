@@ -22,12 +22,14 @@
       <ion-icon name="apps"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="start">
+      <!-- 再生機能はLeaflet移植待ちなので非表示
       <ion-fab-button (click)="fastPlay($event)">
         <ion-icon color="primary" name="chevron-forward-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="togglePlay($event)">
         <ion-icon color="primary" [name]="isPlaying ? 'pause' : 'play'"> </ion-icon>
       </ion-fab-button>
+    -->
       <ion-fab-button (click)="edit($event)">
         <ion-icon color="primary" name="create"></ion-icon>
       </ion-fab-button>
