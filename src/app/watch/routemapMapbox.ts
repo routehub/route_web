@@ -2,12 +2,13 @@
 import turfbbox from '@turf/bbox'
 import * as turf from '@turf/helpers'
 import distance from '@turf/distance'
-import * as mapboxgl from 'mapbox-gl'
-import { LngLatLike } from 'mapbox-gl'
+import * as maplibregl from 'maplibre-gl'
+import { LngLatLike } from 'maplibre-gl'
 import * as chroma from 'chroma-js'
 
-Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2w3NjZoeGJ3MDhnMDNubWk2MWdpNG15diJ9.-viZ5gtnqX6qg2eRpjLNBA')
-const styleId = 'ck7sl13lr2bgw1isx42telruq'
+// eslint-disable-next-line max-len
+// Object.getOwnPropertyDescriptor(mapboxgl, 'accessToken').set('pk.eyJ1Ijoicm91dGVodWIiLCJhIjoiY2w3NjZoeGJ3MDhnMDNubWk2MWdpNG15diJ9.-viZ5gtnqX6qg2eRpjLNBA')
+// const styleId = 'ck7sl13lr2bgw1isx42telruq'
 
 interface RasterStyle {
   url: string,
@@ -22,8 +23,8 @@ interface RasterStyleInfo {
 
 export const rasterStyleInfo: RasterStyleInfo = {
   DEFAULT: {
-    url: `https://api.mapbox.com/styles/v1/routehub/${styleId}/tiles/{z}/{x}/{y}?access_token=${mapboxgl.accessToken}`,
-    copyright: '',
+    url: 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png',
+    copyright: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
   },
   OSM: {
     url: 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png',
@@ -88,7 +89,7 @@ export class RoutemapMapbox {
 
   public static routeLayer = null;
 
-  public static getCurrent = (): mapboxgl.Map | null => RoutemapMapbox.currentMap
+  public static getCurrent = (): maplibregl.Map | null => RoutemapMapbox.currentMap
 
   createMap(mapele: string, isVector?: boolean) {
     const defaultCenter = [35.681, 139.767]
@@ -96,16 +97,16 @@ export class RoutemapMapbox {
 
     let mapMb = null
     if (isVector) {
-      mapMb = new mapboxgl.Map({
+      mapMb = new maplibregl.Map({
         container: mapele,
         style: RoutemapMapbox.getVectorStyle(),
         center: [defaultCenter[1], defaultCenter[0]],
         zoom: defaultZoom,
         attributionControl: false,
       })
-      mapMb.addControl(new mapboxgl.AttributionControl(), 'top-left')
+      mapMb.addControl(new maplibregl.AttributionControl(), 'top-left')
     } else {
-      mapMb = new mapboxgl.Map({
+      mapMb = new maplibregl.Map({
         container: mapele,
         style: {
           version: 8,
@@ -147,10 +148,10 @@ export class RoutemapMapbox {
     const lonplus = Math.abs(bbox[0] - bbox[2]) * 0.1
     const sw = [bbox[0] * 1 - lonplus, bbox[1] * 1 - latplus] as LngLatLike
     const ne = [bbox[2] * 1 + lonplus, bbox[3] * 1 + latplus] as LngLatLike
-    return new mapboxgl.LngLatBounds(sw, ne)
+    return new maplibregl.LngLatBounds(sw, ne)
   }
 
-  func(coordinates: Array<Array<number>>, mode: string): mapboxgl.Expression {
+  func(coordinates: Array<Array<number>>, mode: string): maplibregl.Expression {
     const { length } = coordinates
     // 標高の最大値を求める
     const maxHeight = coordinates.map((a) => a[2]).reduce((a, b) => Math.max(a, b))
@@ -179,7 +180,7 @@ export class RoutemapMapbox {
     ]
   }
 
-  renderRouteLayer(map: mapboxgl.Map, lineGeoJSON: mapboxgl.GeoJSONSourceRaw, mode: string) {
+  renderRouteLayer(map: maplibregl.Map, lineGeoJSON: maplibregl.GeoJSONSourceRaw, mode: string) {
     if (map.getLayer('route')) {
       map.removeLayer('route')
     }
@@ -218,9 +219,9 @@ export class RoutemapMapbox {
 
   createMarker(
     iconInfo?: IconInfo,
-    option?: mapboxgl.MarkerOptions,
+    option?: maplibregl.MarkerOptions,
     className?: string,
-  ): mapboxgl.Marker {
+  ): maplibregl.Marker {
     const startEl = document.createElement('div')
     if (iconInfo) {
       startEl.style.backgroundImage = `url(${iconInfo.iconUrl})`
@@ -230,7 +231,7 @@ export class RoutemapMapbox {
     } else if (className) {
       startEl.className = className
     }
-    return new mapboxgl.Marker(startEl, option)
+    return new maplibregl.Marker(startEl, option)
   }
 
   getHeightColor(height, maxHeight) {
@@ -253,11 +254,11 @@ export class RoutemapMapbox {
   }
 
   public static getVectorStyle(): string {
-    return 'mapbox://styles/routehub/ck7sl13lr2bgw1isx42telruq'
+    return 'https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json'
   }
 
 
-  public static createRasterTile(rasterStyle: RasterStyle): mapboxgl.Style {
+  public static createRasterTile(rasterStyle: RasterStyle): maplibregl.Style {
     return {
       version: 8,
       sources: {
@@ -282,12 +283,12 @@ export class RoutemapMapbox {
     }
   }
 
-  public static toBounds(lngLats: mapboxgl.LngLat[]): mapboxgl.LngLatBounds | null {
+  public static toBounds(lngLats: maplibregl.LngLat[]): maplibregl.LngLatBounds | null {
     if (lngLats.length === 0) {
       return null
     }
 
-    const bounds = new mapboxgl.LngLatBounds()
+    const bounds = new maplibregl.LngLatBounds()
     lngLats.forEach((ll) => {
       bounds.extend(ll)
     })

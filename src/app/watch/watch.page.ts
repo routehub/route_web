@@ -8,7 +8,7 @@ import {
 import * as L from 'leaflet'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
-import * as mapboxgl from 'mapbox-gl'
+import * as maplibregl from 'maplibre-gl'
 import { ElevationGraph } from 'chartjs-util-elevation'
 import { RouteinfoPage } from '../routeinfo/routeinfo.page'
 import { ExportPage } from '../export/export.page'
@@ -59,7 +59,7 @@ export class WatchPage implements OnInit {
 
   isPrivate: boolean = false;
 
-  map: mapboxgl.Map;
+  map: maplibregl.Map;
 
   currenPossitionMarker: any;
 
@@ -83,20 +83,17 @@ export class WatchPage implements OnInit {
 
   private line: any;
 
-  private geolocate: mapboxgl.GeolocateControl
+  private geolocate: maplibregl.GeolocateControl
 
   favoriteIcon = 'star-outline';
 
   isFavorite = false;
 
-  // private animatedMarker: MapboxAnimatedMarker;
-  // private mbAnimatedMarker: MapboxAnimatedMarker | null;
-
   isPlaying: boolean;
 
   private hotlineLayer: any;
 
-  private elevationHoverMarker: mapboxgl.Marker;
+  private elevationHoverMarker: maplibregl.Marker;
 
   private isSlopeMode = false;
 
@@ -137,7 +134,7 @@ export class WatchPage implements OnInit {
       ? this.createdRoutemap : this.routemap.createMap(this.mapElem.nativeElement, true)
 
     this.map = routemap.map
-    this.geolocate = new mapboxgl.GeolocateControl({
+    this.geolocate = new maplibregl.GeolocateControl({
       showAccuracyCircle: false,
       trackUserLocation: true,
     })
@@ -186,8 +183,8 @@ export class WatchPage implements OnInit {
         that.routeGeojson.data.geometry.coordinates = pos
 
         // 標高グラフ表示
-        const startLngLat = [pos[0][0], pos[0][1]] as mapboxgl.LngLatLike
-        const goalLngLat = [pos[pos.length - 1][0], pos[pos.length - 1][1]] as mapboxgl.LngLatLike
+        const startLngLat = [pos[0][0], pos[0][1]] as maplibregl.LngLatLike
+        const goalLngLat = [pos[pos.length - 1][0], pos[pos.length - 1][1]] as maplibregl.LngLatLike
         // 事前にmarker作成
         this.elevationHoverMarker = this.routemap.createMarker(gpsIcon, { anchor: 'center' }, 'marker-start')
           .setLngLat(startLngLat)
@@ -262,11 +259,11 @@ export class WatchPage implements OnInit {
     }
   }
 
-  setAltitudeGraph(map, marker: mapboxgl.Marker, routeData: RouteModel) {
+  setAltitudeGraph(map, marker: maplibregl.Marker, routeData: RouteModel) {
     const onHover = (d, i) => {
       const point = routeData.pos[i]
 
-      const lngLat = new mapboxgl.LngLat(point[0], point[1])
+      const lngLat = new maplibregl.LngLat(point[0], point[1])
       // eslint-disable-next-line no-param-reassign
       marker.getElement().hidden = false
       marker.setLngLat(lngLat)
@@ -300,7 +297,7 @@ export class WatchPage implements OnInit {
       }
 
       const posArea = routeData.pos.slice(this.selectStartPointIndex, this.selectEndPointIndex + 1)
-      const lngLats = posArea.map((p) => new mapboxgl.LngLat(p[0], p[1]))
+      const lngLats = posArea.map((p) => new maplibregl.LngLat(p[0], p[1]))
       const bounds = RoutemapMapbox.toBounds(lngLats)
       this.map.fitBounds(bounds, { padding: 80, animate: true })
 
@@ -421,17 +418,6 @@ export class WatchPage implements OnInit {
     this.isWatchLocation = true
     this.map.addControl(this.geolocate)
     this.geolocate.trigger()
-  }
-
-  togglePlay(event) {
-    event.stopPropagation()
-    if (this.isPlaying) {
-      // this.mbAnimatedMarker.stop()
-      this.isPlaying = false
-    } else {
-      // this.mbAnimatedMarker.start()
-      this.isPlaying = true
-    }
   }
 
   edit(event) {
